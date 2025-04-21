@@ -1,46 +1,51 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="dark">
     <ion-buttons slot="start">
-      <ion-button color="primary" class="backbtn" routerLink="/home" routerDirection="back">
-        <img src='../../assets/back-dark.svg' />
+      <ion-button class="backbtn" routerLink="/home" routerDirection="back">
+        <img src="../../assets/back-dark.svg" />
       </ion-button>
     </ion-buttons>
 
     <ion-buttons slot="end">
       <ion-button class="notification">
-        <ion-icon name="notifications-outline" color="dark"></ion-icon>
+        <ion-icon name="notifications-outline" color="light"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <h1 class="title">Profile</h1>
+<ion-content class="profile-content">
+  <h1 class="title">Perfil</h1>
 
   <div class="profile-info">
-    <ion-item>
-      <ion-label position="floating">Name</ion-label>
-      <ion-input value="Code Crafts"></ion-input>
+    <ion-item class="profile-item">
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input value="Code Crafts" class="input-text"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="floating">Address Lane</ion-label>
-      <ion-input value="37/6 A"></ion-input>
+
+    <ion-item class="profile-item">
+      <ion-label position="floating">Dirección</ion-label>
+      <ion-input value="37/6 A" class="input-text"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="floating">City</ion-label>
-      <ion-input value="Moratuwa"></ion-input>
+
+    <ion-item class="profile-item">
+      <ion-label position="floating">Ciudad</ion-label>
+      <ion-input value="Moratuwa" class="input-text"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="floating">Gender</ion-label>
-      <ion-input value="Male"></ion-input>
+
+    <ion-item class="profile-item">
+      <ion-label position="floating">Género</ion-label>
+      <ion-input value="Masculino" class="input-text"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input value="info@codecrafts.net"></ion-input>
+
+    <ion-item class="profile-item">
+      <ion-label position="floating">Correo electrónico</ion-label>
+      <ion-input value="info@codecrafts.net" class="input-text"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="floating">Phone Number</ion-label>
-      <ion-input value="+94 775 580 646"></ion-input>
+
+    <ion-item class="profile-item">
+      <ion-label position="floating">Teléfono</ion-label>
+      <ion-input value="+94 775 580 646" class="input-text"></ion-input>
     </ion-item>
   </div>
 </ion-content>

@@ -1,19 +1,28 @@
 <ion-header>
- 
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 </ion-header>
 
 <ion-content class="ion-padding ion-text-center">
-  <div class="container">
+  <div class="container" style="background-color: #1b1b1b;">
     <div class="page-header">
-      <h1>Welcome to Bolt</h1>
-      <h3>Explore Us</h3>
+      <h1 style="color: white; font-family: 'Montserrat', sans-serif; text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);">
+        Bienvenido a Abimar
+      </h1>
+      <h3 style="color: white; font-family: 'Montserrat', sans-serif; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);">
+        Explora tu tienda favorita
+      </h3>
     </div>
 
     <img src="../../assets/welcome.png" />
 
     <div class="button-container">
-      <ion-button expand="block" class="main-button" routerLink="/login" routerDirection="forward">Log in</ion-button>
-      <ion-button expand="block" color="dark" fill="clear" routerLink="/signup" routerDirection="forward">Signup</ion-button>
+      <ion-button expand="block" class="main-button" routerLink="/login" routerDirection="forward">
+        Log in
+      </ion-button>
+
+      <ion-button expand="block" class="secondary-button" routerLink="/signup" routerDirection="forward">
+        Signup
+      </ion-button>
     </div>
   </div>
 </ion-content>

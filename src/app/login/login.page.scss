@@ -23,6 +23,8 @@ ion-toolbar {
 .form-container ion-item {
     --padding-start: 0;
     --border-color: #DADADA;
+    --background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
 }
 
 .form-container ion-item ion-label {
@@ -47,3 +49,26 @@ ion-toolbar {
 .sign-up ion-button {
     margin: 0;
 }
+
+.main-button {
+    --background: #fdd835;
+    --background-hover: #ffe066;
+    --color: #1b1b1b;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(253, 216, 53, 0.5);
+    margin-top: 20px;
+  }
+  
+  .secondary-button {
+    --color: #00e5ff;
+    --background: transparent;
+    --border-color: #00e5ff;
+    --border-width: 1.5px;
+    --background-hover: rgba(0, 229, 255, 0.1);
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+  }
+  

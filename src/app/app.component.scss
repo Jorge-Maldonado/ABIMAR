@@ -1,24 +1,57 @@
 ion-menu {
-  --width: 100%;
+  --width: 80%;
+  --background: #000000 !important;  /* Fondo negro del menú */
+  --color: #ffffff;  /* Color de texto blanco */
+  --border-color: transparent;  /* Eliminar bordes predeterminados */
 }
 
 .main-list {
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-top: 20px;
 
   ion-list {
     width: 100%;
+    padding: 0;
+    background: #000000;
 
     ion-item {
       font-size: 18px;
-      font-weight: 100;
+      font-weight: 500;
+      color: #ffffff; /* Texto blanco por defecto */
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      --background: black;
+
+      ion-label {
+        color: #ffffff !important;
+        font-weight: 500;
+      }
+
+      .menu-icon {
+        font-size: 24px;
+        margin-right: 16px;
+        color: #fdd835; /* Amarillo para los íconos */
+      }
+
+      &:hover {
+        background-color: rgba(253, 216, 53, 0.06); /* Efecto hover con fondo suave amarillo */
+        ion-label, .menu-icon {
+          color: #fdd835 !important;
+        }
+      }
     }
 
     .selected {
-      border-left: 5px solid var(--ion-color-primary);
-      color: var(--ion-color-primary);
+      border-left: 5px solid #fdd835; /* Resalta la opción seleccionada con borde amarillo */
+      background-color: rgba(253, 216, 53, 0.06); /* Fondo suave amarillo para la opción seleccionada */
+      ion-label, .menu-icon {
+        color: #fdd835 !important;
+      }
     }
   }
 
@@ -28,5 +61,9 @@ ion-menu {
     right: 10%;
     font-size: 24px;
     --ripple-color: transparent;
+
+    ion-icon {
+      color: #fdd835; /* Color amarillo para el ícono de cerrar */
+    }
   }
 }

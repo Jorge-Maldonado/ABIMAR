@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="dark">
     <ion-buttons slot="start">
       <ion-menu-button>
         <img src="../../assets/menu_bar.svg" />
@@ -7,27 +7,29 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button class="notification">
-        <ion-icon name="notifications-outline" color="dark"></ion-icon>
+        <ion-icon name="notifications-outline" color="light"></ion-icon>
         <span>&nbsp;</span>
       </ion-button>
       <ion-button class="filter">
-        <ion-icon name="funnel-outline" color="dark"></ion-icon>
+        <ion-icon name="funnel-outline" color="light"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content style="--background: #000000;">
+  <!-- Search Section -->
   <div class="search ion-padding">
     <ion-item lines="none">
-      <ion-input placeholder="Search Your Product"></ion-input>
-      <ion-icon name="search-outline" slot="start"></ion-icon>
+      <ion-icon name="search-outline" slot="start" color="black"></ion-icon>
+      <ion-input placeholder="Buscar producto"></ion-input>
     </ion-item>
   </div>
 
+  <!-- Categories Section -->
   <div class="title ion-padding">
-    <h2>Categories</h2>
-    <p>See all</p>
+    <h2>Categorías</h2>
+    <p>Ver todo</p>
   </div>
 
   <div class="category-slider ion-padding-start">
@@ -41,9 +43,10 @@
     </ion-slides>
   </div>
 
+  <!-- Featured Section -->
   <div class="title ion-padding">
-    <h2 class="font-bold">Featured</h2>
-    <p>See all</p>
+    <h2 class="font-bold">Destacados</h2>
+    <p>Ver todo</p>
   </div>
 
   <div class="product-slider ion-padding-start">
@@ -58,9 +61,10 @@
     </ion-slides>
   </div>
 
+  <!-- Best Sell Section -->
   <div class="title ion-padding">
-    <h2 class="font-bold">Best Sell</h2>
-    <p>See all</p>
+    <h2 class="font-bold">Más vendidos</h2>
+    <p>Ver todo</p>
   </div>
 
   <div class="product-slider ion-padding-start">

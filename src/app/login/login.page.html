@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="dark">
     <ion-buttons slot="start">
       <ion-button class="backbtn" routerLink="/welcome" routerDirection="back">
         <img src="../../assets/back.svg" />
@@ -8,25 +8,33 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <div class="ion-padding container">
-    <h1>Login</h1>
+<ion-content class="ion-padding" style="--background: #1b1b1b;">
+  <div class="ion-padding container" 
+       style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);">
+    
+    <h1 style="color: #fdd835; font-family: 'Montserrat', sans-serif; text-align: center; margin-bottom: 24px; text-shadow: 1px 1px 4px rgba(0,0,0,0.4);">
+      Login
+    </h1>
 
     <div class="form-container">
-      <ion-item>
-        <ion-label position="floating">Email</ion-label>
-        <ion-input></ion-input>
+      <ion-item lines="inset">
+        <ion-label position="floating" style="color: white;">Email</ion-label>
+        <ion-input style="color: white;"></ion-input>
       </ion-item>
-      <ion-item>
-        <ion-label position="floating">Password</ion-label>
-        <ion-input type="password"></ion-input>
-        <ion-icon name="eye" slot="end"></ion-icon>
+
+      <ion-item lines="inset">
+        <ion-label position="floating" style="color: white;">Password</ion-label>
+        <ion-input type="password" style="color: white;"></ion-input>
+        <ion-icon name="eye" slot="end" color="medium"></ion-icon>
       </ion-item>
 
       <ion-button expand="block" class="main-button" (click)="login()">Log in</ion-button>
 
-      <div class="sign-up">
-        Don't have an account? <ion-button color="dark" fill="clear" routerLink="/signup" routerDirection="forward">Sign up</ion-button>
+      <div class="sign-up" style="text-align: center; margin-top: 16px; color: #ccc;">
+        Don't have an account?
+        <ion-button fill="clear" class="secondary-button" size="small" routerLink="/signup" routerDirection="forward">
+          Sign up
+        </ion-button>
       </div>
     </div>
   </div>

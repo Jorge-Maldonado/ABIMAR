@@ -1,120 +1,149 @@
-ion-menu-button {
-    margin-left: 10px;
-}
-
-.filter {
-    margin-right: 10px;
-}
-
-.search {
+// Toolbar
+ion-toolbar {
+    --background: #000000;
+    --color: white;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  // Buttons (Notification and Filter)
+  .notification, .filter {
+    --background: transparent;
+    --color: white;
+  }
+  
+  .notification ion-icon, .filter ion-icon {
+    font-size: 22px;
+  }
+  
+  // Search Section
+  .search {
     margin-bottom: 20px;
-
-    ion-item {
-        border-radius: 10px;
-        box-shadow: 0px 13px 30px 0px rgba(0, 0, 0, 0.09);
-        padding: 8px;
-
-        ion-icon {
-            margin-right: 16px;
-        }
-
-        ion-input {
-            padding-left: 10px !important;
-            border-left: 1px solid #F4F4F4;
-        }
+  
+    .search-input {
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+      transition: box-shadow 0.3s ease;
+  
+      &:focus-within {
+        box-shadow: 0 0 12px #00e5ff;
+        border: 1px solid #00e5ff;
+      }
+  
+      ion-icon {
+        margin-right: 16px;
+        color: #fdd835;
+      }
+  
+      .custom-input {
+        color: white !important;
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 10px !important;
+      }
+  
+      ::placeholder {
+        color: #cccccc;
+        opacity: 0.6;
+      }
     }
-}
-
-.title {
+  }
+  
+  // Title (for sections)
+  .title {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 32px;
-
+  
     h2 {
-        margin: 0 0 0 16px;
-        color: #434343;
+      margin: 0 0 0 16px;
+      color: #fdd835; // Yellow color for titles
+      font-family: 'Montserrat', sans-serif;
     }
-
+  
     p {
-        margin: 0 16px 0 0;
-        color: #656565;
+      margin: 0 16px 0 0;
+      color: #00e5ff; // Cyan color for 'See all' links
+      cursor: pointer;
+      text-decoration: underline;
     }
-}
-
-.category-slider {
+  }
+  
+  // Category Slider
+  .category-slider {
     ion-slide {
-        width: 150px;
-        height: 100px;
-        margin-right: 10px;
-        margin-left: 20px;
-        margin-bottom: 30px;
-
-        ion-col {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            h4 {
-                color: #ffffff;
-                margin: 0;
-            }
-
-            img {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 8px;
-                top: 0;
-                left: 0;
-                z-index: -1;
-                box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.16);
-            }
+      width: 150px;
+      height: 100px;
+      margin-right: 10px;
+      margin-left: 20px;
+      margin-bottom: 30px;
+  
+      ion-col {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+  
+        h4 {
+          color: white;
+          margin: 0;
         }
+  
+        img {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 8px;
+          top: 0;
+          left: 0;
+          z-index: -1;
+          box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.16);
+        }
+      }
     }
-}
-
-.font-bold {
+  }
+  
+  // Featured and Best Sell Section
+  .font-bold {
     font-weight: bold;
-}
-
-.product-slider {
+  }
+  
+  .product-slider {
     margin-bottom: 30px;
-
+  
     ion-slide {
-        width: 150px;
-        height: auto;
-        margin-left: 20px;
-        margin-right: 10px;
-
-        ion-col {
-            img {
-                width: 100%;
-                height: 180px;
-                object-fit: cover;
-                border-radius: 8px;
-            }
-
-            p {
-                margin-top: 5px;
-                margin-bottom: 0;
-            }
-
-            h6 {
-                margin-top: 5px;
-                margin-bottom: 0;
-            }
+      width: 150px;
+      height: auto;
+      margin-left: 20px;
+      margin-right: 10px;
+  
+      ion-col {
+        img {
+          width: 100%;
+          height: 180px;
+          object-fit: cover;
+          border-radius: 8px;
         }
+  
+        p {
+          margin-top: 5px;
+          margin-bottom: 0;
+          color: #fdd835; // Yellow color for product price
+        }
+  
+        h6 {
+          margin-top: 5px;
+          margin-bottom: 0;
+          color: white;
+        }
+      }
     }
-}
-
-// Removing highlight when focused/clicked on product
-ion-slide:focus {
+  }
+  
+  // Removing outline on focus for slides
+  ion-slide:focus, ion-col:focus {
     outline: none !important;
-}
-
-ion-col:focus {
-    outline: none !important;
-}
+  }
+  
