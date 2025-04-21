@@ -1,91 +1,107 @@
 .backbtn {
     margin-left: 15px;
-}
-
-.notification {
+  }
+  
+  .notification {
     margin-right: 15px;
-}
-
-ion-content {
+  
+    ion-icon {
+      color: #fdd835 !important; // Amarillo
+    }
+  }
+  
+  ion-content {
     --padding-top: 16px;
     --padding-bottom: 16px;
     --padding-start: 26px;
     --padding-end: 26px;
-}
-
-.title {
+    --background: #121212; // Fondo negro
+  }
+  
+  .title {
     margin-top: 0;
-    color: #434343;
-}
-
-.cart-items {
+    color: #ffffff; // Blanco
+  }
+  
+  .cart-items {
     ion-card {
-        margin-left: 0;
-        margin-right: 0;
-        border-radius: 0;
-
-        ion-card-content {
-            display: flex;
-            position: relative;
-
-            .item-img {
-                display: flex;
-                align-items: center;
-                margin-right: 16px;
-
-                img {
-                    object-fit: cover;
-                    width: 110px;
-                    height: 110px;
-                    box-shadow: 0px 10px 30px 0px rgba(0, 0, 0, 0.16);
-                }
-            }
-
-            .item-info {
-                p {
-                    font-size: 16px;
-                }
-
-                p:nth-child(1) {
-                    color: #434343;
-                }
-                p:nth-child(2) {
-                    color: #919191;
-                }
-                p:nth-child(3) {
-                    color: var(--ion-color-primary);
-                }
-
-                .qty-selector {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    background: #f6f6f6;
-                    border-radius: 5px;
-                    margin-top: 10px;
-
-                    ion-button {
-                        --color: #565656;
-                        font-size: 16px;
-                        margin-left: 8px;
-                        margin-right: 8px;
-                    }
-
-                    ion-label {
-                        color: #565656 !important;
-                        font-size: 16px;
-                    }
-                }
-            }
+      margin-left: 0;
+      margin-right: 0;
+      border-radius: 0;
+      background: #1e1e1e; // Fondo oscuro para tarjetas
+  
+      ion-card-content {
+        display: flex;
+        position: relative;
+  
+        .item-img {
+          display: flex;
+          align-items: center;
+          margin-right: 16px;
+  
+          img {
+            object-fit: cover;
+            width: 110px;
+            height: 110px;
+            box-shadow: 0px 10px 30px 0px rgba(0, 0, 0, 0.16);
+          }
         }
+  
+        .item-info {
+          p {
+            font-size: 16px;
+          }
+  
+          p:nth-child(1) {
+            color: #ffffff; // Nombre del producto
+          }
+  
+          p:nth-child(2) {
+            color: #b0b0b0; // Marca
+          }
+  
+          p:nth-child(3) {
+            color: #fdd835; // Precio
+          }
+  
+          .qty-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #2a2a2a; // Fondo oscuro del selector
+            border-radius: 5px;
+            margin-top: 10px;
+  
+            ion-button {
+              --color: #fdd835; // Amarillo
+              font-size: 16px;
+              margin-left: 8px;
+              margin-right: 8px;
+            }
+  
+            ion-label {
+              color: #ffffff !important;
+              font-size: 16px;
+            }
+          }
+        }
+      }
     }
-}
-
-ion-footer {
+  }
+  
+  ion-footer {
     padding-left: 20px;
     padding-right: 20px;
-
-    .main-button::after {
-        box-shadow: none !important;
+  
+    background: #121212 !important; // Fondo oscuro
+  
+    .main-button {
+      --background: #fdd835 !important; // Amarillo
+      --color: #000000 !important; // Texto negro
     }
-}
+  
+    .main-button::after {
+      box-shadow: none !important;
+    }
+  }
+  

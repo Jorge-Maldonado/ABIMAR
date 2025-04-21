@@ -1,52 +1,61 @@
 .backbtn {
     margin-left: 15px;
-}
-
-.notification {
+  }
+  
+  .notification {
     margin-right: 15px;
-}
-
-ion-content {
+  
+    ion-icon {
+      color: #fdd835 !important; // Color de acento para el icono
+    }
+  }
+  
+  ion-content {
     --padding-top: 16px;
     --padding-bottom: 16px;
     --padding-start: 26px;
     --padding-end: 26px;
-}
-
-.title {
+    --background: #121212; // Fondo oscuro
+  }
+  
+  .title {
     margin-top: 0;
-    color: #434343;
-}
-
-.favorite-items {
+    color: #ffffff; // Texto blanco
+  }
+  
+  .favorite-items {
     margin-top: 20px;
-
+  
     ion-col {
-        padding: 10px;
-        
-        img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        p {
-            margin-top: 5px;
-            margin-bottom: 0;
-        }
-
-        h6 {
-            margin-top: 5px;
-            margin-bottom: 0;
-        }
+      padding: 10px;
+  
+      img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      }
+  
+      p {
+        margin-top: 5px;
+        margin-bottom: 0;
+        color: #fdd835; // Precio o subtítulo en color acento
+      }
+  
+      h6 {
+        margin-top: 5px;
+        margin-bottom: 0;
+        color: #ffffff; // Nombre del producto en blanco
+      }
     }
-}
-
-.padding-left0 {
+  }
+  
+  .padding-left0 {
     padding-left: 0 !important;
-}
-
-.padding-right0 {
+  }
+  
+  .padding-right0 {
     padding-right: 0 !important;
-}
+  }
+  
