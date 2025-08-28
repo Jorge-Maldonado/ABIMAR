@@ -1,7 +1,0 @@
-{
-  "name": "ecomm-app",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular"
-}
