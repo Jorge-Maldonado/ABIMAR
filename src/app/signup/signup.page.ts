@@ -14,6 +14,7 @@ export class SignupPage implements OnInit {
   }
   email = 'Prueba';
   password = 'Pruebabss';
+  fullName: string = '';
 
   constructor(private apiService: ApiService<SignupRequest>) {}
 
