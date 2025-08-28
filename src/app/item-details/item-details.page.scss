@@ -1,167 +1,156 @@
+ion-content {
+  --background: linear-gradient(to bottom right, #1c1c1c, #2a2a2a);
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --padding-start: 26px;
+  --padding-end: 26px;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+}
+
 .backbtn {
-    margin-left: 15px;
+  margin-left: 15px;
 }
 
 .notification {
-    margin-right: 15px;
-}
-
-ion-content {
-    --padding-top: 16px;
-    --padding-bottom: 16px;
-    --padding-start: 26px;
-    --padding-end: 26px;
+  margin-right: 15px;
 }
 
 .item-name {
-    color: #2a2a2a;
+  font-size: 24px;
+  font-weight: 600;
+  color: #fdd835;
+  margin-bottom: 8px;
 }
 
 .price {
-    color: var(--ion-color-primary);
+  font-size: 20px;
+  color: #00e5ff;
 
-    span {
-        color: #2a2a2a;
-        text-decoration: line-through;
-        margin-left: 20px;
-        font-size: medium;
-        vertical-align: top;
-    }
+  .real-price {
+    color: #888;
+    text-decoration: line-through;
+    margin-left: 12px;
+    font-size: 16px;
+  }
 }
 
-.seperator {
-    hr {
-        position: absolute;
-        left: 0;
-        width: 100%;
-        background: #e2e2e2;
-    }
+.seperator hr {
+  width: 100%;
+  background: #444;
+  border: none;
+  height: 1px;
+  margin: 20px 0;
 }
 
 .review {
-    margin-top: 16px;
-    color: #2a2a2a;
+  color: white;
 
-    .rating {
-        display: inline-block;
-        color: #ffffff;
-        background: var(--ion-color-primary);
-        padding: 10px 20px 10px 20px;
-        border-radius: 5px;
-        margin-right: 10px;
-    }
+  .rating {
+    display: inline-block;
+    background: #fdd835;
+    color: #000;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+  }
 
-    .count {
-        height: 100%;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        color: var(--ion-color-primary);
-    }
+  .count {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: #00e5ff;
+    font-weight: 500;
+  }
 }
 
 .description {
-    h5 {
-        color: #2a2a2a;
-        padding-top: 10px;
-    }
+  h5 {
+    color: #fdd835;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
 
-    p {
-        color: #656565;
-    }
+  p {
+    color: #ccc;
+    line-height: 1.6;
+    font-size: 15px;
+  }
 }
 
 .variation {
-    padding-top: 16px;
+  padding-top: 16px;
 
-    ion-segment-button {
-        color: #2a2a2a;
-    }
+  ion-segment-button {
+    color: white;
+  }
 }
 
 .variation-selector {
-    margin-top: 30px;
+  margin-top: 30px;
+  position: relative;
+
+  .sizes,
+  .colors {
     display: flex;
-    position: relative;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 0.3s ease;
 
-    .active-variation {
-        opacity: 1 !important;
-        z-index: 1 !important;
+    div {
+      background-color: #333;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 6px;
+      margin: 0 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s;
     }
 
-    .sizes {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        width: 100%;
-        opacity: 0;
-        z-index: 0;
-        padding-bottom: 30px;
-
-        div {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f3f3f3;
-            width: 50px;
-            height: 50px;
-            margin-right: 8px;
-            transition: 0.5s ease-in-out;
-        }
-
-        .active {
-            color: #ffffff;
-            background-color: var(--ion-color-primary);
-        }
+    .active {
+      background-color: #fdd835;
+      color: #000;
+      font-weight: bold;
     }
+  }
 
-    .colors {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        width: 100%;
-        opacity: 0;
-        z-index: 0;
-        padding-bottom: 30px;
-
-        div {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f3f3f3;
-            width: 70px;
-            height: 50px;
-            margin-right: 8px;
-            transition: 0.5s ease-in-out;
-        }
-
-        .active {
-            color: #ffffff;
-            background-color: var(--ion-color-primary);
-        }
-    }
+  .active-variation {
+    opacity: 1 !important;
+    z-index: 1 !important;
+  }
 }
 
 ion-footer {
-    ion-row {
-        padding: 0;
+  ion-row {
+    padding: 0;
 
-        ion-col {
-            padding: 0;
+    ion-col {
+      padding: 0;
 
-            ion-button {
-                margin: 0;
-                height: 50px;
-                font-size: 18px;
-                box-shadow: none;
-            }
-        }
+      ion-button {
+        margin: 0;
+        height: 50px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 0;
+      }
     }
+  }
 }
 
-// This will remove footer shadow on android
 .footer-md::before {
-    background-image: none !important;
+  background-image: none !important;
+}
+
+ion-slide img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }

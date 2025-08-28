@@ -27,17 +27,17 @@ export class DataService {
 
     let cat1: ICategory = {
       id: 1,
-      name: 'Womens',
+      name: 'Parlantes',
       image: '../../assets/categories/category-1.png'
     }
     let cat2: ICategory = {
       id: 2,
-      name: 'Mens',
+      name: 'Audifonos',
       image: '../../assets/categories/category-2.png'
     }
     let cat3: ICategory = {
       id: 3,
-      name: 'Kids',
+      name: 'Cargadores',
       image: '../../assets/categories/category-3.png'
     }
 
@@ -51,19 +51,19 @@ export class DataService {
 
     let prod1: IProduct = {
       id: 1,
-      name: 'Womens T-Shirt',
+      name: 'Cargador Portatil',
       price: 55,
       image: '../../assets/products/prod-1.png'
     }
     let prod2: IProduct = {
       id: 2,
-      name: 'Mens T-Shirt',
+      name: 'Cargador',
       price: 34,
       image: '../../assets/products/prod-2.png'
     }
     let prod3: IProduct = {
       id: 1,
-      name: 'Womens T-Shirt',
+      name: 'Parlante',
       price: 40,
       image: '../../assets/products/prod-3.png'
     }
@@ -78,19 +78,19 @@ export class DataService {
 
     let prod1: IProduct = {
       id: 1,
-      name: 'Womens T-Shirt',
+      name: 'Audifonos',
       price: 55,
       image: '../../assets/products/prod-4.png'
     }
     let prod2: IProduct = {
       id: 2,
-      name: 'Mens T-Shirt',
+      name: 'Cargador Automovil',
       price: 34,
       image: '../../assets/products/prod-5.png'
     }
     let prod3: IProduct = {
       id: 1,
-      name: 'Womens T-Shirt',
+      name: 'Audifonos',
       price: 40,
       image: '../../assets/products/prod-6.png'
     }

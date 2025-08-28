@@ -54,7 +54,7 @@
       <ion-slide *ngFor="let product of featuredProducts">
         <ion-col class="ion-text-left" routerLink="/item-details" routerDirection="forward">
           <img src="{{ product.image }}" />
-          <p>${{ product.price }}</p>
+          <p>Bs. {{ product.price }}</p>
           <h6>{{ product.name }}</h6>
         </ion-col>
       </ion-slide>
@@ -72,7 +72,7 @@
       <ion-slide *ngFor="let product of bestSellProducts">
         <ion-col class="ion-text-left" routerLink="/item-details" routerDirection="forward">
           <img src="{{ product.image }}" />
-          <p>${{ product.price }}</p>
+          <p>Bs. {{ product.price }}</p>
           <h6>{{ product.name }}</h6>
         </ion-col>
       </ion-slide>
