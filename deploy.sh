@@ -21,13 +21,6 @@ if [ ! -d "www" ]; then
   exit 1
 fi
 
-# 4. Corregir rutas relativas en HTML, TS, JS, SCSS...
-echo "🛠️ Corrigiendo rutas de 'assets/' en archivos de salida..."
-
-find www -type f -name "*.html" -exec sed -i -E \
-  -e "s|(src|href)=[\"'](\.\./)+assets/|\1=\"${BASE_HREF}assets/|g" \
-  -e "s|url\((['\"]?)(\.\./)+assets/|url(\1${BASE_HREF}assets/|g" {} +
-
 # 5. Copiar www a carpeta temporal fuera del repo
 TMP_DEPLOY="../deploy-www-temp"
 echo "📂 Preparando carpeta temporal para deploy: $TMP_DEPLOY"
