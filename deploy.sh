@@ -25,14 +25,14 @@ fi
 echo "🛠️ Corrigiendo rutas de 'assets/' en archivos de salida..."
 
 # Patrones a reemplazar → base href aplicado
-for ext in html js ts css scss; do
+for ext in html ; do
   find www -type f -name "*.${ext}" -exec sed -i \
     -e "s|src=['\"]\.\./\.\./assets/|src=\"${BASE_HREF}assets/|g" \
     -e "s|src=['\"]\.\./assets/|src=\"${BASE_HREF}assets/|g" \
     -e "s|src=['\"]assets/|src=\"${BASE_HREF}assets/|g" \
-    -e "s|url\(['\"]\.\./\.\./assets/|url('${BASE_HREF}assets/|g" \
-    -e "s|url\(['\"]\.\./assets/|url('${BASE_HREF}assets/|g" \
-    -e "s|url\(['\"]assets/|url('${BASE_HREF}assets/|g" \
+    -e 's|url(\(['"'"'"]\)\.\./\.\./assets/|url(\1'"${BASE_HREF}"'assets/|g' \
+    -e 's|url(\(['"'"'"]\)\.\./assets/|url(\1'"${BASE_HREF}"'assets/|g' \
+    -e 's|url(\(['"'"'"]\)assets/|url(\1'"${BASE_HREF}"'assets/|g' \
     {} +
 done
 
