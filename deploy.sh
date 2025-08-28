@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# ⚠️ CONFIGURA ESTO:
+# ⚠️ CONFIGURA TU SUBDIRECTORIO EN GITHUB PAGES:
 BASE_HREF="/ABIMAR/"
 
 # 1. Verificar que estés en la rama main
@@ -21,10 +21,19 @@ if [ ! -d "www" ]; then
   exit 1
 fi
 
-# 4. Corregir rutas relativas en HTML, TS, SCSS, etc.
-echo "🛠️ Corrigiendo rutas relativas en archivos..."
-for ext in html ts js scss; do
-  find www -type f -name "*.${ext}" -exec sed -i -e 's|\.\./\.\./assets/|assets/|g' -e 's|\.\./assets/|assets/|g' {} +
+# 4. Corregir rutas relativas en HTML, TS, JS, SCSS...
+echo "🛠️ Corrigiendo rutas de 'assets/' en archivos de salida..."
+
+# Patrones a reemplazar → base href aplicado
+for ext in html js ts css scss; do
+  find www -type f -name "*.${ext}" -exec sed -i \
+    -e "s|src=['\"]\.\./\.\./assets/|src=\"${BASE_HREF}assets/|g" \
+    -e "s|src=['\"]\.\./assets/|src=\"${BASE_HREF}assets/|g" \
+    -e "s|src=['\"]assets/|src=\"${BASE_HREF}assets/|g" \
+    -e "s|url\(['\"]\.\./\.\./assets/|url('${BASE_HREF}assets/|g" \
+    -e "s|url\(['\"]\.\./assets/|url('${BASE_HREF}assets/|g" \
+    -e "s|url\(['\"]assets/|url('${BASE_HREF}assets/|g" \
+    {} +
 done
 
 # 5. Copiar www a carpeta temporal fuera del repo
