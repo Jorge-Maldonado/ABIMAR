@@ -17,6 +17,11 @@ if [ ! -d "www" ]; then
   exit 1
 fi
 
+# ✅ 1. Corregir rutas de imágenes/recursos en HTML antes del deploy
+echo "🛠️ Corrigiendo rutas relativas en archivos HTML..."
+find www -type f -name "*.html" -exec sed -i 's|\.\./\.\./assets/|assets/|g' {} +
+find www -type f -name "*.html" -exec sed -i 's|\.\./assets/|assets/|g' {} +
+
 # 2. Copiar www a carpeta temporal fuera del repo (en el mismo nivel que repo)
 TMP_DEPLOY="../deploy-www-temp"
 echo "📂 Preparando carpeta temporal para deploy: $TMP_DEPLOY"
