@@ -24,17 +24,9 @@ fi
 # 4. Corregir rutas relativas en HTML, TS, JS, SCSS...
 echo "🛠️ Corrigiendo rutas de 'assets/' en archivos de salida..."
 
-# Patrones a reemplazar → base href aplicado
-for ext in html ; do
-  find www -type f -name "*.${ext}" -exec sed -i \
-    -e "s|src=['\"]\.\./\.\./assets/|src=\"${BASE_HREF}assets/|g" \
-    -e "s|src=['\"]\.\./assets/|src=\"${BASE_HREF}assets/|g" \
-    -e "s|src=['\"]assets/|src=\"${BASE_HREF}assets/|g" \
-    -e 's|url(\(['"'"'"]\)\.\./\.\./assets/|url(\1'"${BASE_HREF}"'assets/|g' \
-    -e 's|url(\(['"'"'"]\)\.\./assets/|url(\1'"${BASE_HREF}"'assets/|g' \
-    -e 's|url(\(['"'"'"]\)assets/|url(\1'"${BASE_HREF}"'assets/|g' \
-    {} +
-done
+find www -type f -name "*.html" -exec sed -i -E \
+  -e "s|(src|href)=[\"'](\.\./)+assets/|\1=\"${BASE_HREF}assets/|g" \
+  -e "s|url\((['\"]?)(\.\./)+assets/|url(\1${BASE_HREF}assets/|g" {} +
 
 # 5. Copiar www a carpeta temporal fuera del repo
 TMP_DEPLOY="../deploy-www-temp"
