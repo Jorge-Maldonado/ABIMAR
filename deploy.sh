@@ -19,8 +19,8 @@ fi
 
 # ✅  Corregir rutas de imágenes/recursos en HTML antes del deploy
 echo "🛠️ Corrigiendo rutas relativas en archivos HTML..."
-find www -type f -name "*.html" -exec sed -i 's|\.\./\.\./assets/|assets/|g' {} +
-find www -type f -name "*.html" -exec sed -i 's|\.\./assets/|assets/|g' {} +
+find www -type f -name "*.html" -exec sed -i 's|\.\./\.\./ABIMAR/assets/|ABIMAR/assets/|g' {} +
+find www -type f -name "*.html" -exec sed -i 's|\.\./ABIMAR/assets/|ABIMAR/assets/|g' {} +
 
 # 2. Copiar www a carpeta temporal fuera del repo (en el mismo nivel que repo)
 TMP_DEPLOY="../deploy-www-temp"
