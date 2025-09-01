@@ -2,14 +2,14 @@
   "name": "ecomm-app",
   "version": "0.0.1",
   "author": "Ionic Framework",
-  "homepage": "https://jorge-maldonado.github.io//ABIMAR/",
+  "homepage": "https://jorge-maldonado.github.io/ABIMAR/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --prod --base-href //ABIMAR/",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --prod --base-href /ABIMAR/",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d www"
   },
