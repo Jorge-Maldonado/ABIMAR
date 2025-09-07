@@ -1,0 +1,79 @@
+<ion-menu contentId="main-content" side="start" menuId="adminMenu">
+  <ion-header>
+    <ion-toolbar color="dark">
+      <ion-title>Administrador</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content style="--background: #1b1b1b;">
+    <ion-list>
+      <ion-item routerLink="/roles">
+        <ion-icon name="people-circle" slot="start" color="warning"></ion-icon>
+        <ion-label>Gestión de Roles</ion-label>
+      </ion-item>
+
+      <ion-item routerLink="/usuarios">
+        <ion-icon name="person-circle" slot="start" color="warning"></ion-icon>
+        <ion-label>Gestión de Usuarios</ion-label>
+      </ion-item>
+
+      <ion-item routerLink="/categorias">
+        <ion-icon name="albums" slot="start" color="warning"></ion-icon>
+        <ion-label>Gestión de Categorías</ion-label>
+      </ion-item>
+
+      <ion-item routerLink="/productos">
+        <ion-icon name="cube" slot="start" color="warning"></ion-icon>
+        <ion-label>Gestión de Productos</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-page id="main-content">
+  <ion-header>
+    <ion-toolbar color="dark">
+      <ion-buttons slot="start">
+        <ion-menu-button autoHide="false" color="light"></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Panel de Administración</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content style="--background: #1b1b1b;" class="ion-padding">
+    <div class="admin-container">
+      <h1 class="title">Bienvenido Administrador</h1>
+      <p class="subtitle">Seleccione una opción para gestionar:</p>
+
+      <div class="menu-grid">
+        <ion-card routerLink="/roles" class="menu-card">
+          <ion-card-header>
+            <ion-icon name="people-circle" size="large"></ion-icon>
+            <ion-card-title>Gestión de Roles</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+
+        <ion-card routerLink="/usuarios" class="menu-card">
+          <ion-card-header>
+            <ion-icon name="person-circle" size="large"></ion-icon>
+            <ion-card-title>Gestión de Usuarios</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+
+        <ion-card routerLink="/categorias" class="menu-card">
+          <ion-card-header>
+            <ion-icon name="albums" size="large"></ion-icon>
+            <ion-card-title>Gestión de Categorías</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+
+        <ion-card routerLink="/productos" class="menu-card">
+          <ion-card-header>
+            <ion-icon name="cube" size="large"></ion-icon>
+            <ion-card-title>Gestión de Productos</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </div>
+    </div>
+  </ion-content>
+</ion-page>

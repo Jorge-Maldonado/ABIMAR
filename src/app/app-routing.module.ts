@@ -9,51 +9,69 @@ const routes: Routes = [
   },
   {
     path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
+    loadChildren: () => import('./folder/folder.module').then(m => m.FolderPageModule)
   },
   {
     path: 'welcome',
-    loadChildren: () => import('./welcome/welcome.module').then( m => m.WelcomePageModule)
+    loadChildren: () => import('./welcome/welcome.module').then(m => m.WelcomePageModule)
   },
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: 'signup',
-    loadChildren: () => import('./signup/signup.module').then( m => m.SignupPageModule)
+    loadChildren: () => import('./signup/signup.module').then(m => m.SignupPageModule)
   },
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
   {
     path: 'item-details',
-    loadChildren: () => import('./item-details/item-details.module').then( m => m.ItemDetailsPageModule)
+    loadChildren: () => import('./item-details/item-details.module').then(m => m.ItemDetailsPageModule)
   },
   {
     path: 'my-cart',
-    loadChildren: () => import('./my-cart/my-cart.module').then( m => m.MyCartPageModule)
+    loadChildren: () => import('./my-cart/my-cart.module').then(m => m.MyCartPageModule)
   },
   {
     path: 'profile',
-    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+    loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
   },
   {
     path: 'my-orders',
-    loadChildren: () => import('./my-orders/my-orders.module').then( m => m.MyOrdersPageModule)
+    loadChildren: () => import('./my-orders/my-orders.module').then(m => m.MyOrdersPageModule)
   },
   {
     path: 'favorite',
-    loadChildren: () => import('./favorite/favorite.module').then( m => m.FavoritePageModule)
+    loadChildren: () => import('./favorite/favorite.module').then(m => m.FavoritePageModule)
   },
   {
     path: 'checkout',
-    loadChildren: () => import('./checkout/checkout.module').then( m => m.CheckoutPageModule)
+    loadChildren: () => import('./checkout/checkout.module').then(m => m.CheckoutPageModule)
   },
   {
     path: 'confirm',
-    loadChildren: () => import('./confirm/confirm.module').then( m => m.ConfirmPageModule)
+    loadChildren: () => import('./confirm/confirm.module').then(m => m.ConfirmPageModule)
+  },
+
+  // 🔹 Nuevas páginas que creamos
+  {
+    path: 'admin-home',
+    loadChildren: () => import('./admin-home/admin-home.module').then(m => m.AdminHomePageModule)
+  },
+  {
+    path: 'productos',
+    loadChildren: () => import('./productos/productos.module').then(m => m.ProductosPageModule)
+  },
+  {
+    path: 'roles',
+    loadChildren: () => import('./roles/roles.module').then(m => m.RolesPageModule)
+  },
+  {
+    path: 'usuarios',
+    loadChildren: () => import('./usuarios/usuarios.module').then(m => m.UsuariosPageModule)
   }
 ];
 
