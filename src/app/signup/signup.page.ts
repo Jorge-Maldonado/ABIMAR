@@ -30,8 +30,8 @@ export class SignupPage implements OnInit {
     const signupData: SignupRequest = {
       emailUser: this.email,
       password: this.password,
-      token: this.password,
-      personal: this.fullName
+      token: this.generateToken(32),
+      personal: 0
     }
 
 
@@ -41,4 +41,14 @@ export class SignupPage implements OnInit {
         error => console.error('Error al hacer Signup:', error)
       );
   }
+
+  generateToken(length: number = 32): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let token = '';
+    for (let i = 0; i < length; i++) {
+      token += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return token;
+  }
+
 }
