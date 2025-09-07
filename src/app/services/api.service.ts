@@ -10,14 +10,35 @@ export class ApiService<T> {
 
   constructor(private http: HttpClient) {}
 
+  // 👉 POST
   post(url: string, data: T, headersObj?: { [key: string]: string }): Observable<any> {
     const headers = new HttpHeaders(headersObj || {
       'Content-Type': 'application/json'
     });
-
     return this.http.post<any>(url, data, { headers });
   }
 
-  // Puedes agregar más métodos como GET, PUT, DELETE si necesitas:
-  // get<R>(url: string, headersObj?: { [key: string]: string }): Observable<R> { ... }
+  // 👉 GET
+  get<R>(url: string, headersObj?: { [key: string]: string }): Observable<R> {
+    const headers = new HttpHeaders(headersObj || {
+      'Content-Type': 'application/json'
+    });
+    return this.http.get<R>(url, { headers });
+  }
+
+  // 👉 PUT
+  put(url: string, data: T, headersObj?: { [key: string]: string }): Observable<any> {
+    const headers = new HttpHeaders(headersObj || {
+      'Content-Type': 'application/json'
+    });
+    return this.http.put<any>(url, data, { headers });
+  }
+
+  // 👉 DELETE
+  delete<R>(url: string, headersObj?: { [key: string]: string }): Observable<R> {
+    const headers = new HttpHeaders(headersObj || {
+      'Content-Type': 'application/json'
+    });
+    return this.http.delete<R>(url, { headers });
+  }
 }
