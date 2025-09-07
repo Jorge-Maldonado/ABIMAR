@@ -1,0 +1,40 @@
+ion-toolbar {
+  --border-width: 0 !important;
+}
+.header-md::after {
+  background: none !important;
+}
+
+.container h1 {
+  margin-top: 0;
+}
+
+.form-container {
+  margin-top: 24px;
+}
+
+.form-container ion-item {
+  --padding-start: 0;
+  --border-color: #DADADA;
+  --background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.form-container ion-label {
+  color: #A6A6A6;
+}
+
+.form-container ion-button {
+  margin-top: 16px;
+}
+
+.main-button {
+  --background: #fdd835;
+  --background-hover: #ffe066;
+  --color: #1b1b1b;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(253, 216, 53, 0.5);
+}

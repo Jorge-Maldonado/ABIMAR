@@ -1,49 +1,73 @@
 // This will remove iOS Header Line
 ion-toolbar {
-    --border-width: 0 !important;
+  --border-width: 0 !important;
 }
 
 // Removing Android Header Line
 .header-md::after {
-    background: none !important;
+  background: none !important;
 }
 
 .container h1 {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .backbtn {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 .form-container {
-    margin-top: 48px;
+  margin-top: 48px;
 }
 
 .form-container ion-item {
-    --padding-start: 0;
-    --border-color: #DADADA;
+  --padding-start: 0;
+  --border-color: #DADADA;
+  --background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
 }
 
 .form-container ion-item ion-label {
-    color: #A6A6A6;
+  color: #A6A6A6;
 }
 
 .form-container ion-item ion-icon {
-    margin-top: auto;
-    color: #c6cbd4;
+  margin-top: auto;
+  color: #c6cbd4;
 }
 
 .form-container ion-button {
-    margin-top: 48px;
+  margin-top: 48px;
 }
 
 .sign-up {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .sign-up ion-button {
-    margin: 0;
+  margin: 0;
+}
+
+.main-button {
+  --background: #fdd835;
+  --background-hover: #ffe066;
+  --color: #1b1b1b;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(253, 216, 53, 0.5);
+  margin-top: 20px;
+}
+
+.secondary-button {
+  --color: #00e5ff;
+  --background: transparent;
+  --border-color: #00e5ff;
+  --border-width: 1.5px;
+  --background-hover: rgba(0, 229, 255, 0.1);
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
 }

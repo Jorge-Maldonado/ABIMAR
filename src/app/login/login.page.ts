@@ -9,18 +9,34 @@ import { UtilService } from '../util.service';
 })
 export class LoginPage implements OnInit {
 
+  email: string = '';
+  password: string = '';
+  showPassword: boolean = false;
+  errorMessage: string = '';
+
   constructor(
     private util: UtilService,
     private navCtrl: NavController, 
   ) { }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   login() {
-    // Enabling Side Menu
-    this.util.setMenuState(true);
-    this.navCtrl.navigateRoot('/home', { animationDirection: 'forward' });
+    if (this.email === 'jorge.maldonado@hotmail.com' && this.password === 'admin') {
+      // habilitar menú
+      this.util.setMenuState(true);
+      // 👉 Ir al home del administrador
+      this.navCtrl.navigateRoot('/admin-home', { animationDirection: 'forward' });
+    } else {
+      // habilitar menú
+      this.util.setMenuState(true);
+      // 👉 Ir al home normal (flujo anterior)
+      this.navCtrl.navigateRoot('/home', { animationDirection: 'forward' });
+    }
   }
 
 }

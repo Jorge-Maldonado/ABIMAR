@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>Gestión de Usuarios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" style="--background: #1b1b1b;">
+  <div class="ion-padding container"
+       style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);">
+
+    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">
+      Usuarios
+    </h1>
+
+    <!-- Formulario Crear Usuario -->
+    <div class="form-container">
+      <ion-item lines="inset">
+        <ion-label position="floating" style="color: white;">Nombres</ion-label>
+        <ion-input [(ngModel)]="nombres" style="color: white;"></ion-input>
+      </ion-item>
+
+      <ion-item lines="inset">
+        <ion-label position="floating" style="color: white;">Apellidos</ion-label>
+        <ion-input [(ngModel)]="apellidos" style="color: white;"></ion-input>
+      </ion-item>
+
+      <ion-item lines="inset">
+        <ion-label position="floating" style="color: white;">Documento</ion-label>
+        <ion-input [(ngModel)]="documento" style="color: white;"></ion-input>
+      </ion-item>
+
+      <ion-item lines="inset">
+        <ion-label position="floating" style="color: white;">Teléfono</ion-label>
+        <ion-input type="number" [(ngModel)]="telefono" style="color: white;"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" class="main-button" (click)="createUsuario()">Crear Usuario</ion-button>
+    </div>
+
+    <!-- Lista de Usuarios -->
+    <ion-list>
+      <ion-item *ngFor="let u of usuarios" style="color: white;">
+        <ion-label>
+          <h2>{{ u.nombres }} {{ u.apellidos }}</h2>
+          <p>Documento: {{ u.documento }} - Tel: {{ u.telefono }}</p>
+        </ion-label>
+        <ion-button slot="end" color="danger" fill="clear" (click)="deleteUsuario(u.idpersona)">
+          Eliminar
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
