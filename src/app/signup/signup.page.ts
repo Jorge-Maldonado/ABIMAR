@@ -12,23 +12,33 @@ export class SignupPage implements OnInit {
 
   ngOnInit() {
   }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
   email = 'Prueba';
   password = 'Pruebabss';
   fullName: string = '';
 
-  constructor(private apiService: ApiService<SignupRequest>) {}
+  // 👇 variable para controlar la visibilidad
+  showPassword: boolean = false;
 
-  signup(){
+  constructor(private apiService: ApiService<SignupRequest>) { }
+
+  signup() {
     const signupData: SignupRequest = {
-      title: this.email,
-      description : this.password
+      emailUser: this.email,
+      password: this.password,
+      token: this.password,
+      personal: this.fullName
     }
-  
 
-  this.apiService.post('http://localhost:8080/api/tutorials', signupData)
+
+    this.apiService.post('https://backend-abimar.onrender.com/abimar/core/api/usuario/create', signupData)
       .subscribe(
         response => console.log('Signup exitoso:', response),
         error => console.error('Error al hacer Signup:', error)
       );
-  }  
+  }
 }
