@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
+import { Platform, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { UtilService } from './util.service';
-import { menuController } from '@ionic/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public isMenuEnabled:boolean = true;
+  public isMenuEnabled: boolean = true;
   public selectedIndex = 0;
 
   constructor(
@@ -22,6 +20,7 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
     private util: UtilService,
     private router: Router,
+    private menuCtrl: MenuController   // ✅ usamos MenuController de Ionic Angular
   ) {
     this.initializeApp();
   }
@@ -35,18 +34,19 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.selectedIndex = 1;
-    
+
     this.util.getMenuState().subscribe(menuState => {
       this.isMenuEnabled = menuState;
     });
   }
 
-  navigate(path, selectedId) {
+  navigate(path: string, selectedId: number) {
     this.selectedIndex = selectedId;
     this.router.navigate([path]);
+    this.menuCtrl.close(); // ✅ cerrar menú al navegar
   }
 
   close() {
-    menuController.toggle();
+    this.menuCtrl.close(); // ✅ ahora sí cierra bien
   }
 }

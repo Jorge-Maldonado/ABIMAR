@@ -56,10 +56,14 @@ const routes: Routes = [
     loadChildren: () => import('./confirm/confirm.module').then(m => m.ConfirmPageModule)
   },
 
-  // 🔹 Nuevas páginas que creamos
+  // 🔹 Páginas de Administración
   {
     path: 'admin-home',
     loadChildren: () => import('./admin-home/admin-home.module').then(m => m.AdminHomePageModule)
+  },
+  {
+    path: 'admin-home/dashboard',
+    loadChildren: () => import('./admin-home/dashboard/dashboard.module').then(m => m.DashboardPageModule)
   },
   {
     path: 'productos',
@@ -81,4 +85,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
