@@ -56,26 +56,10 @@ const routes: Routes = [
     loadChildren: () => import('./confirm/confirm.module').then(m => m.ConfirmPageModule)
   },
 
-  // 🔹 Páginas de Administración
+  // 🔹 Páginas de Administración (solo la principal)
   {
     path: 'admin-home',
     loadChildren: () => import('./admin-home/admin-home.module').then(m => m.AdminHomePageModule)
-  },
-  {
-    path: 'admin-home/dashboard',
-    loadChildren: () => import('./admin-home/dashboard/dashboard.module').then(m => m.DashboardPageModule)
-  },
-  {
-    path: 'productos',
-    loadChildren: () => import('./productos/productos.module').then(m => m.ProductosPageModule)
-  },
-  {
-    path: 'roles',
-    loadChildren: () => import('./roles/roles.module').then(m => m.RolesPageModule)
-  },
-  {
-    path: 'usuarios',
-    loadChildren: () => import('./usuarios/usuarios.module').then(m => m.UsuariosPageModule)
   }
 ];
 
@@ -85,4 +69,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
