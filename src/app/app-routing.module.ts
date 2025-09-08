@@ -56,7 +56,7 @@ const routes: Routes = [
     loadChildren: () => import('./confirm/confirm.module').then(m => m.ConfirmPageModule)
   },
 
-  // 🔹 Páginas de Administración (solo la principal)
+  // 🔹 Administración
   {
     path: 'admin-home',
     loadChildren: () => import('./admin-home/admin-home.module').then(m => m.AdminHomePageModule)

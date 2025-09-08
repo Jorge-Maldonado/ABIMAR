@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AdminHomePage } from './admin-home.page';
 
 const routes: Routes = [
@@ -9,34 +9,25 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: () =>
-          import('./dashboard/dashboard.module').then(m => m.DashboardPageModule)
+        loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardPageModule)
       },
       {
         path: 'roles',
-        loadChildren: () =>
-          import('../roles/roles.module').then(m => m.RolesPageModule)
+        loadChildren: () => import('../roles/roles.module').then(m => m.RolesPageModule)
       },
       {
         path: 'usuarios',
-        loadChildren: () =>
-          import('../usuarios/usuarios.module').then(m => m.UsuariosPageModule)
+        loadChildren: () => import('../usuarios/usuarios.module').then(m => m.UsuariosPageModule)
       },
       {
         path: 'categorias',
-        loadChildren: () =>
-          import('../categorias/categorias.module').then(m => m.CategoriasPageModule)
+        loadChildren: () => import('../categorias/categorias.module').then(m => m.CategoriasPageModule)
       },
       {
         path: 'productos',
-        loadChildren: () =>
-          import('../productos/productos.module').then(m => m.ProductosPageModule)
+        loadChildren: () => import('../productos/productos.module').then(m => m.ProductosPageModule)
       },
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
 ];

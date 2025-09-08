@@ -5,7 +5,7 @@
   "homepage": "https://jorge-maldonado.github.io/ABIMAR/",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

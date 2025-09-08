@@ -1,50 +1,66 @@
-<ion-menu contentId="main-content" side="start" menuId="adminMenu">
-  <ion-header>
-    <ion-toolbar color="dark">
-      <ion-title>Administrador</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-split-pane contentId="main-content">
+  <!-- Menú lateral -->
+  <ion-menu contentId="main-content" side="start" menuId="adminMenu">
+    <ion-header>
+      <ion-toolbar color="dark">
+        <ion-title>Administrador</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-  <ion-content style="--background: #1b1b1b;">
-    <ion-list>
-      <ion-item routerLink="/admin-home/dashboard">
-        <ion-icon name="speedometer-outline" slot="start" color="warning"></ion-icon>
-        <ion-label>Dashboard</ion-label>
-      </ion-item>
+    <ion-content style="--background:#1b1b1b;">
+      <ion-list>
+        <ion-menu-toggle autoHide="false">
+          <ion-item (click)="go('dashboard')" detail="false" lines="none">
+            <ion-icon name="speedometer-outline" slot="start" color="warning"></ion-icon>
+            <ion-label>Dashboard</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
 
-      <ion-item routerLink="/admin-home/roles">
-        <ion-icon name="people-circle" slot="start" color="warning"></ion-icon>
-        <ion-label>Gestión de Roles</ion-label>
-      </ion-item>
+        <ion-menu-toggle autoHide="false">
+          <ion-item (click)="go('roles')" detail="false" lines="none">
+            <ion-icon name="people-circle" slot="start" color="warning"></ion-icon>
+            <ion-label>Gestión de Roles</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
 
-      <ion-item routerLink="/admin-home/usuarios">
-        <ion-icon name="person-circle" slot="start" color="warning"></ion-icon>
-        <ion-label>Gestión de Usuarios</ion-label>
-      </ion-item>
+        <ion-menu-toggle autoHide="false">
+          <ion-item (click)="go('usuarios')" detail="false" lines="none">
+            <ion-icon name="person-circle" slot="start" color="warning"></ion-icon>
+            <ion-label>Gestión de Usuarios</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
 
-      <ion-item routerLink="/admin-home/categorias">
-        <ion-icon name="albums" slot="start" color="warning"></ion-icon>
-        <ion-label>Gestión de Categorías</ion-label>
-      </ion-item>
+        <ion-menu-toggle autoHide="false">
+          <ion-item (click)="go('categorias')" detail="false" lines="none">
+            <ion-icon name="albums" slot="start" color="warning"></ion-icon>
+            <ion-label>Gestión de Categorías</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
 
-      <ion-item routerLink="/admin-home/productos">
-        <ion-icon name="cube" slot="start" color="warning"></ion-icon>
-        <ion-label>Gestión de Productos</ion-label>
-      </ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu>
+        <ion-menu-toggle autoHide="false">
+          <ion-item (click)="go('productos')" detail="false" lines="none">
+            <ion-icon name="cube" slot="start" color="warning"></ion-icon>
+            <ion-label>Gestión de Productos</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
 
-<!-- ✅ Contenido principal -->
-<div id="main-content">
-  <ion-header>
-    <ion-toolbar color="dark">
-      <ion-buttons slot="start">
-        <ion-menu-button autoHide="false" color="light"></ion-menu-button>
-      </ion-buttons>
-      <ion-title>Panel de Administración</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Contenido principal -->
+  <div class="ion-page" id="main-content">
+    <ion-header>
+      <ion-toolbar color="dark">
+        <ion-buttons slot="start">
+          <ion-menu-button menu="adminMenu" autoHide="false" color="light"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Panel de Administración</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-  <ion-router-outlet></ion-router-outlet>
-</div>
+    <ion-content>
+      <!-- Aquí se cargan las páginas hijas -->
+      <ion-router-outlet></ion-router-outlet>
+    </ion-content>
+  </div>
+</ion-split-pane>
