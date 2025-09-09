@@ -10,22 +10,26 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 
+// 🔹 FormsModule para que funcione [(ngModel)]
+import { FormsModule } from '@angular/forms';
+
 // 🔹 Importa el componente del selector de imágenes
 import { ImageSelectorComponent } from './components/image-selector/image-selector.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ImageSelectorComponent   // <-- aquí lo declaramos
+    ImageSelectorComponent   // <-- declarado aquí
   ],
   entryComponents: [
-    ImageSelectorComponent   // <-- necesario para usarlo en un modal
+    ImageSelectorComponent   // <-- necesario para usarlo en modal
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule              // <-- agregado aquí
   ],
   providers: [
     StatusBar,
