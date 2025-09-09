@@ -1,14 +1,11 @@
-<ion-header>
-  <ion-toolbar color="dark">
-    <ion-title>Gestión de Roles</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content class="ion-padding" style="--background: #1b1b1b;">
-  <div class="ion-padding container"
-       style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);">
-
-    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">
+  <div
+    class="ion-padding container"
+    style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);"
+  >
+    <h1
+      style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;"
+    >
       Roles
     </h1>
 
@@ -29,7 +26,7 @@
 
     <!-- Lista de Roles -->
     <ion-list>
-      <ion-item *ngFor="let rol of roles" style="color: white;">
+      <ion-item *ngFor="let rol of roles">
         <ion-label>
           <h2>{{ rol.descripcion }}</h2>
           <p>Estado: {{ rol.estado }}</p>

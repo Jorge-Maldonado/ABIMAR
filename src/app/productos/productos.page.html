@@ -1,62 +1,79 @@
-<ion-header>
-  <ion-toolbar color="dark">
-    <ion-title>Gestión de Productos</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content class="ion-padding" style="--background: #1b1b1b;">
   <div class="ion-padding container"
        style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);">
 
-    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">
-      Productos
-    </h1>
+    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">Productos</h1>
+    <h2 style="color: #aaa; text-align: center; font-size: 16px; font-weight: normal; margin-bottom: 20px;">
+      Gestión de productos disponibles
+    </h2>
 
-    <!-- Formulario Crear Producto -->
+    <!-- Formulario -->
     <div class="form-container">
-      <ion-item lines="inset">
+      <ion-item lines="none">
         <ion-label position="floating" style="color: white;">Nombre</ion-label>
         <ion-input [(ngModel)]="nombre" style="color: white;"></ion-input>
       </ion-item>
 
-      <ion-item lines="inset">
+      <ion-item lines="none">
         <ion-label position="floating" style="color: white;">Descripción</ion-label>
         <ion-input [(ngModel)]="descripcion" style="color: white;"></ion-input>
       </ion-item>
 
-      <ion-item lines="inset">
-        <ion-label position="floating" style="color: white;">Precio</ion-label>
+      <ion-item lines="none">
+        <ion-label position="floating" style="color: white;">Precio (Bs)</ion-label>
         <ion-input type="number" [(ngModel)]="precio" style="color: white;"></ion-input>
       </ion-item>
 
-      <ion-item lines="inset">
+      <ion-item lines="none">
         <ion-label position="floating" style="color: white;">Stock</ion-label>
         <ion-input type="number" [(ngModel)]="stock" style="color: white;"></ion-input>
       </ion-item>
 
-      <ion-item lines="inset">
-        <ion-label position="floating" style="color: white;">Imagen (URL)</ion-label>
-        <ion-input [(ngModel)]="imagen" style="color: white;"></ion-input>
+      <!-- Selector de Imagen (abre modal con ModalController) -->
+      <ion-item button detail="false" lines="none" (click)="abrirSelectorImagen()">
+        <ion-label style="color: white;">Imagen</ion-label>
+        <ion-note slot="end" style="color: #00e5ff;">
+          {{ imagen || 'Seleccionar imagen' }}
+        </ion-note>
+        <ion-avatar slot="end" *ngIf="imagen" style="margin-left: 10px;">
+          <img [src]="'assets/products/' + imagen" alt="preview">
+        </ion-avatar>
       </ion-item>
 
-      <ion-button expand="block" class="main-button" (click)="createProducto()">Crear Producto</ion-button>
+      <!-- Botones -->
+      <ion-button expand="block" class="main-button" *ngIf="!editId" (click)="createProducto()">Crear Producto</ion-button>
+      <ion-button expand="block" color="warning" *ngIf="editId" (click)="updateProducto()">Guardar Cambios</ion-button>
     </div>
 
-    <!-- Lista de Productos -->
-    <ion-list>
-      <ion-item *ngFor="let p of productos" style="color: white;">
-        <ion-thumbnail slot="start">
-          <img [src]="p.imagen || 'assets/no-image.png'" alt="Producto">
+    <!-- División -->
+    <ion-item-divider style="margin: 20px 0; border-top: 1px solid #444; --background: transparent;">
+      <ion-label style="color: #fdd835; font-weight: bold;">Lista de Productos</ion-label>
+    </ion-item-divider>
+
+    <!-- Buscador -->
+    <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar producto..."
+                   style="--color: white; --placeholder-color: #aaa;"></ion-searchbar>
+
+    <!-- Lista -->
+    <ion-list *ngIf="productosFiltrados().length > 0; else noProductos">
+      <ion-item *ngFor="let p of productosFiltrados()" lines="none" style="color: white;">
+        <ion-thumbnail slot="start" style="width: 72px; height: 72px;">
+          <img [src]="p.imagen" alt="Producto" style="object-fit: cover; width: 100%; height: 100%;">
         </ion-thumbnail>
         <ion-label>
           <h2>{{ p.nombre }}</h2>
           <p>{{ p.descripcion }}</p>
-          <p>💲 {{ p.precio }} | Stock: {{ p.stock }}</p>
+          <p>Bs {{ p.precio | number:'1.2-2' }} | Stock: {{ p.stock }}</p>
         </ion-label>
-        <ion-button slot="end" color="danger" fill="clear" (click)="deleteProducto(p.idproducto)">
-          Eliminar
-        </ion-button>
+        <ion-buttons slot="end">
+          <ion-button color="warning" fill="clear" (click)="editProducto(p)">Editar</ion-button>
+          <ion-button color="danger" fill="clear" (click)="deleteProducto(p.idproducto)">Eliminar</ion-button>
+        </ion-buttons>
       </ion-item>
     </ion-list>
+
+    <ng-template #noProductos>
+      <p style="color: #ccc; text-align: center; margin-top: 20px;">No hay productos disponibles</p>
+    </ng-template>
   </div>
 </ion-content>

@@ -15,14 +15,14 @@ ion-toolbar {
 
 .form-container ion-item {
   --padding-start: 0;
-  --border-color: #DADADA;
+  --border-color: #dadada;
   --background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   margin-bottom: 12px;
 }
 
 .form-container ion-label {
-  color: #A6A6A6;
+  color: #a6a6a6;
 }
 
 .form-container ion-button {
@@ -37,4 +37,29 @@ ion-toolbar {
   font-weight: bold;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(253, 216, 53, 0.5);
+}
+
+/* ✅ Listas visibles */
+ion-list {
+  background: transparent !important;
+  margin-top: 20px;
+}
+
+ion-item {
+  --inner-border-width: 0 !important;
+  --background: rgba(255, 255, 255, 0.08);
+  --border-radius: 8px;
+  margin: 8px 0;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+ion-item h2 {
+  color: #fdd835;
+  font-weight: bold;
+}
+
+ion-item p {
+  color: #ccc;
+  font-size: 14px;
 }

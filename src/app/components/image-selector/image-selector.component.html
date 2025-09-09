@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>Seleccionar imagen</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    placeholder="Buscar imagen..."
+  ></ion-searchbar>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="4" *ngFor="let img of filteredImages()">
+        <ion-card
+          button
+          (click)="selectImage(img)"
+          (dblclick)="chooseImage(img)"
+          [class.selected]="selectedImage === img"
+          style="border-radius: 12px; overflow: hidden;"
+        >
+          <img
+            [src]="'assets/products/' + img"
+            [alt]="img"
+            style="width: 100%; height: 110px; object-fit: cover;"
+          />
+          <ion-card-content style="text-align: center; font-size: 12px;">
+            {{ img }}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div
+    *ngIf="filteredImages().length === 0"
+    style="text-align:center; padding: 24px; color:#888;"
+  >
+    No se encontraron imágenes en assets/products
+  </div>
+</ion-content>
+
+<ion-footer *ngIf="filteredImages().length > 0">
+  <ion-toolbar>
+    <div class="footer-actions">
+      <div class="preview" *ngIf="selectedImage">
+        <img [src]="'assets/products/' + selectedImage" [alt]="selectedImage" />
+        <span>{{ selectedImage }}</span>
+      </div>
+      <ion-button
+        expand="block"
+        (click)="useSelected()"
+        [disabled]="!selectedImage"
+      >
+        Usar esta imagen
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>
