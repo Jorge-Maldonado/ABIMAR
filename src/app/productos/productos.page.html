@@ -29,7 +29,7 @@
         <ion-input type="number" [(ngModel)]="stock" style="color: white;"></ion-input>
       </ion-item>
 
-      <!-- Selector de Imagen (abre modal con ModalController) -->
+      <!-- Selector de Imagen -->
       <ion-item button detail="false" lines="none" (click)="abrirSelectorImagen()">
         <ion-label style="color: white;">Imagen</ion-label>
         <ion-note slot="end" style="color: #00e5ff;">
@@ -41,8 +41,17 @@
       </ion-item>
 
       <!-- Botones -->
-      <ion-button expand="block" class="main-button" *ngIf="!editId" (click)="createProducto()">Crear Producto</ion-button>
-      <ion-button expand="block" color="warning" *ngIf="editId" (click)="updateProducto()">Guardar Cambios</ion-button>
+      <ion-button expand="block" class="main-button" *ngIf="!editId" (click)="createProducto()">
+        Crear Producto
+      </ion-button>
+
+      <ion-button expand="block" color="warning" *ngIf="editId" (click)="updateProducto()">
+        Guardar Cambios
+      </ion-button>
+
+      <ion-button expand="block" color="medium" *ngIf="editId" (click)="cancelEdit()">
+        Cancelar
+      </ion-button>
     </div>
 
     <!-- División -->
@@ -52,7 +61,8 @@
 
     <!-- Buscador -->
     <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar producto..."
-                   style="--color: white; --placeholder-color: #aaa;"></ion-searchbar>
+                   style="--color: white; --placeholder-color: #aaa; --input-color: white;">
+    </ion-searchbar>
 
     <!-- Lista -->
     <ion-list *ngIf="productosFiltrados().length > 0; else noProductos">

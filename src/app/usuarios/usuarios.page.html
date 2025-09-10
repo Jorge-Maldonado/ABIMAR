@@ -1,12 +1,12 @@
 <ion-content class="ion-padding" style="--background: #1b1b1b;">
   <div class="ion-padding container"
-       style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);">
+    style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);">
 
-    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">
-      Usuarios
-    </h1>
+    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">Usuarios</h1>
+    <h2 style="color: #aaa; text-align: center; font-size: 16px; font-weight: normal; margin-bottom: 20px;">
+      Gestión de usuarios
+    </h2>
 
-    <!-- Formulario Crear Usuario -->
     <div class="form-container">
       <ion-item lines="none">
         <ion-label position="floating" style="color: white;">Nombres</ion-label>
@@ -28,20 +28,52 @@
         <ion-input type="number" [(ngModel)]="telefono" style="color: white;"></ion-input>
       </ion-item>
 
-      <ion-button expand="block" class="main-button" (click)="createUsuario()">Crear Usuario</ion-button>
+      <!-- Combo de Roles -->
+      <ion-item lines="none" class="select-item">
+        <ion-label position="floating" style="color: white;">Rol</ion-label>
+        <ion-select
+          [(ngModel)]="idRol"
+          placeholder="Seleccionar rol"
+          interface="popover"
+          [okText]="'OK'"
+          [cancelText]="'Cancelar'">
+          <ion-select-option *ngFor="let r of roles" [value]="r.idrol">
+            {{ r.descripcion || r.nombre || ('Rol ' + r.idrol) }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-button expand="block" class="main-button" *ngIf="!editId" (click)="createUsuario()">Crear Usuario</ion-button>
+      <ion-button expand="block" color="warning" *ngIf="editId" (click)="updateUsuario()">Guardar Cambios</ion-button>
+      <ion-button expand="block" color="medium" fill="clear" *ngIf="editId" (click)="resetForm()">Cancelar</ion-button>
     </div>
 
-    <!-- Lista de Usuarios -->
-    <ion-list>
-      <ion-item *ngFor="let u of usuarios" lines="none" style="color: white;">
+    <ion-item-divider style="margin: 20px 0; border-top: 1px solid #444; --background: transparent;">
+      <ion-label style="color: #fdd835; font-weight: bold;">Lista de Usuarios</ion-label>
+    </ion-item-divider>
+
+    <ion-searchbar
+      [(ngModel)]="searchTerm"
+      placeholder="Buscar usuario..."
+      style="--color: white; --placeholder-color: #aaa; --input-color: white;">
+    </ion-searchbar>
+
+    <ion-list *ngIf="usuariosFiltrados().length > 0; else noUsuarios">
+      <ion-item *ngFor="let u of usuariosFiltrados()" lines="none" style="color: white;">
         <ion-label>
           <h2>{{ u.nombres }} {{ u.apellidos }}</h2>
           <p>Documento: {{ u.documento }} - Tel: {{ u.telefono }}</p>
+          <p style="color: #ddd; font-size: 13px;">Rol: {{ getRoleName(u.rolId) }}</p>
         </ion-label>
-        <ion-button slot="end" color="danger" fill="clear" (click)="deleteUsuario(u.idpersona)">
-          Eliminar
-        </ion-button>
+        <ion-buttons slot="end">
+          <ion-button color="warning" fill="clear" (click)="editUsuario(u)">Editar</ion-button>
+          <ion-button color="danger" fill="clear" (click)="deleteUsuario(u.idpersona)">Eliminar</ion-button>
+        </ion-buttons>
       </ion-item>
     </ion-list>
+
+    <ng-template #noUsuarios>
+      <p style="color: #ccc; text-align: center; margin-top: 20px;">No hay usuarios disponibles</p>
+    </ng-template>
   </div>
 </ion-content>

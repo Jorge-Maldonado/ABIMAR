@@ -52,7 +52,7 @@ export class ProductosPage implements OnInit {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'ok' && data) {
-      this.imagen = String(data); // <- aquí ya llega "name.jpg/png"
+      this.imagen = String(data);
     }
   }
 
@@ -160,6 +160,10 @@ export class ProductosPage implements OnInit {
         () => this.loadProductos(),
         (err) => console.error('Error eliminando producto:', err)
       );
+  }
+
+  cancelEdit() {
+    this.resetForm();
   }
 
   private resetForm() {

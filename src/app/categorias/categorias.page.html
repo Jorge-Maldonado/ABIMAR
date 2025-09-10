@@ -2,11 +2,12 @@
   <div class="ion-padding container"
        style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);">
 
-    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">
-      Categorías
-    </h1>
+    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">Categorías</h1>
+    <h2 style="color: #aaa; text-align: center; font-size: 16px; font-weight: normal; margin-bottom: 20px;">
+      Gestión de categorías disponibles
+    </h2>
 
-    <!-- Formulario Crear Categoría -->
+    <!-- Formulario -->
     <div class="form-container">
       <ion-item lines="none">
         <ion-label position="floating" style="color: white;">Nombre</ion-label>
@@ -18,20 +19,35 @@
         <ion-input [(ngModel)]="descripcion" style="color: white;"></ion-input>
       </ion-item>
 
-      <ion-button expand="block" class="main-button" (click)="createCategoria()">Crear Categoría</ion-button>
+      <ion-button expand="block" class="main-button" *ngIf="!editId" (click)="createCategoria()">Crear Categoría</ion-button>
+      <ion-button expand="block" color="warning" *ngIf="editId" (click)="updateCategoria()">Guardar Cambios</ion-button>
+      <ion-button expand="block" color="medium" fill="clear" *ngIf="editId" (click)="resetForm()">Cancelar</ion-button>
     </div>
 
-    <!-- Lista de Categorías -->
-    <ion-list>
-      <ion-item *ngFor="let c of categorias" lines="none" style="color: white;">
+    <ion-item-divider style="margin: 20px 0; border-top: 1px solid #444; --background: transparent;">
+      <ion-label style="color: #fdd835; font-weight: bold;">Lista de Categorías</ion-label>
+    </ion-item-divider>
+
+    <!-- Buscador -->
+    <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar categoría..."
+                   style="--color: white; --placeholder-color: #aaa;"></ion-searchbar>
+
+    <!-- Lista -->
+    <ion-list *ngIf="categoriasFiltradas().length > 0; else noCategorias">
+      <ion-item *ngFor="let c of categoriasFiltradas()" lines="none" style="color: white;">
         <ion-label>
           <h2>{{ c.nombre }}</h2>
           <p>{{ c.descripcion }}</p>
         </ion-label>
-        <ion-button slot="end" color="danger" fill="clear" (click)="deleteCategoria(c.idcategoria)">
-          Eliminar
-        </ion-button>
+        <ion-buttons slot="end">
+          <ion-button color="warning" fill="clear" (click)="editCategoria(c)">Editar</ion-button>
+          <ion-button color="danger" fill="clear" (click)="deleteCategoria(c.idcategoria)">Eliminar</ion-button>
+        </ion-buttons>
       </ion-item>
     </ion-list>
+
+    <ng-template #noCategorias>
+      <p style="color: #ccc; text-align: center; margin-top: 20px;">No hay categorías disponibles</p>
+    </ng-template>
   </div>
 </ion-content>

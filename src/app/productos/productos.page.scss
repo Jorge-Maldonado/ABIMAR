@@ -58,6 +58,33 @@ ion-toolbar {
   transform: scale(0.97);
 }
 
+/* ✅ Botón Cancelar */
+ion-button[color="medium"] {
+  --background: #555;
+  --background-hover: #777;
+  --color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s ease-in-out;
+  margin-top: 10px;
+}
+ion-button[color="medium"]:active {
+  transform: scale(0.97);
+}
+
+/* ✅ Buscador */
+ion-searchbar {
+  --color: #fff;
+  --placeholder-color: #aaa;
+  --input-color: #fff;
+  --background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #00e5ff;
+  border-radius: 8px;
+  margin: 12px 0 20px;
+}
+
 /* ✅ Lista de productos */
 ion-list {
   background: transparent !important;
