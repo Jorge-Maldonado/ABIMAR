@@ -29,6 +29,16 @@
         <ion-input type="number" [(ngModel)]="stock" style="color: white;"></ion-input>
       </ion-item>
 
+      <!-- ✅ ComboBox Categoría -->
+      <ion-item lines="none">
+        <ion-label style="color: white;">Categoría</ion-label>
+        <ion-select [(ngModel)]="categoriaId" placeholder="Seleccionar categoría">
+          <ion-select-option *ngFor="let c of categorias" [value]="c.idcategoria">
+            {{ c.nombre }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
       <!-- Selector de Imagen -->
       <ion-item button detail="false" lines="none" (click)="abrirSelectorImagen()">
         <ion-label style="color: white;">Imagen</ion-label>
@@ -74,6 +84,7 @@
           <h2>{{ p.nombre }}</h2>
           <p>{{ p.descripcion }}</p>
           <p>Bs {{ p.precio | number:'1.2-2' }} | Stock: {{ p.stock }}</p>
+          <p style="color:#00e5ff;">Categoría: {{ getCategoriaNombre(p.categoriaId) }}</p>
         </ion-label>
         <ion-buttons slot="end">
           <ion-button color="warning" fill="clear" (click)="editProducto(p)">Editar</ion-button>

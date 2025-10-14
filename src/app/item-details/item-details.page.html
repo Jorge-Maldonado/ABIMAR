@@ -1,79 +1,38 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button color="primary" class="backbtn" routerLink="/home" routerDirection="back">
-        <img src="assets/back-dark.svg" />
-      </ion-button>
-    </ion-buttons>
-
-    <ion-buttons slot="end">
-      <ion-button>
-        <ion-icon name="search-outline" color="dark"></ion-icon>
-      </ion-button>
-      <ion-button class="notification">
-        <ion-icon name="notifications-outline" color="dark"></ion-icon>
-        <span>&nbsp;</span>
-      </ion-button>
+      <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <!-- Slider de imágenes -->
   <ion-slides pager="true" class="product-slider">
     <ion-slide>
-      <img src="assets/product-slider/prod-slide1.png" />
-    </ion-slide>
-    <ion-slide>
-      <img src="assets/product-slider/prod-slide1.png" />
-    </ion-slide>
-    <ion-slide>
-      <img src="assets/product-slider/prod-slide1.png" />
+      <img [src]="producto?.imagen || 'assets/no-image.png'" />
     </ion-slide>
   </ion-slides>
 
   <div class="ion-padding-vertical">
-    <h1 class="item-name">Cargador Portatil</h1>
+    <h1 class="item-name">{{ producto?.nombre }}</h1>
 
     <h4 class="price">
-      Bs.42
-      <span class="real-price">Bs.62</span>
+      Bs.{{ producto?.precio }}
+      <span *ngIf="producto?.precioAnterior" class="real-price">
+        Bs.{{ producto?.precioAnterior }}
+      </span>
     </h4>
   </div>
 
-  <div class="seperator">
-    <hr>
-  </div>
-
-  <div class="review">
-    <ion-row>
-      <ion-col size="6">
-        <div class="rating">
-          4.5
-        </div>
-        Muy bueno
-      </ion-col>
-      <ion-col size="6">
-        <div class="count">49 reseñas</div>
-      </ion-col>
-    </ion-row>
-  </div>
-
-  <div class="seperator">
-    <hr>
-  </div>
+  <div class="seperator"><hr></div>
 
   <div class="description">
     <h5>Descripción</h5>
-
-    <p>
-      Una maravillosa serenidad se ha apoderado de toda mi alma, como estas dulces mañanas de primavera que disfruto con todo mi corazón. Estoy solo y siento el encanto de la existencia en este lugar, creado para la felicidad de almas como la mía.
-    </p>
-
+    <p>{{ producto?.descripcion || 'Sin descripción disponible.' }}</p>
   </div>
 
-  <div class="seperator">
-    <hr>
-  </div>
+  <div class="seperator"><hr></div>
 
   <div class="variation">
     <ion-segment (ionChange)="segmentChanged($event)" value="size">
@@ -86,36 +45,18 @@
     </ion-segment>
   </div>
 
-  <div class="seperator">
-    <hr>
-  </div>
-
   <div class="variation-selector">
     <div class="sizes" [class.active-variation]="activeVariation == 'size'">
-      <div [class.active]="selectedSize == 1" (click)="changeSize(1)">
-        S
-      </div>
-      <div [class.active]="selectedSize == 2" (click)="changeSize(2)">
-        M
-      </div>
-      <div [class.active]="selectedSize == 3" (click)="changeSize(3)">
-        L
-      </div>
-      <div [class.active]="selectedSize == 4" (click)="changeSize(4)">
-        XL
-      </div>
+      <div [class.active]="selectedSize == 1" (click)="changeSize(1)">S</div>
+      <div [class.active]="selectedSize == 2" (click)="changeSize(2)">M</div>
+      <div [class.active]="selectedSize == 3" (click)="changeSize(3)">L</div>
+      <div [class.active]="selectedSize == 4" (click)="changeSize(4)">XL</div>
     </div>
 
     <div class="colors" [class.active-variation]="activeVariation == 'color'">
-      <div [class.active]="selectedColor == 1" (click)="changeColor(1)">
-        NEGRO
-      </div>
-      <div [class.active]="selectedColor == 2" (click)="changeColor(2)">
-        VERDE
-      </div>
-      <div [class.active]="selectedColor == 3" (click)="changeColor(3)">
-        AZUL
-      </div>
+      <div [class.active]="selectedColor == 1" (click)="changeColor(1)">NEGRO</div>
+      <div [class.active]="selectedColor == 2" (click)="changeColor(2)">VERDE</div>
+      <div [class.active]="selectedColor == 3" (click)="changeColor(3)">AZUL</div>
     </div>
   </div>
 </ion-content>

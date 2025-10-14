@@ -8,6 +8,7 @@ ion-content {
   font-family: 'Montserrat', sans-serif;
 }
 
+/* Botones header */
 .backbtn {
   margin-left: 15px;
 }
@@ -16,33 +17,38 @@ ion-content {
   margin-right: 15px;
 }
 
+/* Nombre y precio */
 .item-name {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   color: #fdd835;
-  margin-bottom: 8px;
+  margin: 12px 0 6px;
+  text-align: center;
 }
 
 .price {
   font-size: 20px;
+  text-align: center;
   color: #00e5ff;
 
   .real-price {
     color: #888;
     text-decoration: line-through;
     margin-left: 12px;
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
+/* Separadores */
 .seperator hr {
   width: 100%;
   background: #444;
   border: none;
   height: 1px;
-  margin: 20px 0;
+  margin: 16px 0;
 }
 
+/* Reviews */
 .review {
   color: white;
 
@@ -50,7 +56,7 @@ ion-content {
     display: inline-block;
     background: #fdd835;
     color: #000;
-    padding: 6px 16px;
+    padding: 6px 14px;
     border-radius: 6px;
     font-weight: bold;
   }
@@ -64,30 +70,46 @@ ion-content {
   }
 }
 
+/* Descripción */
 .description {
   h5 {
     color: #fdd835;
-    font-size: 18px;
-    margin-bottom: 8px;
+    font-size: 17px;
+    margin-bottom: 6px;
   }
 
   p {
     color: #ccc;
-    line-height: 1.6;
-    font-size: 15px;
+    line-height: 1.5;
+    font-size: 14px;
   }
 }
 
+/* Variaciones */
 .variation {
   padding-top: 16px;
 
+  ion-segment {
+    background: #333;
+    border-radius: 10px;
+    margin: 10px 0;
+  }
+
   ion-segment-button {
-    color: white;
+    color: white !important;
+    font-weight: 500;
+  }
+
+  ion-segment-button.ion-activated {
+    color: #000 !important;
+    background: #fdd835 !important;
+    border-radius: 8px;
+    font-weight: bold;
   }
 }
 
 .variation-selector {
-  margin-top: 30px;
+  margin-top: 24px;
   position: relative;
 
   .sizes,
@@ -104,12 +126,19 @@ ion-content {
     div {
       background-color: #333;
       color: white;
-      padding: 12px 20px;
+      padding: 10px 18px;
       border-radius: 6px;
-      margin: 0 8px;
+      margin: 0 6px;
       cursor: pointer;
       font-weight: 500;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, transform 0.2s;
+      font-size: 14px;
+    }
+
+    div:hover {
+      background-color: #00e5ff;
+      color: #000;
+      transform: scale(1.05);
     }
 
     .active {
@@ -125,6 +154,7 @@ ion-content {
   }
 }
 
+/* Footer */
 ion-footer {
   ion-row {
     padding: 0;
@@ -135,9 +165,21 @@ ion-footer {
       ion-button {
         margin: 0;
         height: 50px;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
         border-radius: 0;
+      }
+
+      /* Botón carrito */
+      ion-button[color="light"] {
+        --background: #00e5ff;
+        --color: #000;
+      }
+
+      /* Botón comprar */
+      ion-button {
+        --background: #fdd835;
+        --color: #000;
       }
     }
   }
@@ -147,10 +189,36 @@ ion-footer {
   background-image: none !important;
 }
 
+/* Slider de producto */
+.product-slider {
+  max-height: 240px; /* ✅ altura */
+  margin-bottom: 12px;
+}
+
 ion-slide img {
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  height: 220px;
+  object-fit: contain;  /* ✅ ajusta sin cortar ni pixelar */
   border-radius: 10px;
+  background: #222;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .product-slider {
+    max-height: 200px;
+  }
+
+  ion-slide img {
+    height: 180px;
+  }
+
+  .item-name {
+    font-size: 20px;
+  }
+
+  .price {
+    font-size: 18px;
+  }
 }

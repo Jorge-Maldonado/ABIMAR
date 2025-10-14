@@ -14,8 +14,10 @@ export class ProductosPage implements OnInit {
   precio: number = 0;
   stock: number = 0;
   imagen: string = ''; // solo name.ext
+  categoriaId: number | null = null;
 
   productos: any[] = [];
+  categorias: any[] = []; // ✅ lista categorías
 
   editId: number | null = null;
   originalData: any = {};
@@ -29,6 +31,7 @@ export class ProductosPage implements OnInit {
 
   ngOnInit() {
     this.loadProductos();
+    this.loadCategorias();
   }
 
   private normalizeImagePath(val: any): string {
@@ -77,9 +80,30 @@ export class ProductosPage implements OnInit {
       );
   }
 
+  loadCategorias() {
+    this.apiService
+      .post(
+        'https://backend-abimar.onrender.com/abimar/core/api/categoria/list',
+        {}
+      )
+      .subscribe(
+        (res: any) => {
+          if (Array.isArray(res)) {
+            this.categorias = res;
+          }
+        },
+        (err) => console.error('Error cargando categorías:', err)
+      );
+  }
+
+  getCategoriaNombre(id: number): string {
+    const cat = this.categorias.find((c) => c.idcategoria === id);
+    return cat ? cat.nombre : 'Sin categoría';
+  }
+
   createProducto() {
     const producto = {
-      categoriaId: 1,
+      categoriaId: this.categoriaId,
       codigo: `PRD-${Date.now()}`,
       dateCreated: new Date().toISOString(),
       descripcion: this.descripcion,
@@ -112,6 +136,7 @@ export class ProductosPage implements OnInit {
     this.descripcion = p.descripcion;
     this.precio = p.precio;
     this.stock = p.stock;
+    this.categoriaId = p.categoriaId;
 
     const imgPath = (p.imagen || '').toString();
     this.imagen = imgPath ? imgPath.split('/').pop() || '' : '';
@@ -123,7 +148,7 @@ export class ProductosPage implements OnInit {
     if (!this.editId) return;
 
     const producto = {
-      categoriaId: this.originalData.categoriaId,
+      categoriaId: this.categoriaId,
       codigo: this.originalData.codigo,
       dateCreated: this.originalData.dateCreated,
       descripcion: this.descripcion,
@@ -172,6 +197,7 @@ export class ProductosPage implements OnInit {
     this.precio = 0;
     this.stock = 0;
     this.imagen = '';
+    this.categoriaId = null;
     this.editId = null;
     this.originalData = {};
   }

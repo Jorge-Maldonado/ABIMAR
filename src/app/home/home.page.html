@@ -1,81 +1,120 @@
 <ion-header>
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-menu-button>
-        <img src="assets/menu_bar.svg" />
-      </ion-menu-button>
-    </ion-buttons>
+  <ion-toolbar>
+    <ion-title>Inicio</ion-title>
     <ion-buttons slot="end">
-      <ion-button class="notification">
-        <ion-icon name="notifications-outline" color="light"></ion-icon>
-        <span>&nbsp;</span>
+      <ion-button>
+        <ion-icon name="cart-outline"></ion-icon>
       </ion-button>
-      <ion-button class="filter">
-        <ion-icon name="funnel-outline" color="light"></ion-icon>
+      <ion-button>
+        <ion-icon name="heart-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: #000000;">
-  <!-- Search Section -->
-  <div class="search ion-padding">
-    <ion-item lines="none">
-      <ion-icon name="search-outline" slot="start" color="black"></ion-icon>
-      <ion-input placeholder="Buscar producto"></ion-input>
-    </ion-item>
-  </div>
+<ion-content>
 
-  <!-- Categories Section -->
-  <div class="title ion-padding">
-    <h2>Categorías</h2>
-    <p>Ver todo</p>
-  </div>
+  <!-- 🔍 Buscador -->
+  <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar productos..."></ion-searchbar>
 
-  <div class="category-slider ion-padding-start">
-    <ion-slides [options]="{ slidesPerView: 'auto', zoom: false, grabCursor: true }">
-      <ion-slide *ngFor="let category of categories">
-        <ion-col>
-          <h4>{{ category.name }}</h4>
-          <img src="{{ category.image }}" />
+  <!-- 🟡 Categorías -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Categorías</h2>
+      <ion-button fill="clear" size="small" (click)="toggleVerTodos('categorias')">
+        {{ showAllCategorias ? 'Ver menos' : 'Ver todos' }}
+      </ion-button>
+    </div>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" size-md="3" *ngFor="let c of categorias | slice:0:(showAllCategorias ? categorias.length : 4)">
+          <ion-card (click)="filtrarPorCategoria(c)">
+            <img [src]="c.imagen" alt="{{ c.nombre }}" />
+            <ion-card-content>
+              <h3>{{ c.nombre }}</h3>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
-      </ion-slide>
-    </ion-slides>
+      </ion-row>
+    </ion-grid>
   </div>
 
-  <!-- Featured Section -->
-  <div class="title ion-padding">
-    <h2 class="font-bold">Destacados</h2>
-    <p>Ver todo</p>
-  </div>
+  <!-- 🔵 Destacados -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Destacados</h2>
+      <ion-button fill="clear" size="small" (click)="toggleVerTodos('destacados')">
+        {{ showAllDestacados ? 'Ver menos' : 'Ver todos' }}
+      </ion-button>
+    </div>
 
-  <div class="product-slider ion-padding-start">
-    <ion-slides [options]="{ slidesPerView: 'auto', zoom: false, grabCursor: true }">
-      <ion-slide *ngFor="let product of featuredProducts">
-        <ion-col class="ion-text-left" routerLink="/item-details" routerDirection="forward">
-          <img src="{{ product.image }}" />
-          <p>Bs. {{ product.price }}</p>
-          <h6>{{ product.name }}</h6>
+    <ion-grid>
+      <ion-row>
+        <ion-col
+          size="6"
+          size-md="3"
+          *ngFor="let p of destacados | slice:0:(showAllDestacados ? destacados.length : 4)"
+        >
+          <ion-card>
+            <img [src]="p.imagen" (click)="verDetalle(p)" alt="{{ p.nombre }}" />
+            <ion-card-content>
+              <h3>{{ p.nombre }}</h3>
+              <p>{{ p.precio | currency:'USD' }}</p>
+              <div class="buttons">
+                <ion-button fill="clear" (click)="agregarCarrito(p)">
+                  <ion-icon name="cart-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" (click)="agregarFavorito(p)">
+                  <ion-icon name="heart-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="outline" (click)="comprarProducto(p)">
+                  Comprar
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
-      </ion-slide>
-    </ion-slides>
+      </ion-row>
+    </ion-grid>
   </div>
 
-  <!-- Best Sell Section -->
-  <div class="title ion-padding">
-    <h2 class="font-bold">Más vendidos</h2>
-    <p>Ver todo</p>
-  </div>
+  <!-- 🔴 Más vendidos -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Más vendidos</h2>
+      <ion-button fill="clear" size="small" (click)="toggleVerTodos('masVendidos')">
+        {{ showAllMasVendidos ? 'Ver menos' : 'Ver todos' }}
+      </ion-button>
+    </div>
 
-  <div class="product-slider ion-padding-start">
-    <ion-slides [options]="{ slidesPerView: 'auto', zoom: false, grabCursor: true }">
-      <ion-slide *ngFor="let product of bestSellProducts">
-        <ion-col class="ion-text-left" routerLink="/item-details" routerDirection="forward">
-          <img src="{{ product.image }}" />
-          <p>Bs. {{ product.price }}</p>
-          <h6>{{ product.name }}</h6>
+    <ion-grid>
+      <ion-row>
+        <ion-col
+          size="6"
+          size-md="3"
+          *ngFor="let p of masVendidos | slice:0:(showAllMasVendidos ? masVendidos.length : 4)"
+        >
+          <ion-card>
+            <img [src]="p.imagen" (click)="verDetalle(p)" alt="{{ p.nombre }}" />
+            <ion-card-content>
+              <h3>{{ p.nombre }}</h3>
+              <p>{{ p.precio | currency:'USD' }}</p>
+              <div class="buttons">
+                <ion-button fill="clear" (click)="agregarCarrito(p)">
+                  <ion-icon name="cart-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" (click)="agregarFavorito(p)">
+                  <ion-icon name="heart-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="outline" (click)="comprarProducto(p)">
+                  Comprar
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
-      </ion-slide>
-    </ion-slides>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>

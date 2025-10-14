@@ -56,6 +56,11 @@ export class UsuariosPage implements OnInit {
 
   // crear
   createUsuario() {
+    if (!this.idRol) {
+      alert('Debe seleccionar un rol antes de crear el usuario');
+      return;
+    }
+
     const usuario = {
       apellidos: this.apellidos,
       documento: this.documento,
@@ -65,7 +70,7 @@ export class UsuariosPage implements OnInit {
       idpersona: 0,
       nombres: this.nombres,
       razonSocial: `${this.nombres} ${this.apellidos}`,
-      rolId: this.idRol, // id del rol seleccionado
+      rolId: this.idRol,
       telefono: this.telefono,
       tipoDocumentoId: 1
     };
@@ -88,7 +93,6 @@ export class UsuariosPage implements OnInit {
     this.apellidos = u.apellidos || '';
     this.documento = u.documento || '';
     this.telefono = u.telefono ?? null;
-    // puede ser number o string, asegurar number
     this.idRol = u.rolId !== undefined && u.rolId !== null ? Number(u.rolId) : null;
     this.originalData = { ...u };
   }
@@ -96,6 +100,10 @@ export class UsuariosPage implements OnInit {
   // actualizar
   updateUsuario() {
     if (!this.editId) return;
+    if (!this.idRol) {
+      alert('Debe seleccionar un rol antes de guardar los cambios');
+      return;
+    }
 
     const usuario = {
       idpersona: this.editId,

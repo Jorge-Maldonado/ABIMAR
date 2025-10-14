@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Animation, AnimationController } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
+import { AnimationController } from '@ionic/angular';
 
 @Component({
   selector: 'app-item-details',
@@ -11,49 +12,59 @@ export class ItemDetailsPage implements OnInit {
   selectedColor: number;
   activeVariation: string;
 
+  producto: any; // ✅ Aquí guardamos el producto recibido
+
   constructor(
-    private animatioCntrl: AnimationController,
-  ) { }
+    private route: ActivatedRoute,
+    private animationCtrl: AnimationController,
+  ) {}
 
   ngOnInit() {
     this.activeVariation = 'size';
+
+    // ✅ Recibir datos del producto desde la URL
+    this.route.queryParams.subscribe((params) => {
+      if (params && params['producto']) {
+        this.producto = JSON.parse(params['producto']);
+      }
+    });
   }
 
   segmentChanged(e: any) {
     this.activeVariation = e.detail.value;
 
     if (this.activeVariation == 'color') {
-      this.animatioCntrl.create()
-      .addElement(document.querySelector('.sizes'))
-      .duration(500)
-      .iterations(1)
-      .fromTo('transform', 'translateX(0px)', 'translateX(100%)')
-      .fromTo('opacity', '1', '0.2')
-      .play();
+      this.animationCtrl.create()
+        .addElement(document.querySelector('.sizes'))
+        .duration(500)
+        .iterations(1)
+        .fromTo('transform', 'translateX(0px)', 'translateX(100%)')
+        .fromTo('opacity', '1', '0.2')
+        .play();
 
-      this.animatioCntrl.create()
-      .addElement(document.querySelector('.colors'))
-      .duration(500)
-      .iterations(1)
-      .fromTo('transform', 'translateX(-100%)', 'translateX(0)')
-      .fromTo('opacity', '0.2', '1')
-      .play();
+      this.animationCtrl.create()
+        .addElement(document.querySelector('.colors'))
+        .duration(500)
+        .iterations(1)
+        .fromTo('transform', 'translateX(-100%)', 'translateX(0)')
+        .fromTo('opacity', '0.2', '1')
+        .play();
     } else {
-      this.animatioCntrl.create()
-      .addElement(document.querySelector('.sizes'))
-      .duration(500)
-      .iterations(1)
-      .fromTo('transform', 'translateX(100%)', 'translateX(0)')
-      .fromTo('opacity', '0.2', '1')
-      .play();
+      this.animationCtrl.create()
+        .addElement(document.querySelector('.sizes'))
+        .duration(500)
+        .iterations(1)
+        .fromTo('transform', 'translateX(100%)', 'translateX(0)')
+        .fromTo('opacity', '0.2', '1')
+        .play();
 
-      this.animatioCntrl.create()
-      .addElement(document.querySelector('.colors'))
-      .duration(500)
-      .iterations(1)
-      .fromTo('transform', 'translateX(0px)', 'translateX(-100%)')
-      .fromTo('opacity', '1', '0.2')
-      .play();
+      this.animationCtrl.create()
+        .addElement(document.querySelector('.colors'))
+        .duration(500)
+        .iterations(1)
+        .fromTo('transform', 'translateX(0px)', 'translateX(-100%)')
+        .fromTo('opacity', '1', '0.2')
+        .play();
     }
   }
 
@@ -64,5 +75,4 @@ export class ItemDetailsPage implements OnInit {
   changeColor(color: number) {
     this.selectedColor = color;
   }
-
 }

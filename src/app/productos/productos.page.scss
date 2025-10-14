@@ -4,6 +4,7 @@ ion-toolbar {
   --color: #fdd835;
   font-family: 'Montserrat', sans-serif;
 }
+
 .header-md::after {
   background: none !important;
 }
@@ -38,6 +39,15 @@ ion-toolbar {
 
 .form-container ion-input {
   color: #fff !important;
+}
+
+.form-container ion-select {
+  color: #fff !important;
+  --placeholder-color: #aaa;
+  --background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 229, 255, 0.2);
 }
 
 .form-container ion-button {

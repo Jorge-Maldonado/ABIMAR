@@ -107,18 +107,12 @@ ion-item p {
   font-size: 14px;
 }
 
-/* Mejor estilo para el combo (ion-select dentro de ion-item) */
+/* Combo (ion-select) */
 .select-item ion-select {
   width: 100%;
   --color: #fff;
   --placeholder-color: #aaa;
   --padding-start: 10px;
   --border-radius: 8px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(0,229,255,0.12);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,229,255,0.06);
+  font-size: 14px;
 }
-
-/* cuando se abre el popover, los textos conservan color por defecto del sistema */
-/* (la interfaz popover es controlada por Ionic) */
