@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ categoriaNombre }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" style="--background: #1b1b1b;">
+
+  <!-- Buscador -->
+  <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar productos..."
+                 style="--color: white; --placeholder-color: #aaa;"></ion-searchbar>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" *ngFor="let p of productosFiltrados">
+        <div class="card">
+          <div class="card-top">
+            <img [src]="p.imagen" alt="{{p.nombre}}">
+            <div class="card-icons">
+              <ion-button fill="clear" (click)="agregarCarrito(p)">
+                <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" (click)="agregarFavorito(p)">
+                <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+          <div class="card-info">
+            <p>Bs {{ p.precio | number:'1.2-2' }}</p>
+            <h6>{{ p.nombre }}</h6>
+          </div>
+          <ion-button (click)="comprarProducto(p)">Comprar</ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <p *ngIf="productosFiltrados.length === 0" style="color: #ccc; text-align:center; margin-top:20px;">
+    No hay productos en esta categoría
+  </p>
+
+</ion-content>

@@ -31,9 +31,6 @@ export class HomePage implements OnInit {
     this.loadProductos();
   }
 
-  // ================================
-  // Cargar categorías
-  // ================================
   loadCategorias() {
     this.apiService
       .post('https://backend-abimar.onrender.com/abimar/core/api/categoria/list', {})
@@ -55,9 +52,6 @@ export class HomePage implements OnInit {
       );
   }
 
-  // ================================
-  // Cargar productos
-  // ================================
   loadProductos() {
     this.apiService
       .post('https://backend-abimar.onrender.com/abimar/core/api/producto/list', {})
@@ -68,6 +62,7 @@ export class HomePage implements OnInit {
               ...p,
               imagen: this.normalizeImagePath(p.imagen),
             }));
+
             this.destacados = this.productos.slice(0, 5);
             this.masVendidos = this.productos.slice(5, 10);
           } else {
@@ -80,18 +75,12 @@ export class HomePage implements OnInit {
       );
   }
 
-  // ================================
-  // Alternar “Ver todos / Ver menos”
-  // ================================
   toggleVerTodos(tipo: string) {
     if (tipo === 'categorias') this.showAllCategorias = !this.showAllCategorias;
     if (tipo === 'destacados') this.showAllDestacados = !this.showAllDestacados;
     if (tipo === 'masVendidos') this.showAllMasVendidos = !this.showAllMasVendidos;
   }
 
-  // ================================
-  // Normalizar rutas de imágenes
-  // ================================
   private normalizeImagePath(val: any): string {
     if (!val) return 'assets/no-image.png';
     const s = String(val).trim();
@@ -102,9 +91,6 @@ export class HomePage implements OnInit {
     return `assets/products/${onlyName}`;
   }
 
-  // ================================
-  // Filtrado de productos según buscador
-  // ================================
   get productosFiltrados() {
     if (!this.searchTerm) return this.productos;
     const term = this.searchTerm.toLowerCase();
@@ -115,51 +101,42 @@ export class HomePage implements OnInit {
     );
   }
 
-  // ================================
-  // Ir al detalle de un producto
-  // ================================
   verDetalle(producto: any) {
     this.router.navigate(['/item-details'], {
       queryParams: { producto: JSON.stringify(producto) },
     });
   }
 
-  // ================================
-  // Filtrar productos por categoría
-  // ================================
-  filtrarPorCategoria(categoria: any) {
-    this.searchTerm = categoria.nombre;
-  }
-
-  // ================================
-  // NUEVAS FUNCIONES — botones HTML
-  // ================================
-  agregarCarrito(producto: any) {
+  async agregarCarrito(producto: any) {
     console.log('Producto agregado al carrito:', producto);
-    this.mostrarToast(`"${producto.nombre}" agregado al carrito 🛒`);
+    await this.mostrarToast(`"${producto.nombre}" agregado al carrito 🛒`, 'warning');
   }
 
-  agregarFavorito(producto: any) {
+  async agregarFavorito(producto: any) {
     console.log('Producto agregado a favoritos:', producto);
-    this.mostrarToast(`"${producto.nombre}" agregado a favoritos ❤️`);
+    await this.mostrarToast(`"${producto.nombre}" agregado a favoritos ❤️`, 'warning');
   }
 
   comprarProducto(producto: any) {
     console.log('Compra iniciada para:', producto);
-    this.mostrarToast(`Iniciando compra de "${producto.nombre}" 💳`);
+    this.mostrarToast(`Iniciando compra de "${producto.nombre}" 💳`, 'success');
     this.verDetalle(producto);
   }
 
-  // ================================
-  // Helper para mostrar mensajes Toast
-  // ================================
-  async mostrarToast(mensaje: string) {
+  async mostrarToast(mensaje: string, color: string) {
     const toast = await this.toastController.create({
       message: mensaje,
       duration: 2000,
-      color: 'tertiary',
+      color: color,
       position: 'bottom',
+      cssClass: 'custom-toast'
     });
     await toast.present();
+  }
+
+  abrirCategoria(categoria: any) {
+    this.router.navigate(['/categoria-productos'], {
+      queryParams: { id: categoria.idcategoria, nombre: categoria.nombre }
+    });
   }
 }

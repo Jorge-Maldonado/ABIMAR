@@ -25,48 +25,14 @@ ion-toolbar {
 /* ==================== */
 /* BUSCADOR             */
 /* ==================== */
-.search {
-  margin: 10px 0;
-
-  ion-item {
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 4px 8px;
-
-    ion-icon {
-      color: #fdd835;
-      font-size: 20px;
-    }
-
-    ion-input {
-      color: white;
-      font-size: 14px;
-    }
-  }
-}
-
-/* ==================== */
-/* TÍTULOS              */
-/* ==================== */
-.title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 8px 0;
-
-  h2 {
-    color: #fdd835;
-    font-size: 16px;
-    margin: 0;
-  }
-
-  p {
-    color: #00e5ff;
-    font-size: 12px;
-    cursor: pointer;
-    text-decoration: underline;
-    margin: 0;
-  }
+ion-searchbar {
+  --color: #fff; 
+  --placeholder-color: #aaa;
+  --input-color: #fff;
+  --background: rgba(255,255,255,0.05);
+  border: 1px solid #00e5ff;
+  border-radius: 8px;
+  margin: 12px 0 20px;
 }
 
 /* ==================== */
@@ -84,41 +50,7 @@ ion-toolbar {
 }
 
 /* ==================== */
-/* CATEGORÍAS           */
-/* ==================== */
-.category-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  width: 100%;
-  height: 260px;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 229, 255, 0.2);
-  }
-
-  img {
-    @extend .product-image;
-  }
-
-  h4 {
-    color: white;
-    font-size: 13px;
-    text-align: center;
-    margin: 6px 0 0 0;
-    font-family: 'Montserrat', sans-serif;
-  }
-}
-
-/* ==================== */
-/* PRODUCTOS (HOME)     */
+/* PRODUCTOS POR CATEGORÍA */
 /* ==================== */
 .card {
   position: relative;
@@ -142,7 +74,7 @@ ion-toolbar {
 }
 
 .card-top {
-  position: relative; /* contenedor imagen + iconos */
+  position: relative;
 }
 
 .card-top img {
@@ -218,80 +150,18 @@ ion-toolbar {
 }
 
 /* ==================== */
-/* DETALLE PRODUCTO     */
+/* TOAST PERSONALIZADO  */
 /* ==================== */
-.item-name {
-  font-size: 22px;
-  font-weight: 600;
-  color: #fdd835;
-  margin: 12px 0 6px;
+.custom-toast {
+  --background: rgba(253, 216, 53, 0.95); 
+  --color: #1b1b1b; 
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
   text-align: center;
-}
-
-.price {
-  font-size: 20px;
-  text-align: center;
-  color: #00e5ff;
-}
-
-.price .real-price {
-  color: #888;
-  text-decoration: line-through;
-  margin-left: 12px;
-  font-size: 15px;
-}
-
-.seperator hr {
-  width: 100%;
-  background: #444;
-  border: none;
-  height: 1px;
-  margin: 16px 0;
-}
-
-.description h5 {
-  color: #fdd835;
-  font-size: 17px;
-  margin-bottom: 6px;
-}
-
-.description p {
-  color: #ccc;
-  line-height: 1.5;
+  box-shadow: 0 4px 15px rgba(253, 216, 53, 0.4);
   font-size: 14px;
-}
-
-/* Slider */
-.product-slider {
-  max-height: 260px;
-  margin-bottom: 12px;
-}
-
-ion-slide img {
-  @extend .product-image;
-}
-
-/* ==================== */
-/* FOOTER               */
-/* ==================== */
-ion-footer {
-  ion-row {
-    padding: 0;
-    ion-col {
-      padding: 0;
-      ion-button {
-        margin: 0;
-        height: 50px;
-        font-size: 16px;
-        font-weight: bold;
-        border-radius: 0;
-      }
-    }
-  }
-}
-
-.footer-md::before {
-  background-image: none !important;
+  padding: 8px 12px;
 }
 
 /* ==================== */
@@ -313,16 +183,6 @@ ion-col {
 /* RESPONSIVE           */
 /* ==================== */
 @media (max-width: 480px) {
-  .category-card {
-    height: 220px;
-  }
-
-  .category-card img,
-  .card-top img,
-  ion-slide img {
-    height: 180px;
-  }
-
   .card {
     height: 300px;
   }
@@ -337,11 +197,20 @@ ion-col {
     height: 28px;
   }
 
-  .item-name {
-    font-size: 20px;
+  .card-top img {
+    height: 180px;
   }
+}
 
-  .price {
-    font-size: 18px;
-  }
+/* Toast personalizado */
+.custom-toast {
+  --background: rgba(253, 216, 53, 0.95); /* amarillo intenso */
+  --color: #1b1b1b; /* texto oscuro */
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(253, 216, 53, 0.4);
+  font-size: 14px;
+  padding: 8px 12px;
 }

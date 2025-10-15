@@ -2,119 +2,106 @@
   <ion-toolbar>
     <ion-title>Inicio</ion-title>
     <ion-buttons slot="end">
-      <ion-button>
-        <ion-icon name="cart-outline"></ion-icon>
+      <ion-button class="notification">
+        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
       </ion-button>
-      <ion-button>
-        <ion-icon name="heart-outline"></ion-icon>
+      <ion-button class="filter">
+        <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding" style="--background: #1b1b1b;">
 
-  <!-- 🔍 Buscador -->
-  <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar productos..."></ion-searchbar>
-
-  <!-- 🟡 Categorías -->
-  <div class="section">
-    <div class="section-header">
-      <h2>Categorías</h2>
-      <ion-button fill="clear" size="small" (click)="toggleVerTodos('categorias')">
-        {{ showAllCategorias ? 'Ver menos' : 'Ver todos' }}
-      </ion-button>
-    </div>
-
-    <ion-grid>
-      <ion-row>
-        <ion-col size="6" size-md="3" *ngFor="let c of categorias | slice:0:(showAllCategorias ? categorias.length : 4)">
-          <ion-card (click)="filtrarPorCategoria(c)">
-            <img [src]="c.imagen" alt="{{ c.nombre }}" />
-            <ion-card-content>
-              <h3>{{ c.nombre }}</h3>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <!-- Buscador -->
+  <div class="search">
+    <ion-item lines="none">
+      <ion-icon name="search-outline"></ion-icon>
+      <ion-input [(ngModel)]="searchTerm" placeholder="Buscar productos..."></ion-input>
+    </ion-item>
   </div>
 
-  <!-- 🔵 Destacados -->
-  <div class="section">
-    <div class="section-header">
-      <h2>Destacados</h2>
-      <ion-button fill="clear" size="small" (click)="toggleVerTodos('destacados')">
-        {{ showAllDestacados ? 'Ver menos' : 'Ver todos' }}
-      </ion-button>
-    </div>
-
-    <ion-grid>
-      <ion-row>
-        <ion-col
-          size="6"
-          size-md="3"
-          *ngFor="let p of destacados | slice:0:(showAllDestacados ? destacados.length : 4)"
-        >
-          <ion-card>
-            <img [src]="p.imagen" (click)="verDetalle(p)" alt="{{ p.nombre }}" />
-            <ion-card-content>
-              <h3>{{ p.nombre }}</h3>
-              <p>{{ p.precio | currency:'USD' }}</p>
-              <div class="buttons">
-                <ion-button fill="clear" (click)="agregarCarrito(p)">
-                  <ion-icon name="cart-outline"></ion-icon>
-                </ion-button>
-                <ion-button fill="clear" (click)="agregarFavorito(p)">
-                  <ion-icon name="heart-outline"></ion-icon>
-                </ion-button>
-                <ion-button fill="outline" (click)="comprarProducto(p)">
-                  Comprar
-                </ion-button>
-              </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <!-- Categorías -->
+  <div class="title">
+    <h2>Categorías</h2>
+    <p *ngIf="categorias.length > 3" (click)="toggleVerTodos('categorias')">
+      {{ showAllCategorias ? 'Ver menos' : 'Ver todos' }}
+    </p>
   </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="4" *ngFor="let c of (showAllCategorias ? categorias : categorias.slice(0,3))">
+        <div class="category-card" (click)="abrirCategoria(c)">
+          <img [src]="c.imagen" alt="{{c.nombre}}">
+          <h4>{{ c.nombre }}</h4>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-  <!-- 🔴 Más vendidos -->
-  <div class="section">
-    <div class="section-header">
-      <h2>Más vendidos</h2>
-      <ion-button fill="clear" size="small" (click)="toggleVerTodos('masVendidos')">
-        {{ showAllMasVendidos ? 'Ver menos' : 'Ver todos' }}
-      </ion-button>
-    </div>
-
-    <ion-grid>
-      <ion-row>
-        <ion-col
-          size="6"
-          size-md="3"
-          *ngFor="let p of masVendidos | slice:0:(showAllMasVendidos ? masVendidos.length : 4)"
-        >
-          <ion-card>
-            <img [src]="p.imagen" (click)="verDetalle(p)" alt="{{ p.nombre }}" />
-            <ion-card-content>
-              <h3>{{ p.nombre }}</h3>
-              <p>{{ p.precio | currency:'USD' }}</p>
-              <div class="buttons">
-                <ion-button fill="clear" (click)="agregarCarrito(p)">
-                  <ion-icon name="cart-outline"></ion-icon>
-                </ion-button>
-                <ion-button fill="clear" (click)="agregarFavorito(p)">
-                  <ion-icon name="heart-outline"></ion-icon>
-                </ion-button>
-                <ion-button fill="outline" (click)="comprarProducto(p)">
-                  Comprar
-                </ion-button>
-              </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <!-- Destacados -->
+  <div class="title">
+    <h2>Destacados</h2>
+    <p *ngIf="destacados.length > 3" (click)="toggleVerTodos('destacados')">
+      {{ showAllDestacados ? 'Ver menos' : 'Ver todos' }}
+    </p>
   </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="4" *ngFor="let p of (showAllDestacados ? destacados : destacados.slice(0,3))">
+        <div class="card">
+          <div class="card-top">
+            <img [src]="p.imagen" alt="{{p.nombre}}">
+            <div class="card-icons">
+              <ion-button fill="clear" (click)="agregarCarrito(p)">
+                <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" (click)="agregarFavorito(p)">
+                <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+          <div class="card-info">
+            <p>Bs {{ p.precio | number:'1.2-2' }}</p>
+            <h6>{{ p.nombre }}</h6>
+          </div>
+          <ion-button (click)="comprarProducto(p)">Comprar</ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Más Vendidos -->
+  <div class="title">
+    <h2>Más Vendidos</h2>
+    <p *ngIf="masVendidos.length > 3" (click)="toggleVerTodos('masVendidos')">
+      {{ showAllMasVendidos ? 'Ver menos' : 'Ver todos' }}
+    </p>
+  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="4" *ngFor="let p of (showAllMasVendidos ? masVendidos : masVendidos.slice(0,3))">
+        <div class="card">
+          <div class="card-top">
+            <img [src]="p.imagen" alt="{{p.nombre}}">
+            <div class="card-icons">
+              <ion-button fill="clear" (click)="agregarCarrito(p)">
+                <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" (click)="agregarFavorito(p)">
+                <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+          <div class="card-info">
+            <p>Bs {{ p.precio | number:'1.2-2' }}</p>
+            <h6>{{ p.nombre }}</h6>
+          </div>
+          <ion-button (click)="comprarProducto(p)">Comprar</ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>
