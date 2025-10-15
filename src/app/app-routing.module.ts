@@ -63,6 +63,10 @@ const routes: Routes = [
   },  {
     path: 'categoria-productos',
     loadChildren: () => import('./categoria-productos/categoria-productos.module').then( m => m.CategoriaProductosPageModule)
+  },
+  {
+    path: 'contactus',
+    loadChildren: () => import('./contactus/contactus.module').then( m => m.ContactusPageModule)
   }
 
 ];

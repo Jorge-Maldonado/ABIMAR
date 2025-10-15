@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-welcome',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomePage implements OnInit {
 
-  constructor() { }
+  constructor(private menu: MenuController) { }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    // Deshabilita el menú lateral al entrar en Welcome
+    this.menu.enable(false);
+  }
+
+  ionViewWillLeave() {
+    // Vuelve a habilitar el menú al salir de Welcome
+    this.menu.enable(true);
   }
 
 }

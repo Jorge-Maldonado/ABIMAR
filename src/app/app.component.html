@@ -1,5 +1,7 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
+
+    <!-- Menú lateral -->
     <ion-menu contentId="main-content" type="overlay" [disabled]="!isMenuEnabled">
       <ion-content>
         <div class="main-list" style="background: black;">
@@ -50,7 +52,16 @@
               </ion-item>
             </ion-menu-toggle>
 
-            <!-- 🔥 Dashboard (nuevo) -->
+            <!-- Contact Us -->
+            <ion-menu-toggle auto-hide="false">
+              <ion-item lines="none" (click)="navigate('/contactus', 7)" detail="false"
+                class="ion-text-center" [class.selected]="selectedIndex == 7">
+                <ion-icon slot="start" name="mail-outline" class="menu-icon"></ion-icon>
+                <ion-label>Contact Us</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+
+            <!-- 🔥 Dashboard -->
             <ion-menu-toggle auto-hide="false">
               <ion-item lines="none" (click)="navigate('/admin-home/dashboard', 6)" detail="false"
                 class="ion-text-center" [class.selected]="selectedIndex == 6">
@@ -58,6 +69,8 @@
                 <ion-label>Dashboard</ion-label>
               </ion-item>
             </ion-menu-toggle>
+
+
 
           </ion-list>
 

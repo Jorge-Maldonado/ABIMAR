@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Contactenos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" style="background: linear-gradient(to bottom right, #1c1c1c, #2a2a2a);">
+
+  <div class="contact-container">
+
+    <h2 class="contact-title">Envíanos un mensaje</h2>
+
+    <form (ngSubmit)="sendMessage()" #contactForm="ngForm">
+
+      <ion-item lines="full">
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input type="text" name="name" [(ngModel)]="contact.name" required></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Correo</ion-label>
+        <ion-input type="email" name="email" [(ngModel)]="contact.email" required></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Mensaje</ion-label>
+        <ion-textarea name="message" [(ngModel)]="contact.message" required></ion-textarea>
+      </ion-item>
+
+      <ion-button expand="block" type="submit" color="warning" [disabled]="!contactForm.form.valid">
+        Enviar
+      </ion-button>
+
+    </form>
+
+    <div *ngIf="success" class="success-message">
+     ¡Gracias! Tu mensaje ha sido enviado.
+    </div>
+
+  </div>
+
+</ion-content>
