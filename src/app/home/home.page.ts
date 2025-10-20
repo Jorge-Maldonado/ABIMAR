@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
+import { UtilService } from '../util.service';
 
 @Component({
   selector: 'app-home',
@@ -9,6 +10,8 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
+
+  usuarioEmail: string = '';
   categorias: any[] = [];
   productos: any[] = [];
   destacados: any[] = [];
@@ -17,18 +20,46 @@ export class HomePage implements OnInit {
   showAllCategorias = false;
   showAllDestacados = false;
   showAllMasVendidos = false;
-
+  showIcons: boolean = true;
   searchTerm: string = '';
 
   constructor(
     private apiService: ApiService<any>,
     private router: Router,
-    private toastController: ToastController
-  ) {}
+    private toastController: ToastController,
+    private alertCtrl: AlertController,
+    private util: UtilService
+  ) { }
 
   ngOnInit() {
+    //const isGuest = localStorage.getItem('guestAccess') === 'true';
+    this.usuarioEmail = localStorage.getItem('usuario') || 'Invitado';
+
+    // Suscribirse al estado de iconos
+    this.util.getShowIcons().subscribe(s => {
+      this.showIcons = s;
+    });
     this.loadCategorias();
     this.loadProductos();
+  }
+
+  async logout() {
+    const alert = await this.alertCtrl.create({
+      header: 'Cerrar sesión',
+      message: '¿Deseas salir de tu cuenta?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Salir',
+          handler: () => {
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('guestAccess');
+            this.router.navigate(['/login']);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   loadCategorias() {
@@ -37,13 +68,10 @@ export class HomePage implements OnInit {
       .subscribe(
         (res: any) => {
           if (Array.isArray(res)) {
-            this.categorias = res.map((c, index) => {
-              const defaultImg = `assets/categories/category-${index + 1}.png`;
-              return {
-                ...c,
-                imagen: c.imagen && c.imagen.trim() !== '' ? c.imagen : defaultImg,
-              };
-            });
+            this.categorias = res.map((c, index) => ({
+              ...c,
+              imagen: c.imagen && c.imagen.trim() !== '' ? c.imagen : `assets/categories/category-${index + 1}.png`,
+            }));
           } else {
             this.categorias = [];
           }
@@ -62,7 +90,6 @@ export class HomePage implements OnInit {
               ...p,
               imagen: this.normalizeImagePath(p.imagen),
             }));
-
             this.destacados = this.productos.slice(0, 5);
             this.masVendidos = this.productos.slice(5, 10);
           } else {
@@ -108,17 +135,14 @@ export class HomePage implements OnInit {
   }
 
   async agregarCarrito(producto: any) {
-    console.log('Producto agregado al carrito:', producto);
     await this.mostrarToast(`"${producto.nombre}" agregado al carrito 🛒`, 'warning');
   }
 
   async agregarFavorito(producto: any) {
-    console.log('Producto agregado a favoritos:', producto);
     await this.mostrarToast(`"${producto.nombre}" agregado a favoritos ❤️`, 'warning');
   }
 
   comprarProducto(producto: any) {
-    console.log('Compra iniciada para:', producto);
     this.mostrarToast(`Iniciando compra de "${producto.nombre}" 💳`, 'success');
     this.verDetalle(producto);
   }

@@ -17,7 +17,7 @@
             </ion-menu-toggle>
 
             <!-- Perfil -->
-            <ion-menu-toggle auto-hide="false">
+            <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
               <ion-item lines="none" (click)="navigate('/profile', 2)" detail="false"
                 class="ion-text-center" [class.selected]="selectedIndex == 2">
                 <ion-icon slot="start" name="person-outline" class="menu-icon"></ion-icon>
@@ -26,7 +26,7 @@
             </ion-menu-toggle>
 
             <!-- Mi Carrito -->
-            <ion-menu-toggle auto-hide="false">
+            <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
               <ion-item lines="none" (click)="navigate('/my-cart', 3)" detail="false"
                 class="ion-text-center" [class.selected]="selectedIndex == 3">
                 <ion-icon slot="start" name="cart-outline" class="menu-icon"></ion-icon>
@@ -35,7 +35,7 @@
             </ion-menu-toggle>
 
             <!-- Favoritos -->
-            <ion-menu-toggle auto-hide="false">
+            <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
               <ion-item lines="none" (click)="navigate('/favorite', 4)" detail="false"
                 class="ion-text-center" [class.selected]="selectedIndex == 4">
                 <ion-icon slot="start" name="heart-outline" class="menu-icon"></ion-icon>
@@ -44,7 +44,7 @@
             </ion-menu-toggle>
 
             <!-- Mis Pedidos -->
-            <ion-menu-toggle auto-hide="false">
+            <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
               <ion-item lines="none" (click)="navigate('/my-orders', 5)" detail="false"
                 class="ion-text-center" [class.selected]="selectedIndex == 5">
                 <ion-icon slot="start" name="clipboard-outline" class="menu-icon"></ion-icon>
@@ -52,7 +52,7 @@
               </ion-item>
             </ion-menu-toggle>
 
-            <!-- Contact Us -->
+            <!-- Contact Us (siempre visible) -->
             <ion-menu-toggle auto-hide="false">
               <ion-item lines="none" (click)="navigate('/contactus', 7)" detail="false"
                 class="ion-text-center" [class.selected]="selectedIndex == 7">
@@ -61,16 +61,14 @@
               </ion-item>
             </ion-menu-toggle>
 
-            <!-- 🔥 Dashboard -->
-            <ion-menu-toggle auto-hide="false">
+            <!-- Dashboard solo si NO es invitado -->
+            <!-- <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
               <ion-item lines="none" (click)="navigate('/admin-home/dashboard', 6)" detail="false"
                 class="ion-text-center" [class.selected]="selectedIndex == 6">
                 <ion-icon slot="start" name="speedometer-outline" class="menu-icon"></ion-icon>
                 <ion-label>Dashboard</ion-label>
               </ion-item>
-            </ion-menu-toggle>
-
-
+            </ion-menu-toggle> -->
 
           </ion-list>
 

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
-import { SignupRequest } from '../models/signup-request.model';
 import { MenuController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
@@ -11,120 +10,111 @@ import { Router } from '@angular/router';
 })
 export class SignupPage implements OnInit {
 
+  nombres: string = '';
+  apellidos: string = '';
+  documento: string = '';
+  telefono: number | null = null;
   email: string = '';
   password: string = '';
-  fullName: string = '';
   showPassword: boolean = false;
 
   constructor(
-    private apiService: ApiService<SignupRequest>,
+    private apiService: ApiService<any>,
     private menu: MenuController,
-    private router: Router,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    // Asegurarse de que el menú lateral esté deshabilitado al entrar
     this.menu.enable(false);
   }
 
-  ionViewWillEnter() {
-    // Deshabilita el menú lateral al entrar
-    this.menu.enable(false);
-  }
+  ionViewWillEnter() { this.menu.enable(false); }
+  ionViewWillLeave() { this.menu.enable(true); }
 
-  ionViewWillLeave() {
-    // Habilita el menú al salir de esta página
-    this.menu.enable(true);
-  }
-
-  togglePassword() {
-    this.showPassword = !this.showPassword;
-  }
+  togglePassword() { this.showPassword = !this.showPassword; }
 
   async signup() {
     // Validaciones
-    if (!this.fullName.trim()) {
-      alert('Por favor ingresa tu nombre completo.');
-      return;
+    if (!this.nombres.trim() || !this.apellidos.trim()) {
+      return this.showAlert('Error', 'Por favor ingresa nombres y apellidos.');
     }
-
-    if (!this.email.trim()) {
-      alert('Por favor ingresa tu correo electrónico.');
-      return;
+    if (!this.email.trim() || !this.isValidEmail(this.email)) {
+      return this.showAlert('Error', 'Correo electrónico inválido.');
     }
-
-    if (!this.isValidEmail(this.email)) {
-      alert('Por favor ingresa un correo electrónico válido.');
-      return;
-    }
-
     if (!this.password.trim()) {
-      alert('Por favor ingresa tu contraseña.');
-      return;
+      return this.showAlert('Error', 'Ingresa tu contraseña.');
     }
 
-    const signupData: SignupRequest = {
-      emailUser: this.email,
-      password: this.password,
-      token: this.generateToken(32),
-      personal: 1
+    const persona = {
+      nombres: this.nombres,
+      apellidos: this.apellidos,
+      documento: this.documento || '',
+      telefono: this.telefono || null,
+      estado: 1,
+      fechaCreacion: new Date().toISOString(),
+      identificacion: this.documento || '',
+      razonSocial: `${this.nombres} ${this.apellidos}`,
+      rolId: 1,
+      tipoDocumentoId: 1
     };
 
-    this.apiService.post(
-      'https://backend-abimar.onrender.com/abimar/core/api/usuario/create',
-      signupData
-    ).subscribe(
-      async response => {
-        console.log('Signup exitoso:', response);
+    try {
+      // Crear persona
+      const personaResp: any = await this.apiService
+        .post('https://backend-abimar.onrender.com/abimar/core/api/persona/create', persona)
+        .toPromise();
 
-        // Limpiar campos
-        this.email = '';
-        this.password = '';
-        this.fullName = '';
+      // Crear login
+      const loginData = {
+        emailUser: this.email,
+        password: this.password,
+        token: this.generateToken(32),
+        personal: personaResp.idpersona
+      };
 
-        // Mostrar ALERT de éxito centrado y bloquear fondo
-        const alert = await this.alertCtrl.create({
-          header: '¡Registro exitoso!',
-          message: 'Serás redirigido al login.',
-          backdropDismiss: false, // Bloquea cerrar al tocar el fondo
-          buttons: [
-            {
-              text: 'Aceptar',
-              handler: () => {
-                this.router.navigate(['/login']); // Redirige al login
-              }
-            }
-          ]
-        });
-        await alert.present();
-      },
-      async error => {
-        console.error('Error al hacer Signup:', error);
+      await this.apiService
+        .post('https://backend-abimar.onrender.com/abimar/core/api/usuario/create', loginData)
+        .toPromise();
 
-        const alert = await this.alertCtrl.create({
-          header: 'Error',
-          message: 'Ocurrió un error al registrarse. Intenta de nuevo.',
-          backdropDismiss: true,
-          buttons: ['Aceptar']
-        });
-        await alert.present();
-      }
-    );
-  }
+      // Éxito
+      const alert = await this.alertCtrl.create({
+        header: '¡Registro exitoso!',
+        message: 'Serás redirigido al login.',
+        backdropDismiss: false,
+        buttons: [{ text: 'Aceptar', handler: () => this.router.navigate(['/login']) }]
+      });
+      await alert.present();
 
-  generateToken(length: number = 32): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let token = '';
-    for (let i = 0; i < length; i++) {
-      token += chars.charAt(Math.floor(Math.random() * chars.length));
+      // Limpiar formulario
+      this.resetForm();
+
+    } catch (error) {
+      console.error('Error creando usuario:', error);
+      this.showAlert('Error', 'No se pudo crear la cuenta. Intenta de nuevo.');
     }
-    return token;
   }
 
-  isValidEmail(email: string): boolean {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
-    return regex.test(email);
+  private showAlert(header: string, message: string) {
+    return this.alertCtrl.create({ header, message, backdropDismiss: true, buttons: ['Aceptar'] })
+      .then(alert => alert.present());
   }
 
+  private generateToken(length: number = 32): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    return Array.from({ length }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+  }
+
+  private isValidEmail(email: string) {
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/.test(email);
+  }
+
+  private resetForm() {
+    this.nombres = '';
+    this.apellidos = '';
+    this.documento = '';
+    this.telefono = null;
+    this.email = '';
+    this.password = '';
+  }
 }

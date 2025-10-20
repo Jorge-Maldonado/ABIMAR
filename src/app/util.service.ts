@@ -1,22 +1,43 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilService {
+  private isGuestSubject = new BehaviorSubject<boolean>(false);
+  isGuest$ = this.isGuestSubject.asObservable();
 
-  private isMenuEnabled = new Subject<boolean>();
+  private menuState = new BehaviorSubject<boolean>(true);
+  menuState$ = this.menuState.asObservable();
+
+  private showIcons = new BehaviorSubject<boolean>(true);
+  showIcons$ = this.showIcons.asObservable();
 
   constructor() { }
 
-  // Creating method to handle Side Menu State (Enabled or Disabeld)
-  setMenuState(enabled) {
-    this.isMenuEnabled.next(enabled);
+  setMenuState(state: boolean) {
+    this.menuState.next(state);
   }
 
-  // Method for get the Menu State
-  getMenuState(): Subject<boolean> {
-    return this.isMenuEnabled;
+  getMenuState() {
+    return this.menuState$;
+  }
+
+  setShowIcons(state: boolean) {
+    this.showIcons.next(state);
+  }
+
+  getShowIcons() {
+    return this.showIcons$;
+  }
+  setGuest(state: boolean) {
+    this.isGuestSubject.next(state);
+    if (state) localStorage.setItem('guestAccess', 'true');
+    else localStorage.removeItem('guestAccess');
+  }
+
+  getGuest(): boolean {
+    return this.isGuestSubject.getValue();
   }
 }

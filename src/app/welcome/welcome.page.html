@@ -23,6 +23,11 @@
       <ion-button expand="block" class="secondary-button" routerLink="/signup" routerDirection="forward">
         Signup
       </ion-button>
+
+      <!-- 🔹 Botón acceso sin logeo -->
+      <ion-button expand="block" color="tertiary" (click)="goHomeWithoutLogin()">
+        Continuar como invitado
+      </ion-button>
     </div>
   </div>
 </ion-content>

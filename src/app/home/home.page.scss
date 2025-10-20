@@ -345,3 +345,85 @@ ion-col {
     font-size: 18px;
   }
 }
+
+ion-toolbar {
+  --background: #1b1b1b;
+  --color: #fdd835;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.user-info {
+  --background: transparent;
+  color: #fdd835;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-right: 8px;
+}
+
+ion-icon[name="person-circle-outline"] {
+  color: #fdd835;
+  font-size: 1.4rem;
+  margin-right: 4px;
+}
+
+ion-icon[name="log-out-outline"] {
+  color: #ff5252;
+  font-size: 1.4rem;
+  transition: transform 0.2s ease;
+}
+
+ion-icon[name="log-out-outline"]:hover {
+  transform: scale(1.1);
+}
+
+/* ==================== */
+/*  ESTILO DEL CONTENIDO */
+/* ==================== */
+ion-content {
+  --background: linear-gradient(to bottom right, #1c1c1c, #2a2a2a);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  padding: 20px;
+}
+
+ion-toolbar {
+  --background: #1b1b1b;
+  --color: #fdd835;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.user-info {
+  --background: transparent;
+  color: #fdd835;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-right: 8px;
+}
+
+ion-icon[name="person-circle-outline"] {
+  color: #fdd835;
+  font-size: 1.4rem;
+  margin-right: 4px;
+}
+
+ion-icon[name="log-out-outline"] {
+  color: #ff5252;
+  font-size: 1.4rem;
+  transition: transform 0.2s ease;
+}
+
+ion-icon[name="log-out-outline"]:hover {
+  transform: scale(1.1);
+}
+
+/* ==================== */
+/*  ESTILO DEL CONTENIDO */
+/* ==================== */
+ion-content {
+  --background: linear-gradient(to bottom right, #1c1c1c, #2a2a2a);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  padding: 20px;
+}

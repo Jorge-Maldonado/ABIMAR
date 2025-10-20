@@ -1,12 +1,27 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Inicio</ion-title>
+
+    <!-- 🔹 Iconos solo si NO es invitado -->
     <ion-buttons slot="end">
-      <ion-button class="notification">
-        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
-      </ion-button>
-      <ion-button class="filter">
-        <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
+      <ng-container *ngIf="showIcons">
+        <ion-button class="notification">
+          <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+        </ion-button>
+        <ion-button class="filter">
+          <ion-icon slot="icon-only" name="funnel-outline"></ion-icon>
+        </ion-button>
+      </ng-container>
+    </ion-buttons>
+
+    <!-- 🔹 Usuario logueado y logout -->
+    <ion-buttons slot="end" *ngIf="usuarioEmail !== 'Invitado'">
+      <ion-item lines="none" class="user-info">
+        <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+        <ion-label>{{ usuarioEmail }}</ion-label>
+      </ion-item>
+      <ion-button fill="clear" (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -53,7 +68,7 @@
         <div class="card">
           <div class="card-top">
             <img [src]="p.imagen" alt="{{p.nombre}}">
-            <div class="card-icons">
+            <div class="card-icons" *ngIf="usuarioEmail !== 'Invitado'">
               <ion-button fill="clear" (click)="agregarCarrito(p)">
                 <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
               </ion-button>
@@ -85,7 +100,7 @@
         <div class="card">
           <div class="card-top">
             <img [src]="p.imagen" alt="{{p.nombre}}">
-            <div class="card-icons">
+            <div class="card-icons" *ngIf="usuarioEmail !== 'Invitado'">
               <ion-button fill="clear" (click)="agregarCarrito(p)">
                 <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
               </ion-button>

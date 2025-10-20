@@ -10,9 +10,10 @@ import { HttpClient } from '@angular/common/http';
 })
 export class LoginPage implements OnInit {
 
-  email: string = '';
-  password: string = '';
+  email = '';
+  password = '';
   showPassword: boolean = false;
+  isGuest: boolean = false;
 
   constructor(
     private util: UtilService,
@@ -20,18 +21,18 @@ export class LoginPage implements OnInit {
     private menu: MenuController,
     private alertCtrl: AlertController,
     private http: HttpClient
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   ionViewWillEnter() {
-    // Deshabilitar menú lateral en login
     this.menu.enable(false);
+    this.util.setMenuState(false);
+    this.util.setShowIcons(false);
   }
 
   ionViewWillLeave() {
-    // Habilitar menú al salir
-    this.menu.enable(true);
+
   }
 
   togglePassword() {
@@ -49,41 +50,40 @@ export class LoginPage implements OnInit {
       password: this.password
     };
 
-    // Usar observe: 'response' para obtener el status HTTP
-    this.http.post('https://backend-abimar.onrender.com/abimar/core/api/login', payload, { observe: 'response', responseType: 'text' })
+    this.http.post('https://backend-abimar.onrender.com/abimar/core/api/login', payload, {
+      observe: 'response',
+      responseType: 'text'
+    })
       .subscribe(
         async (response) => {
-          console.log('Respuesta HTTP:', response);
-
           if (response.status === 200) {
-            // Login correcto
+            localStorage.setItem('usuario', this.email);
+            localStorage.removeItem('guestAccess');
+            localStorage.setItem('guestAccess', 'false'); // persistente
+            this.isGuest = false;                         // control de UI
+            this.util.setGuest(false);
+            this.util.setMenuState(true);
+            this.menu.enable(true);
+            this.util.setShowIcons(true); // ✅ volver a mostrar notificaciones y filtro
             if (this.email === 'jorge.maldonado@hotmail.com') {
-              // Admin
               const alert = await this.alertCtrl.create({
                 header: '¡Bienvenido Admin!',
                 message: 'Serás redirigido al panel de administración.',
                 backdropDismiss: false,
                 buttons: [{
                   text: 'Aceptar',
-                  handler: () => {
-                    this.util.setMenuState(true);
-                    this.navCtrl.navigateRoot('/admin-home', { animationDirection: 'forward' });
-                  }
+                  handler: () => this.navCtrl.navigateRoot('/admin-home', { animationDirection: 'forward' })
                 }]
               });
               await alert.present();
             } else {
-              // Usuario normal
               const alert = await this.alertCtrl.create({
                 header: '¡Login exitoso!',
                 message: 'Serás redirigido al inicio.',
                 backdropDismiss: false,
                 buttons: [{
                   text: 'Aceptar',
-                  handler: () => {
-                    this.util.setMenuState(true);
-                    this.navCtrl.navigateRoot('/home', { animationDirection: 'forward' });
-                  }
+                  handler: () => this.navCtrl.navigateRoot('/home', { animationDirection: 'forward' })
                 }]
               });
               await alert.present();
@@ -91,7 +91,6 @@ export class LoginPage implements OnInit {
           }
         },
         async (error) => {
-          console.error('Error al iniciar sesión:', error);
           if (error.status === 401) {
             this.showAlert('Error', 'Usuario o contraseña incorrectos');
           } else {
@@ -110,5 +109,4 @@ export class LoginPage implements OnInit {
     });
     await alert.present();
   }
-
 }

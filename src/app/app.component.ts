@@ -11,8 +11,10 @@ import { Router } from '@angular/router';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public isMenuEnabled: boolean = true;
+  public isMenuEnabled = true;
+  public showIcons = true;
   public selectedIndex = 0;
+  public isGuest = false;
 
   constructor(
     private platform: Platform,
@@ -20,7 +22,7 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
     private util: UtilService,
     private router: Router,
-    private menuCtrl: MenuController   // ✅ usamos MenuController de Ionic Angular
+    private menuCtrl: MenuController
   ) {
     this.initializeApp();
   }
@@ -33,20 +35,34 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selectedIndex = 1;
+    // Escucha el estado del menú
+    this.util.getMenuState().subscribe(state => {
+      this.isMenuEnabled = state;
+      this.menuCtrl.enable(state); // 🔹 fuerza el estado en el controlador real
+    });
 
-    this.util.getMenuState().subscribe(menuState => {
-      this.isMenuEnabled = menuState;
+    // Escucha el estado de los íconos
+    this.util.getShowIcons().subscribe(state => {
+      this.showIcons = state;
+    });
+    // inicializa estado desde localStorage
+    const guest = localStorage.getItem('guestAccess') === 'true';
+    this.util.setGuest(guest);
+    // suscribirse para cambios en tiempo real
+    this.util.isGuest$.subscribe(isGuest => {
+      this.isGuest = isGuest;
+      this.showIcons = !isGuest;     // desactiva iconos si es invitado
+      this.menuCtrl.enable(true);     // siempre habilita menú lateral
     });
   }
 
   navigate(path: string, selectedId: number) {
     this.selectedIndex = selectedId;
     this.router.navigate([path]);
-    this.menuCtrl.close(); // ✅ cerrar menú al navegar
+    this.menuCtrl.close();
   }
 
   close() {
-    this.menuCtrl.close(); // ✅ ahora sí cierra bien
+    this.menuCtrl.close();
   }
 }
