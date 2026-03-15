@@ -14,6 +14,7 @@ export class LoginPage implements OnInit {
   password = '';
   showPassword: boolean = false;
   isGuest: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private util: UtilService,
