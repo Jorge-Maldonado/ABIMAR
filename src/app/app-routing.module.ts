@@ -67,6 +67,14 @@ const routes: Routes = [
   {
     path: 'contactus',
     loadChildren: () => import('./contactus/contactus.module').then( m => m.ContactusPageModule)
+  },
+  {
+    path: 'payment-methods',
+    loadChildren: () => import('./payment-methods/payment-methods.module').then( m => m.PaymentMethodsPageModule)
+  },
+  {
+    path: 'qr-payment',
+    loadChildren: () => import('./qr-payment/qr-payment.module').then( m => m.QrPaymentPageModule)
   }
 
 ];

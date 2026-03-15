@@ -15,11 +15,12 @@ import { FormsModule } from '@angular/forms';
 
 // 🔹 Importa el componente del selector de imágenes
 import { ImageSelectorComponent } from './components/image-selector/image-selector.component';
+import { QRCodeModule } from 'angularx-qrcode';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ImageSelectorComponent   // <-- declarado aquí
+    ImageSelectorComponent,   // <-- declarado aquí
   ],
   entryComponents: [
     ImageSelectorComponent   // <-- necesario para usarlo en modal
@@ -29,7 +30,8 @@ import { ImageSelectorComponent } from './components/image-selector/image-select
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
-    FormsModule              // <-- agregado aquí
+    FormsModule,              // <-- agregado aquí
+    QRCodeModule
   ],
   providers: [
     StatusBar,

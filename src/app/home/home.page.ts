@@ -118,15 +118,15 @@ export class HomePage implements OnInit {
     return `assets/products/${onlyName}`;
   }
 
-  get productosFiltrados() {
-    if (!this.searchTerm) return this.productos;
-    const term = this.searchTerm.toLowerCase();
-    return this.productos.filter(
-      (p) =>
-        (p.nombre || '').toLowerCase().includes(term) ||
-        (p.descripcion || '').toLowerCase().includes(term)
-    );
-  }
+ get productosFiltrados() {
+  if (!this.searchTerm || this.searchTerm.length < 4) return [];
+  const term = this.searchTerm.toLowerCase();
+  return this.productos.filter(
+    p =>
+      (p.nombre || '').toLowerCase().includes(term) ||
+      (p.descripcion || '').toLowerCase().includes(term)
+  );
+}
 
   verDetalle(producto: any) {
     this.router.navigate(['/item-details'], {
@@ -135,6 +135,22 @@ export class HomePage implements OnInit {
   }
 
   async agregarCarrito(producto: any) {
+    // Obtener carrito actual
+    let carrito: any[] = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+    // Verificar si el producto ya está en el carrito
+    const index = carrito.findIndex(p => p.idproducto === producto.idproducto);
+
+    if (index >= 0) {
+      // Si ya existe, incrementar cantidad
+      carrito[index].cantidad += 1;
+    } else {
+      // Si no existe, agregar con cantidad 1
+      carrito.push({ ...producto, cantidad: 1 });
+    }
+
+    // Guardar de nuevo en localStorage
+    localStorage.setItem('carrito', JSON.stringify(carrito));
     await this.mostrarToast(`"${producto.nombre}" agregado al carrito 🛒`, 'warning');
   }
 

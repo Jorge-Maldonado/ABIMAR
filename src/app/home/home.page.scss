@@ -22,28 +22,127 @@ ion-toolbar {
   margin-right: 15px;
 }
 
-/* ==================== */
-/* BUSCADOR             */
-/* ==================== */
+/* BUSCADOR */
 .search {
   margin: 10px 0;
 
   ion-item {
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.4); /* fondo oscuro */
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 4px 10px;
+    transition: all 0.3s ease;
 
     ion-icon {
       color: #fdd835;
-      font-size: 20px;
+      font-size: 18px;
     }
 
     ion-input {
-      color: white;
+      /* Estilo general */
       font-size: 14px;
+
+      /* Apunta al input nativo generado por Ionic */
+      input.native-input {
+        color: #fff !important; /* texto visible */
+        font-size: 14px;
+
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.6) !important; /* placeholder visible */
+        }
+      }
+    }
+
+    &:hover {
+      border-color: #fdd835;
+      box-shadow: 0 0 8px rgba(253, 216, 53, 0.3);
     }
   }
 }
+
+
+
+/* PRODUCTOS FILTRADOS - GRID FIJO 3 COLUMNAS */
+.product-grid ion-row {
+  margin-left: -4px;
+  margin-right: -4px;
+}
+
+.product-grid ion-col {
+  padding-left: 4px;
+  padding-right: 4px;
+  flex: 0 0 33.3333%;
+  max-width: 33.3333%;
+}
+
+
+/* CARD PRODUCTOS */
+ion-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+  padding: 4px;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: #fdd835;
+    box-shadow: 0 0 10px rgba(253, 216, 53, 0.3);
+  }
+
+  .card-top {
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .card-icons {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      display: flex;
+      gap: 4px;
+
+      ion-button {
+        --background: rgba(0,0,0,0.4);
+        --color: #fdd835;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        padding: 0;
+      }
+    }
+  }
+
+  .card-info {
+    margin-top: 4px;
+
+    .item-name {
+      color: #fdd835;
+      font-size: 12px;
+      margin: 2px 0;
+    }
+
+    .item-brand {
+      color: #00e5ff;
+      font-size: 11px;
+      margin: 0;
+    }
+
+    .item-price {
+      color: #fff;
+      font-size: 12px;
+      margin: 2px 0;
+    }
+  }
+}
+
 
 /* ==================== */
 /* TÍTULOS              */
@@ -91,7 +190,7 @@ ion-toolbar {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
@@ -122,7 +221,7 @@ ion-toolbar {
 /* ==================== */
 .card {
   position: relative;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   overflow: hidden;
   padding: 6px;
@@ -142,7 +241,8 @@ ion-toolbar {
 }
 
 .card-top {
-  position: relative; /* contenedor imagen + iconos */
+  position: relative;
+  /* contenedor imagen + iconos */
 }
 
 .card-top img {
@@ -153,7 +253,7 @@ ion-toolbar {
   background: #222;
   display: block;
   margin: 0 auto;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 /* Iconos flotantes: carrito y corazón */
@@ -166,7 +266,7 @@ ion-toolbar {
 }
 
 .card-icons ion-button {
-  --background: rgba(0,0,0,0.5);
+  --background: rgba(0, 0, 0, 0.5);
   --color: #fdd835;
   width: 32px;
   height: 32px;
@@ -175,7 +275,7 @@ ion-toolbar {
 }
 
 .card-icons ion-button:hover {
-  --background: rgba(0,0,0,0.7);
+  --background: rgba(0, 0, 0, 0.7);
 }
 
 .card-info {
@@ -208,13 +308,13 @@ ion-toolbar {
   display: block;
   box-sizing: border-box;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card ion-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* ==================== */
@@ -277,8 +377,10 @@ ion-slide img {
 ion-footer {
   ion-row {
     padding: 0;
+
     ion-col {
       padding: 0;
+
       ion-button {
         margin: 0;
         height: 50px;

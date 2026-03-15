@@ -35,13 +35,13 @@
             </ion-menu-toggle>
 
             <!-- Favoritos -->
-            <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
+            <!-- <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
               <ion-item lines="none" (click)="navigate('/favorite', 4)" detail="false"
                 class="ion-text-center" [class.selected]="selectedIndex == 4">
                 <ion-icon slot="start" name="heart-outline" class="menu-icon"></ion-icon>
                 <ion-label>Favoritos</ion-label>
               </ion-item>
-            </ion-menu-toggle>
+            </ion-menu-toggle> -->
 
             <!-- Mis Pedidos -->
             <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
@@ -52,12 +52,12 @@
               </ion-item>
             </ion-menu-toggle>
 
-            <!-- Contact Us (siempre visible) -->
+            <!-- Contactanos (siempre visible) -->
             <ion-menu-toggle auto-hide="false">
               <ion-item lines="none" (click)="navigate('/contactus', 7)" detail="false"
                 class="ion-text-center" [class.selected]="selectedIndex == 7">
                 <ion-icon slot="start" name="mail-outline" class="menu-icon"></ion-icon>
-                <ion-label>Contact Us</ion-label>
+                <ion-label>Contactanos</ion-label>
               </ion-item>
             </ion-menu-toggle>
 

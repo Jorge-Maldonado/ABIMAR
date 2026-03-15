@@ -29,13 +29,44 @@
 
 <ion-content class="ion-padding" style="--background: #1b1b1b;">
 
-  <!-- Buscador -->
-  <div class="search">
+  <!-- BUSCADOR -->
+  <div class="search" *ngIf="productos.length > 0">
     <ion-item lines="none">
-      <ion-icon name="search-outline"></ion-icon>
-      <ion-input [(ngModel)]="searchTerm" placeholder="Buscar productos..."></ion-input>
+      <ion-icon slot="start" name="search-outline"></ion-icon>
+      <ion-input placeholder="Buscar productos..." [(ngModel)]="searchTerm" clearInput></ion-input>
     </ion-item>
   </div>
+
+  <!-- PRODUCTOS FILTRADOS -->
+  <div class="title" *ngIf="searchTerm">
+    <h2>Resultados</h2>
+  </div>
+
+<div class="product-grid" *ngIf="productosFiltrados.length > 0">
+  <ion-row>
+    <ion-col *ngFor="let producto of productosFiltrados">
+      <div class="card">
+        <div class="card-top">
+          <img [src]="producto.imagen" alt="{{producto.nombre}}">
+          <div class="card-icons" *ngIf="usuarioEmail !== 'Invitado'">
+            <ion-button fill="clear" (click)="agregarCarrito(producto)">
+              <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" (click)="agregarFavorito(producto)">
+              <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+        <div class="card-info">
+          <p>Bs {{ producto.precio | number:'1.2-2' }}</p>
+          <h6>{{ producto.nombre }}</h6>
+        </div>
+        <ion-button (click)="comprarProducto(producto)">Comprar</ion-button>
+      </div>
+    </ion-col>
+  </ion-row>
+</div>
+
 
   <!-- Categorías -->
   <div class="title">

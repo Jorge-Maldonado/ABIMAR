@@ -1,0 +1,151 @@
+/* ==================== */
+/* FONDO GENERAL Y TIPOGRAFÍA */
+/* ==================== */
+ion-content {
+  --background: #1b1b1b; /* fondo negro sólido */
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  padding: 20px;
+}
+
+/* Toolbar personalizada */
+ion-toolbar {
+  --background: #1b1b1b;
+  --color: #fdd835;
+  font-family: 'Montserrat', sans-serif;
+  box-shadow: none;
+}
+
+ion-title {
+  font-weight: bold;
+  color: #fdd835;
+}
+
+/* ==================== */
+/* TÍTULO DE SECCIÓN */
+/* ==================== */
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fdd835;
+  margin-bottom: 16px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== */
+/* AVATARES Y ICONOS */
+/* ==================== */
+ion-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #222;
+  padding: 4px;
+}
+
+/* ==================== */
+/* ITEMS DE PAGO */
+/* ==================== */
+ion-item.payment-item {
+  --background: #222; /* fondo negro más suave */
+  --border-radius: 12px;
+  margin: 12px 0;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(253, 216, 53, 0.15);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(253, 216, 53, 0.3);
+  }
+
+  h3 {
+    color: #fdd835;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  p {
+    color: #ccc;
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+/* ==================== */
+/* CONTENEDOR PAYPAL */
+/* ==================== */
+#paypal-button-container {
+  margin-top: 20px;
+  background: #1b1b1b;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(253, 216, 53, 0.1);
+}
+
+/* Loader de PayPal */
+.loader-paypal {
+  display: block;
+  margin: 20px auto;
+  color: #fdd835;
+}
+
+/* ==================== */
+/* BOTÓN CONFIRMAR PAGO */
+/* ==================== */
+ion-button.confirm-btn {
+  --background: #fdd835; /* dorado */
+  --background-hover: #ffe066;
+  --color: #1b1b1b;
+  font-weight: bold;
+  border-radius: 12px;
+  height: 48px;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(253, 216, 53, 0.3);
+  transition: transform 0.15s ease-in-out, box-shadow 0.2s ease;
+}
+
+ion-button.confirm-btn:active {
+  transform: scale(0.97);
+}
+
+/* ==================== */
+/* SPINNER/LOADER */
+/* ==================== */
+.loading-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fdd835;
+  margin-top: 40px;
+
+  p {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #fdd835;
+  }
+}
+
+/* ==================== */
+/* RESPONSIVE */
+/* ==================== */
+@media (max-width: 480px) {
+  ion-avatar img {
+    width: 40px;
+    height: 40px;
+  }
+
+  ion-item.payment-item {
+    padding: 10px;
+  }
+
+  ion-button.confirm-btn {
+    height: 42px;
+    font-size: 14px;
+  }
+}
+

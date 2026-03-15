@@ -1,29 +1,15 @@
 <ion-header>
   <ion-toolbar>
-    
+    <ion-title>Confirmación</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="confirmation">
-    <div class="ion-text-center">
+  <h2>¡Gracias por tu compra!</h2>
+  <p>Método de pago: {{ metodo }}</p>
+  <p>Total pagado: {{ total | number:'1.2-2' }} USD</p>
 
-      <div class="outer-circle">
-        <div class="inner-circle">
-          <img src="assets/like.png" />
-        </div>
-      </div>
-
-      <h2>Confirmation</h2>
-      <p>
-        You have successfully <br>
-        completed your payment procedure
-      </p>
-    </div>
-  </div>
+  <ion-button expand="block" routerLink="/home" color="primary">
+    Volver al inicio
+  </ion-button>
 </ion-content>
-<ion-footer translucent="true" class="ion-no-border" mode="md">
-  <ion-toolbar color="translucent">
-    <ion-button expand="block" class="main-button" routerLink="/home" routerDirection="back">Back to Home</ion-button>
-  </ion-toolbar>
-</ion-footer>

@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" class="backbtn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Métodos de pago</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <h2 class="section-title">Selecciona tu método de pago</h2>
+
+  <!-- Loader de PayPal -->
+  <ion-spinner *ngIf="mostrarPayPal && !paypalCargado" name="crescent" class="loader-paypal"></ion-spinner>
+
+  <!-- Lista de métodos -->
+  <ion-list class="payment-list">
+    <!-- PayPal -->
+    <ion-item (click)="pagarConPayPal()" class="payment-item">
+      <ion-avatar slot="start">
+        <img src="assets/paypal.png" alt="PayPal" />
+      </ion-avatar>
+      <ion-label>
+        <h3>PayPal</h3>
+        <p>Paga con tu cuenta PayPal (modo prueba sandbox)</p>
+      </ion-label>
+    </ion-item>
+
+    <!-- QR -->
+    <ion-item (click)="pagarConQR()" class="payment-item">
+      <ion-avatar slot="start">
+        <img src="assets/qr.png" alt="QR" />
+      </ion-avatar>
+      <ion-label>
+        <h3>Pago con QR</h3>
+        <p>Escanea y paga mediante tu app bancaria</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Contenedor PayPal -->
+  <div id="paypal-button-container" *ngIf="mostrarPayPal"></div>
+
+</ion-content>

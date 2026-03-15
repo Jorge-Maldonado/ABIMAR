@@ -1,0 +1,135 @@
+/* ==================== */
+/* HEADER Y TOOLBAR     */
+/* ==================== */
+/* Toolbar personalizada para QR */
+.toolbar-qr {
+  --background: #1b1b1b !important; /* Fondo negro */
+  --color: #fdd835 !important;      /* Texto dorado */
+  font-family: 'Montserrat', sans-serif;
+
+  ion-back-button {
+    --color: #fdd835 !important;   /* Flecha dorada */
+  }
+
+  ion-title {
+    color: #fdd835 !important;     /* Título dorado */
+  }
+}
+
+
+/* ==================== */
+/* CONTENIDO PRINCIPAL  */
+/* ==================== */
+ion-content {
+  --background: #121212;
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
+  padding: 20px;
+}
+
+.qr-wrapper {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* TÍTULO Y SUBTÍTULO */
+.titulo {
+  color: #fdd835;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(253, 216, 53, 0.6);
+  margin-bottom: 6px;
+}
+
+.subtexto {
+  color: #ccc;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* CONTENEDOR DEL QR */
+.qr-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(253, 216, 53, 0.2);
+  padding: 20px;
+  margin: 0 auto 20px;
+  box-shadow: 0 2px 10px rgba(253, 216, 53, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.qr-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(253, 216, 53, 0.35);
+}
+
+/* TOTAL */
+.total {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fdd835;
+  margin-bottom: 20px;
+}
+
+/* BOTÓN CONFIRMAR PAGO */
+ion-button.main-button {
+  --background: #fdd835;
+  --background-hover: #ffe066;
+  --color: #1b1b1b;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(253, 216, 53, 0.4);
+  transition: transform 0.15s ease-in-out;
+}
+
+ion-button.main-button:active {
+  transform: scale(0.98);
+}
+
+/* LOADER */
+.loading-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  color: #fdd835;
+  font-size: 14px;
+  text-align: center;
+
+  ion-spinner {
+    margin-bottom: 16px;
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .titulo {
+    font-size: 18px;
+  }
+  .total {
+    font-size: 16px;
+  }
+  .qr-container {
+    padding: 16px;
+  }
+}
+
+.main-button {
+  --background: #fdd835;        /* dorado */
+  --background-activated: #ffe066; /* dorado más claro al presionar */
+  --color: #1b1b1b;             /* texto negro */
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(253, 216, 53, 0.4);
+  transition: transform 0.15s ease-in-out;
+}
+
+.main-button:active {
+  transform: scale(0.98);
+}

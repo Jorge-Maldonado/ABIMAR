@@ -1,127 +1,45 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-buttons class="backbtn" routerLink="/home" routerDirection="back">
-        <img src="assets/back-dark.svg" />
-      </ion-buttons>
-    </ion-buttons>
-
-    <ion-buttons slot="end">
-      <ion-button class="notification">
-        <ion-icon name="notifications-outline" color="dark"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content fullscreen="true">
   <h1 class="title">Carrito</h1>
 
-  <div class="cart-items">
-    <ion-card mode="ios">
+  <div class="cart-items" *ngIf="carrito.length > 0; else vacio">
+    <ion-card mode="ios" *ngFor="let item of carrito">
       <ion-card-content>
         <div class="item-img">
-          <img src="assets/cart/cart1.png" />
+          <img [src]="item.imagen" />
         </div>
 
         <div class="item-info">
-          <p>Parlante</p>
-          <p>JBL</p>
-          <p>Bs.34.00</p>
+          <p>{{ item.nombre }}</p>
+          <p>{{ item.marca || item.nombre }}</p>
+          <p>Bs. {{ item.precio | number:'1.2-2' }}</p>
 
           <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
+            <ion-button fill="clear" (click)="decrementarCantidad(item)">-</ion-button>
+            <ion-label>{{ item.cantidad }}</ion-label>
+            <ion-button fill="clearose" (click)="incrementarCantidad(item)">+</ion-button>
           </div>
+
+          <ion-button fill="clear" color="danger" (click)="eliminarProducto(item)">
+            Eliminar
+          </ion-button>
         </div>
       </ion-card-content>
     </ion-card>
 
-    <ion-card mode="ios">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="assets/cart/cart2.png" />
-        </div>
+    <div class="total">
+      <h2>Total: Bs. {{ total | number:'1.2-2' }}</h2>
+    </div>
 
-        <div class="item-info">
-          <p>Audifono</p>
-          <p>Sound Core</p>
-          <p>Bs.44.00</p>
-
-          <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card mode="ios">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="assets/cart/cart3.png" />
-        </div>
-
-        <div class="item-info">
-          <p>Cargador</p>
-          <p>Akita</p>
-          <p>Bs.54.00</p>
-
-          <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card mode="ios">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="assets/cart/cart4.png" />
-        </div>
-
-        <div class="item-info">
-          <p>Cargador para auto</p>
-          <p>Samsung</p>
-          <p>Bs.34.00</p>
-
-          <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card mode="ios">
-      <ion-card-content>
-        <div class="item-img">
-          <img src="assets/cart/cart5.png" />
-        </div>
-
-        <div class="item-info">
-          <p>Cargador Portatil</p>
-          <p>JBE</p>
-          <p>Bs.44.00</p>
-
-          <div class="qty-selector">
-            <ion-button fill="clear">-</ion-button>
-            <ion-label>1</ion-label>
-            <ion-button fill="clear">+</ion-button>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
+    <ion-footer translucent="true" class="ion-no-border">
+      <ion-toolbar color="translucent">
+        <ion-button expand="block" routerLink="/checkout">Continuar</ion-button>
+      </ion-toolbar>
+    </ion-footer>
   </div>
-</ion-content>
 
-<ion-footer translucent="true" class="ion-no-border" mode="md">
-  <ion-toolbar color="translucent">
-    <ion-button expand="block" class="main-button" routerLink="/checkout" routerDirection="forward">Continuar</ion-button>
-  </ion-toolbar>
-</ion-footer>
+  <ng-template #vacio>
+    <p style="text-align:center; margin-top:50px; color:#ccc;">
+      Tu carrito está vacío 🛒
+    </p>
+  </ng-template>
+</ion-content>

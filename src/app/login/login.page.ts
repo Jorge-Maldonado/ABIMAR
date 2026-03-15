@@ -57,14 +57,17 @@ export class LoginPage implements OnInit {
       .subscribe(
         async (response) => {
           if (response.status === 200) {
+
             localStorage.setItem('usuario', this.email);
             localStorage.removeItem('guestAccess');
             localStorage.setItem('guestAccess', 'false'); // persistente
+
             this.isGuest = false;                         // control de UI
             this.util.setGuest(false);
             this.util.setMenuState(true);
             this.menu.enable(true);
             this.util.setShowIcons(true); // ✅ volver a mostrar notificaciones y filtro
+
             if (this.email === 'jorge.maldonado@hotmail.com') {
               const alert = await this.alertCtrl.create({
                 header: '¡Bienvenido Admin!',
