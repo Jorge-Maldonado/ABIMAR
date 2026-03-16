@@ -3,6 +3,7 @@ import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
 import { ToastController, AlertController } from '@ionic/angular';
 import { UtilService } from '../util.service';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +29,8 @@ export class HomePage implements OnInit {
     private router: Router,
     private toastController: ToastController,
     private alertCtrl: AlertController,
-    private util: UtilService
+    private util: UtilService,
+    private menu: MenuController
   ) { }
 
   ngOnInit() {
@@ -41,6 +43,10 @@ export class HomePage implements OnInit {
     });
     this.loadCategorias();
     this.loadProductos();
+  }
+
+  openMenu() {
+    this.menu.open();
   }
 
   async logout() {
@@ -118,15 +124,15 @@ export class HomePage implements OnInit {
     return `assets/products/${onlyName}`;
   }
 
- get productosFiltrados() {
-  if (!this.searchTerm || this.searchTerm.length < 4) return [];
-  const term = this.searchTerm.toLowerCase();
-  return this.productos.filter(
-    p =>
-      (p.nombre || '').toLowerCase().includes(term) ||
-      (p.descripcion || '').toLowerCase().includes(term)
-  );
-}
+  get productosFiltrados() {
+    if (!this.searchTerm || this.searchTerm.length < 4) return [];
+    const term = this.searchTerm.toLowerCase();
+    return this.productos.filter(
+      p =>
+        (p.nombre || '').toLowerCase().includes(term) ||
+        (p.descripcion || '').toLowerCase().includes(term)
+    );
+  }
 
   verDetalle(producto: any) {
     this.router.navigate(['/item-details'], {

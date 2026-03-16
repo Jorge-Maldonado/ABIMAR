@@ -1,54 +1,84 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
+  <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button class="backbtn" fill="clear">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
+      <ion-back-button defaultHref="/home" text=""></ion-back-button>
     </ion-buttons>
-
-    <ion-title class="title">Perfil</ion-title>
-
+    <ion-title>Mi perfil</ion-title>
     <ion-buttons slot="end">
-      <ion-button class="notification" fill="clear">
-        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+      <ion-button fill="clear">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="profile-content">
-  <h1 class="title"></h1>
+  <div class="profile-body">
 
-  <div class="profile-info">
+    <!-- Avatar -->
+    <div class="profile-avatar-section">
+      <div class="profile-avatar">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <h2 class="profile-fullname">{{ usuario.nombres }} {{ usuario.apellidos }}</h2>
+      <p class="profile-email">{{ usuario.emailUser }}</p>
+    </div>
 
-    <ion-item class="profile-item">
-      <ion-label position="floating">Nombre</ion-label>
-      <ion-input [value]="usuario.nombres"></ion-input>
-    </ion-item>
+    <!-- Datos -->
+    <div class="profile-fields">
 
-    <ion-item class="profile-item">
-      <ion-label position="floating">Apellidos</ion-label>
-      <ion-input [value]="usuario.apellidos"></ion-input>
-    </ion-item>
+      <div class="profile-field">
+        <span class="profile-field__label">
+          <ion-icon name="person-outline"></ion-icon>
+          Nombres
+        </span>
+        <ion-item class="ds-form-item profile-item" lines="none">
+          <ion-input [value]="usuario.nombres" readonly></ion-input>
+        </ion-item>
+      </div>
 
-    <ion-item class="profile-item">
-      <ion-label position="floating">Documento</ion-label>
-      <ion-input [value]="usuario.documento"></ion-input>
-    </ion-item>
+      <div class="profile-field">
+        <span class="profile-field__label">
+          <ion-icon name="people-outline"></ion-icon>
+          Apellidos
+        </span>
+        <ion-item class="ds-form-item profile-item" lines="none">
+          <ion-input [value]="usuario.apellidos" readonly></ion-input>
+        </ion-item>
+      </div>
 
-    <ion-item class="profile-item">
-      <ion-label position="floating">Teléfono</ion-label>
-      <ion-input [value]="usuario.telefono"></ion-input>
-    </ion-item>
+      <div class="profile-field">
+        <span class="profile-field__label">
+          <ion-icon name="card-outline"></ion-icon>
+          Documento
+        </span>
+        <ion-item class="ds-form-item profile-item" lines="none">
+          <ion-input [value]="usuario.documento" readonly></ion-input>
+        </ion-item>
+      </div>
 
-    <ion-item class="profile-item">
-      <ion-label position="floating">Correo electrónico</ion-label>
-      <ion-input [value]="usuario.emailUser"></ion-input>
-    </ion-item>
+      <div class="profile-field">
+        <span class="profile-field__label">
+          <ion-icon name="call-outline"></ion-icon>
+          Teléfono
+        </span>
+        <ion-item class="ds-form-item profile-item" lines="none">
+          <ion-input [value]="usuario.telefono" readonly></ion-input>
+        </ion-item>
+      </div>
 
-  </div>
+      <div class="profile-field">
+        <span class="profile-field__label">
+          <ion-icon name="mail-outline"></ion-icon>
+          Correo
+        </span>
+        <ion-item class="ds-form-item profile-item" lines="none">
+          <ion-input [value]="usuario.emailUser" readonly></ion-input>
+        </ion-item>
+      </div>
 
-  <div class="profile-footer">
-    <p>© 2025 Abimar. Todos los derechos reservados.</p>
+    </div>
+
+    <p class="profile-footer">© 2025 Abimar Shop · Todos los derechos reservados</p>
   </div>
 </ion-content>

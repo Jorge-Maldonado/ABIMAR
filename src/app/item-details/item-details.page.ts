@@ -17,7 +17,7 @@ export class ItemDetailsPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private animationCtrl: AnimationController,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.activeVariation = 'size';
@@ -28,6 +28,14 @@ export class ItemDetailsPage implements OnInit {
         this.producto = JSON.parse(params['producto']);
       }
     });
+  }
+
+  agregarFavorito(producto: any) {
+    console.log('Favorito:', producto);
+  }
+
+  agregarAlCarrito() {
+    console.log('Carrito:', this.producto);
   }
 
   segmentChanged(e: any) {

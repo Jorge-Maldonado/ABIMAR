@@ -1,73 +1,87 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="item-toolbar">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-back-button defaultHref="/home" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="agregarFavorito(producto)">
+        <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <!-- Slider de imágenes -->
-  <ion-slides pager="true" class="product-slider">
-    <ion-slide>
-      <img [src]="producto?.imagen || 'assets/no-image.png'" />
-    </ion-slide>
-  </ion-slides>
+<ion-content class="item-content">
 
-  <div class="ion-padding-vertical">
-    <h1 class="item-name">{{ producto?.nombre }}</h1>
-
-    <h4 class="price">
-      Bs.{{ producto?.precio }}
-      <span *ngIf="producto?.precioAnterior" class="real-price">
-        Bs.{{ producto?.precioAnterior }}
-      </span>
-    </h4>
+  <!-- Imagen hero -->
+  <div class="item-hero">
+    <ion-slides pager="true" class="item-slider">
+      <ion-slide>
+        <img [src]="producto?.imagen || 'assets/no-image.png'" [alt]="producto?.nombre" class="item-hero__img" />
+      </ion-slide>
+    </ion-slides>
   </div>
 
-  <div class="seperator"><hr></div>
-
-  <div class="description">
-    <h5>Descripción</h5>
-    <p>{{ producto?.descripcion || 'Sin descripción disponible.' }}</p>
-  </div>
-
-  <div class="seperator"><hr></div>
-
-  <div class="variation">
-    <ion-segment (ionChange)="segmentChanged($event)" value="size">
-      <ion-segment-button value="size">
-        <ion-label>Seleccionar talla</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="color">
-        <ion-label>Seleccionar color</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </div>
-
-  <div class="variation-selector">
-    <div class="sizes" [class.active-variation]="activeVariation == 'size'">
-      <div [class.active]="selectedSize == 1" (click)="changeSize(1)">S</div>
-      <div [class.active]="selectedSize == 2" (click)="changeSize(2)">M</div>
-      <div [class.active]="selectedSize == 3" (click)="changeSize(3)">L</div>
-      <div [class.active]="selectedSize == 4" (click)="changeSize(4)">XL</div>
+  <!-- Info principal -->
+  <div class="item-body">
+    <div class="item-header">
+      <h1 class="item-name">{{ producto?.nombre }}</h1>
+      <div class="item-price-row">
+        <span class="item-price">Bs. {{ producto?.precio }}</span>
+        <span *ngIf="producto?.precioAnterior" class="item-price-old">Bs. {{ producto?.precioAnterior }}</span>
+      </div>
     </div>
 
-    <div class="colors" [class.active-variation]="activeVariation == 'color'">
-      <div [class.active]="selectedColor == 1" (click)="changeColor(1)">NEGRO</div>
-      <div [class.active]="selectedColor == 2" (click)="changeColor(2)">VERDE</div>
-      <div [class.active]="selectedColor == 3" (click)="changeColor(3)">AZUL</div>
+    <div class="item-divider"></div>
+
+    <!-- Descripción -->
+    <div class="item-section">
+      <h3 class="item-section__title">Descripción</h3>
+      <p class="item-section__text">{{ producto?.descripcion || 'Sin descripción disponible.' }}</p>
     </div>
+
+    <div class="item-divider"></div>
+
+    <!-- Variaciones -->
+    <div class="item-section">
+      <ion-segment (ionChange)="segmentChanged($event)" value="size" class="item-segment">
+        <ion-segment-button value="size">
+          <ion-label>Talla</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="color">
+          <ion-label>Color</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <div class="variation-chips" [class.active]="activeVariation == 'size'">
+        <div class="chip" [class.chip--active]="selectedSize == 1" (click)="changeSize(1)">S</div>
+        <div class="chip" [class.chip--active]="selectedSize == 2" (click)="changeSize(2)">M</div>
+        <div class="chip" [class.chip--active]="selectedSize == 3" (click)="changeSize(3)">L</div>
+        <div class="chip" [class.chip--active]="selectedSize == 4" (click)="changeSize(4)">XL</div>
+      </div>
+
+      <div class="variation-chips" [class.active]="activeVariation == 'color'">
+        <div class="chip" [class.chip--active]="selectedColor == 1" (click)="changeColor(1)">Negro</div>
+        <div class="chip" [class.chip--active]="selectedColor == 2" (click)="changeColor(2)">Verde</div>
+        <div class="chip" [class.chip--active]="selectedColor == 3" (click)="changeColor(3)">Azul</div>
+      </div>
+    </div>
+
+    <!-- Espaciado para el footer -->
+    <div style="height: 100px;"></div>
   </div>
+
 </ion-content>
 
-<ion-footer>
-  <ion-row>
-    <ion-col size="6">
-      <ion-button expand="full" color="light">Agregar al carrito</ion-button>
-    </ion-col>
-    <ion-col size="6">
-      <ion-button expand="full">Comprar ahora</ion-button>
-    </ion-col>
-  </ion-row>
+<!-- Footer sticky con CTAs -->
+<ion-footer class="ion-no-border item-footer">
+  <div class="item-footer__inner">
+    <ion-button expand="block" class="btn-ghost footer-btn-cart" (click)="agregarAlCarrito()">
+      <ion-icon slot="start" name="cart-outline"></ion-icon>
+      Al carrito
+    </ion-button>
+    <ion-button expand="block" class="btn-buy footer-btn-buy">
+      Comprar ahora
+    </ion-button>
+  </div>
 </ion-footer>

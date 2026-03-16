@@ -1,67 +1,79 @@
-<ion-header>
-  <ion-toolbar color="dark">
+<ion-header class="ion-no-border">
+  <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button class="backbtn" routerLink="/welcome" routerDirection="back">
-        <img src="assets/back.svg" />
+      <ion-button routerLink="/welcome" routerDirection="back" fill="clear">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" style="--background: #1b1b1b;">
-  <div class="container" style="max-width: 400px; margin: auto;">
-    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">Registro</h1>
+<ion-content class="signup-content">
+  <div class="auth-container">
+
+    <div class="auth-header">
+      <h1>Crear cuenta</h1>
+      <p>Únete a Abimar Shop hoy</p>
+    </div>
 
     <form #signupForm="ngForm" (ngSubmit)="signup()" autocomplete="off">
-      <div class="form-container">
+      <div class="auth-form">
 
-        <ion-item lines="inset">
-          <ion-label position="floating" style="color: white;">Nombres</ion-label>
-          <ion-input name="nombres" [(ngModel)]="nombres" required #nombresInput="ngModel"></ion-input>
-        </ion-item>
-        <div *ngIf="nombresInput.invalid && nombresInput.touched" class="error-message">
-          Ingresa tus nombres.
+        <div class="form-row">
+          <ion-item class="ds-form-item" lines="none">
+            <ion-label position="floating">Nombres</ion-label>
+            <ion-input name="nombres" [(ngModel)]="nombres" required #nombresInput="ngModel" autocomplete="given-name"></ion-input>
+          </ion-item>
+          <div *ngIf="nombresInput.invalid && nombresInput.touched" class="error-message">Ingresa tus nombres.</div>
         </div>
 
-        <ion-item lines="inset">
-          <ion-label position="floating" style="color: white;">Apellidos</ion-label>
-          <ion-input name="apellidos" [(ngModel)]="apellidos" required #apellidosInput="ngModel"></ion-input>
-        </ion-item>
-        <div *ngIf="apellidosInput.invalid && apellidosInput.touched" class="error-message">
-          Ingresa tus apellidos.
+        <div class="form-row">
+          <ion-item class="ds-form-item" lines="none">
+            <ion-label position="floating">Apellidos</ion-label>
+            <ion-input name="apellidos" [(ngModel)]="apellidos" required #apellidosInput="ngModel" autocomplete="family-name"></ion-input>
+          </ion-item>
+          <div *ngIf="apellidosInput.invalid && apellidosInput.touched" class="error-message">Ingresa tus apellidos.</div>
         </div>
 
-        <ion-item lines="inset">
-          <ion-label position="floating" style="color: white;">Documento</ion-label>
-          <ion-input name="documento" [(ngModel)]="documento" style="color: white;"></ion-input>
+        <ion-item class="ds-form-item" lines="none">
+          <ion-label position="floating">Documento de identidad</ion-label>
+          <ion-input name="documento" [(ngModel)]="documento" inputmode="numeric"></ion-input>
         </ion-item>
 
-        <ion-item lines="inset">
-          <ion-label position="floating" style="color: white;">Teléfono</ion-label>
-          <ion-input name="telefono" type="number" [(ngModel)]="telefono" style="color: white;"></ion-input>
+        <ion-item class="ds-form-item" lines="none">
+          <ion-label position="floating">Teléfono</ion-label>
+          <ion-input name="telefono" type="tel" [(ngModel)]="telefono" inputmode="tel"></ion-input>
         </ion-item>
 
-        <ion-item lines="inset">
-          <ion-label position="floating" style="color: white;">Correo electrónico</ion-label>
-          <ion-input name="email" [(ngModel)]="email" type="email" required #emailInput="ngModel"></ion-input>
-        </ion-item>
-        <div *ngIf="emailInput.invalid && emailInput.touched" class="error-message">
-          Ingresa un correo válido.
+        <div class="form-row">
+          <ion-item class="ds-form-item" lines="none">
+            <ion-label position="floating">Correo electrónico</ion-label>
+            <ion-input name="email" [(ngModel)]="email" type="email" required #emailInput="ngModel" autocomplete="email"></ion-input>
+          </ion-item>
+          <div *ngIf="emailInput.invalid && emailInput.touched" class="error-message">Ingresa un correo válido.</div>
         </div>
 
-        <ion-item lines="inset">
-          <ion-label position="floating" style="color: white;">Contraseña</ion-label>
-          <ion-input name="password" [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" required #passwordInput="ngModel"></ion-input>
-          <ion-icon [name]="showPassword ? 'eye-off' : 'eye'" slot="end" (click)="togglePassword()"></ion-icon>
-        </ion-item>
-        <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error-message">
-          La contraseña es obligatoria.
+        <div class="form-row">
+          <ion-item class="ds-form-item" lines="none">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input name="password" [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" required #passwordInput="ngModel"></ion-input>
+            <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" class="field-icon--toggle" (click)="togglePassword()"></ion-icon>
+          </ion-item>
+          <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error-message">La contraseña es obligatoria.</div>
         </div>
 
-        <ion-button type="submit" expand="block" class="main-button" [disabled]="signupForm.invalid" style="margin-top: 20px;">
-          Registrarse
+        <ion-button type="submit" expand="block" class="btn-primary auth-submit" [disabled]="signupForm.invalid">
+          Crear mi cuenta
         </ion-button>
+
       </div>
     </form>
+
+    <div class="auth-footer">
+      <span>¿Ya tienes cuenta?</span>
+      <ion-button fill="clear" class="auth-link" routerLink="/login" routerDirection="back">
+        Inicia sesión
+      </ion-button>
+    </div>
   </div>
 </ion-content>

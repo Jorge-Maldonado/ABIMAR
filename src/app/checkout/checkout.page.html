@@ -1,89 +1,106 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-buttons class="backbtn" routerLink="/home" routerDirection="back">
-        <img src="assets/back-dark.svg" />
-      </ion-buttons>
+      <ion-back-button defaultHref="/my-cart" text=""></ion-back-button>
     </ion-buttons>
-
-    <ion-buttons slot="end">
-      <ion-button class="notification">
-        <ion-icon name="notifications-outline" color="dark"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-title>Resumen de pago</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen="true">
-  <h1 class="title">Pago</h1>
+<ion-content class="checkout-content">
 
-  <div class="cart-items" *ngIf="carrito.length > 0; else vacio">
-    <ion-card mode="ios" *ngFor="let item of carrito">
-      <ion-card-content>
-        <div class="item-img">
-          <img [src]="item.imagen" />
-        </div>
+  <div class="checkout-body" *ngIf="carrito.length > 0; else vacio">
 
-        <div class="item-info">
-          <p>{{ item.nombre }}</p>
-          <p>{{ item.marca || item.nombre }}</p>
-          <p>Bs. {{ item.precio | number:'1.2-2' }}</p>
+    <!-- Productos -->
+    <div class="checkout-section">
+      <h3 class="checkout-section__title">
+        <ion-icon name="bag-outline"></ion-icon>
+        Productos ({{ carrito.length }})
+      </h3>
 
-          <div class="qty-selector">
-            <ion-button fill="clear" (click)="decrementarCantidad(item)">-</ion-button>
-            <ion-label>{{ item.cantidad }}</ion-label>
-            <ion-button fill="clear" (click)="incrementarCantidad(item)">+</ion-button>
+      <div class="checkout-item" *ngFor="let item of carrito">
+        <img [src]="item.imagen" [alt]="item.nombre" class="checkout-item__img" />
+        <div class="checkout-item__info">
+          <p class="checkout-item__name">{{ item.nombre }}</p>
+          <p class="checkout-item__brand">{{ item.marca || item.nombre }}</p>
+
+          <div class="checkout-item__row">
+            <div class="qty-control">
+              <button class="qty-btn" (click)="decrementarCantidad(item)">−</button>
+              <span class="qty-value">{{ item.cantidad }}</span>
+              <button class="qty-btn" (click)="incrementarCantidad(item)">+</button>
+            </div>
+            <span class="checkout-item__price">Bs. {{ item.precio | number:'1.2-2' }}</span>
           </div>
-
-          <ion-button fill="clear" color="danger" (click)="eliminarProducto(item)">
-            Eliminar
-          </ion-button>
         </div>
-      </ion-card-content>
-    </ion-card>
-
-    <div class="address">
-      <ion-item lines="none">
-        Direccion: Santa Cruz - Bolivia
-        <ion-badge slot="end">&nbsp;</ion-badge>
-      </ion-item>
+        <ion-button fill="clear" class="remove-btn" (click)="eliminarProducto(item)">
+          <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+        </ion-button>
+      </div>
     </div>
 
-    <hr>
-
-    <div class="cart-total">
-      <ion-item lines="none">
-        <ion-label>Subtotal</ion-label>
-        <ion-label slot="end" class="ion-text-right">Bs. {{ subtotal | number:'1.2-2' }}</ion-label>
-      </ion-item>
-      <ion-item lines="none">
-        <ion-label>Descuento</ion-label>
-        <ion-label slot="end" class="ion-text-right">{{ descuento | number:'1.2-2' }}</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-label>Envío</ion-label>
-        <ion-label slot="end" class="ion-text-right">{{ envio | number:'1.2-2' }}</ion-label>
-      </ion-item>
-      <ion-item lines="none">
-        <ion-label>Total</ion-label>
-        <ion-label slot="end" class="ion-text-right">{{ total | number:'1.2-2' }}</ion-label>
-      </ion-item>
+    <!-- Dirección de entrega -->
+    <div class="checkout-section">
+      <h3 class="checkout-section__title">
+        <ion-icon name="location-outline"></ion-icon>
+        Dirección de entrega
+      </h3>
+      <div class="checkout-address">
+        <ion-icon name="home-outline"></ion-icon>
+        <div>
+          <p class="checkout-address__main">Santa Cruz, Bolivia</p>
+          <p class="checkout-address__sub">Dirección principal</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="checkout-address__arrow"></ion-icon>
+      </div>
     </div>
+
+    <!-- Totales -->
+    <div class="checkout-section">
+      <h3 class="checkout-section__title">
+        <ion-icon name="receipt-outline"></ion-icon>
+        Detalle del pago
+      </h3>
+
+      <div class="checkout-totals">
+        <div class="totals-row">
+          <span>Subtotal</span>
+          <span>Bs. {{ subtotal | number:'1.2-2' }}</span>
+        </div>
+        <div class="totals-row">
+          <span>Descuento</span>
+          <span class="totals-row__discount">− Bs. {{ descuento | number:'1.2-2' }}</span>
+        </div>
+        <div class="totals-row">
+          <span>Envío</span>
+          <span>{{ envio > 0 ? 'Bs. ' + (envio | number:'1.2-2') : 'Gratis' }}</span>
+        </div>
+        <div class="totals-divider"></div>
+        <div class="totals-row totals-row--total">
+          <span>Total a pagar</span>
+          <span class="totals-row__total-val">Bs. {{ total | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 100px;"></div>
   </div>
 
   <ng-template #vacio>
-    <p style="text-align:center; margin-top:50px; color:#ccc;">
-      Tu carrito está vacío 🛒
-    </p>
+    <div class="ds-empty">
+      <ion-icon name="cart-outline"></ion-icon>
+      <h3>Carrito vacío</h3>
+      <p>Agrega productos antes de continuar</p>
+    </div>
   </ng-template>
+
 </ion-content>
 
-<ion-footer translucent="true" class="ion-no-border" mode="md">
-  <ion-toolbar color="translucent">
-    <ion-button expand="block" class="main-button" 
-                routerLink="/payment-methods" routerDirection="forward">
-      Comprar
+<ion-footer class="ion-no-border checkout-footer">
+  <div class="checkout-footer__inner" *ngIf="carrito.length > 0">
+    <ion-button expand="block" class="btn-buy" routerLink="/payment-methods" routerDirection="forward">
+      Ir a pagar
+      <ion-icon slot="end" name="lock-closed-outline"></ion-icon>
     </ion-button>
-  </ion-toolbar>
+  </div>
 </ion-footer>
-

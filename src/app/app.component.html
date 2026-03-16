@@ -1,86 +1,77 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
 
-    <!-- Menú lateral -->
+    <!-- Menú lateral (secundario / admin) -->
     <ion-menu contentId="main-content" type="overlay" [disabled]="!isMenuEnabled">
       <ion-content>
-        <div class="main-list" style="background: black;">
-          <ion-list id="inbox-list">
+        <div class="side-menu">
 
-            <!-- Inicio -->
+          <!-- Header del menú -->
+          <div class="menu-header">
+            <div class="menu-avatar">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <div class="menu-user-info">
+              <h3>{{ isGuest ? 'Invitado' : 'Mi cuenta' }}</h3>
+              <span>Abimar Shop</span>
+            </div>
+          </div>
+
+          <div class="menu-divider"></div>
+
+          <ion-list>
             <ion-menu-toggle auto-hide="false">
               <ion-item lines="none" (click)="navigate('/home', 1)" detail="false"
-                class="ion-text-center" [class.selected]="selectedIndex == 1">
-                <ion-icon slot="start" name="home-outline" class="menu-icon"></ion-icon>
+                [class.menu-item--active]="selectedIndex == 1">
+                <ion-icon slot="start" name="home-outline"></ion-icon>
                 <ion-label>Inicio</ion-label>
               </ion-item>
             </ion-menu-toggle>
 
-            <!-- Perfil -->
             <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
               <ion-item lines="none" (click)="navigate('/profile', 2)" detail="false"
-                class="ion-text-center" [class.selected]="selectedIndex == 2">
-                <ion-icon slot="start" name="person-outline" class="menu-icon"></ion-icon>
-                <ion-label>Perfil</ion-label>
+                [class.menu-item--active]="selectedIndex == 2">
+                <ion-icon slot="start" name="person-outline"></ion-icon>
+                <ion-label>Mi Perfil</ion-label>
               </ion-item>
             </ion-menu-toggle>
 
-            <!-- Mi Carrito -->
             <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
               <ion-item lines="none" (click)="navigate('/my-cart', 3)" detail="false"
-                class="ion-text-center" [class.selected]="selectedIndex == 3">
-                <ion-icon slot="start" name="cart-outline" class="menu-icon"></ion-icon>
+                [class.menu-item--active]="selectedIndex == 3">
+                <ion-icon slot="start" name="cart-outline"></ion-icon>
                 <ion-label>Mi Carrito</ion-label>
               </ion-item>
             </ion-menu-toggle>
 
-            <!-- Favoritos -->
-            <!-- <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
-              <ion-item lines="none" (click)="navigate('/favorite', 4)" detail="false"
-                class="ion-text-center" [class.selected]="selectedIndex == 4">
-                <ion-icon slot="start" name="heart-outline" class="menu-icon"></ion-icon>
-                <ion-label>Favoritos</ion-label>
-              </ion-item>
-            </ion-menu-toggle> -->
-
-            <!-- Mis Pedidos -->
             <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
               <ion-item lines="none" (click)="navigate('/my-orders', 5)" detail="false"
-                class="ion-text-center" [class.selected]="selectedIndex == 5">
-                <ion-icon slot="start" name="clipboard-outline" class="menu-icon"></ion-icon>
+                [class.menu-item--active]="selectedIndex == 5">
+                <ion-icon slot="start" name="receipt-outline"></ion-icon>
                 <ion-label>Mis Pedidos</ion-label>
               </ion-item>
             </ion-menu-toggle>
 
-            <!-- Contactanos (siempre visible) -->
             <ion-menu-toggle auto-hide="false">
               <ion-item lines="none" (click)="navigate('/contactus', 7)" detail="false"
-                class="ion-text-center" [class.selected]="selectedIndex == 7">
-                <ion-icon slot="start" name="mail-outline" class="menu-icon"></ion-icon>
-                <ion-label>Contactanos</ion-label>
+                [class.menu-item--active]="selectedIndex == 7">
+                <ion-icon slot="start" name="mail-outline"></ion-icon>
+                <ion-label>Contáctanos</ion-label>
               </ion-item>
             </ion-menu-toggle>
-
-            <!-- Dashboard solo si NO es invitado -->
-            <!-- <ion-menu-toggle *ngIf="!isGuest" auto-hide="false">
-              <ion-item lines="none" (click)="navigate('/admin-home/dashboard', 6)" detail="false"
-                class="ion-text-center" [class.selected]="selectedIndex == 6">
-                <ion-icon slot="start" name="speedometer-outline" class="menu-icon"></ion-icon>
-                <ion-label>Dashboard</ion-label>
-              </ion-item>
-            </ion-menu-toggle> -->
-
           </ion-list>
 
-          <!-- Botón cerrar -->
-          <ion-button fill="clear" color="dark" (click)="close()">
-            <ion-icon name="close-circle-outline"></ion-icon>
-          </ion-button>
+          <div class="menu-footer">
+            <ion-button fill="clear" (click)="close()" class="menu-close-btn">
+              <ion-icon slot="start" name="close-outline"></ion-icon>
+              Cerrar menú
+            </ion-button>
+          </div>
         </div>
       </ion-content>
     </ion-menu>
 
-    <!-- Donde se cargan las páginas -->
+    <!-- Contenido principal -->
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>
 </ion-app>

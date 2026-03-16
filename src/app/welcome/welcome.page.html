@@ -1,33 +1,37 @@
-<ion-header>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-</ion-header>
+<ion-content class="welcome-content" [fullscreen]="true">
 
-<ion-content class="ion-padding ion-text-center">
-  <div class="container" style="background-color: #1b1b1b;">
-    <div class="page-header">
-      <h1 style="color: white; font-family: 'Montserrat', sans-serif; text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);">
-        Bienvenido a Abimar
-      </h1>
-      <h3 style="color: white; font-family: 'Montserrat', sans-serif; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);">
-        Explora tu tienda favorita
-      </h3>
+  <!-- Fondo con gradiente -->
+  <div class="welcome-bg">
+    <div class="welcome-bg__glow welcome-bg__glow--1"></div>
+    <div class="welcome-bg__glow welcome-bg__glow--2"></div>
+  </div>
+
+  <!-- Imagen hero -->
+  <div class="welcome-hero">
+    <img src="assets/welcome.png" alt="Abimar Shop" class="welcome-hero__img" />
+  </div>
+
+  <!-- Contenido -->
+  <div class="welcome-body">
+    <div class="welcome-brand">
+      <span class="welcome-brand__tag">Bienvenido a</span>
+      <h1 class="welcome-brand__name">Abimar</h1>
+      <p class="welcome-brand__subtitle">Tu tienda favorita, ahora en tu bolsillo</p>
     </div>
 
-    <img src="assets/welcome.png" />
-
-    <div class="button-container">
-      <ion-button expand="block" class="main-button" routerLink="/login" routerDirection="forward">
-        Log in
+    <div class="welcome-actions">
+      <ion-button expand="block" class="btn-primary" routerLink="/login" routerDirection="forward">
+        Iniciar sesión
       </ion-button>
 
-      <ion-button expand="block" class="secondary-button" routerLink="/signup" routerDirection="forward">
-        Signup
+      <ion-button expand="block" class="btn-ghost" routerLink="/signup" routerDirection="forward">
+        Crear cuenta
       </ion-button>
 
-      <!-- 🔹 Botón acceso sin logeo -->
-      <ion-button expand="block" color="tertiary" (click)="goHomeWithoutLogin()">
+      <button class="welcome-guest-btn" (click)="goHomeWithoutLogin()">
         Continuar como invitado
-      </ion-button>
+      </button>
     </div>
   </div>
+
 </ion-content>

@@ -1,151 +1,119 @@
-/* ==================== */
-/* FONDO GENERAL Y TIPOGRAFÍA */
-/* ==================== */
-ion-content {
-  --background: #1b1b1b; /* fondo negro sólido */
-  color: #ffffff;
-  font-family: 'Montserrat', sans-serif;
-  padding: 20px;
+.payment-content { --background: var(--ds-bg-base); }
+
+.payment-body {
+  padding: var(--ds-sp-md);
 }
 
-/* Toolbar personalizada */
-ion-toolbar {
-  --background: #1b1b1b;
-  --color: #fdd835;
-  font-family: 'Montserrat', sans-serif;
-  box-shadow: none;
+.payment-subtitle {
+  font-size:     14px;
+  color:         var(--ds-text-2);
+  margin:        0 0 var(--ds-sp-lg);
+  text-align:    center;
 }
 
-ion-title {
-  font-weight: bold;
-  color: #fdd835;
-}
-
-/* ==================== */
-/* TÍTULO DE SECCIÓN */
-/* ==================== */
-.section-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: #fdd835;
-  margin-bottom: 16px;
-  text-align: center;
-  letter-spacing: 0.5px;
-}
-
-/* ==================== */
-/* AVATARES Y ICONOS */
-/* ==================== */
-ion-avatar img {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-  object-fit: contain;
-  background: #222;
-  padding: 4px;
-}
-
-/* ==================== */
-/* ITEMS DE PAGO */
-/* ==================== */
-ion-item.payment-item {
-  --background: #222; /* fondo negro más suave */
-  --border-radius: 12px;
-  margin: 12px 0;
-  padding: 12px;
-  box-shadow: 0 2px 6px rgba(253, 216, 53, 0.15);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(253, 216, 53, 0.3);
-  }
-
-  h3 {
-    color: #fdd835;
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 4px;
-  }
-
-  p {
-    color: #ccc;
-    font-size: 14px;
-    margin: 0;
-  }
-}
-
-/* ==================== */
-/* CONTENEDOR PAYPAL */
-/* ==================== */
-#paypal-button-container {
-  margin-top: 20px;
-  background: #1b1b1b;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(253, 216, 53, 0.1);
-}
-
-/* Loader de PayPal */
-.loader-paypal {
-  display: block;
-  margin: 20px auto;
-  color: #fdd835;
-}
-
-/* ==================== */
-/* BOTÓN CONFIRMAR PAGO */
-/* ==================== */
-ion-button.confirm-btn {
-  --background: #fdd835; /* dorado */
-  --background-hover: #ffe066;
-  --color: #1b1b1b;
-  font-weight: bold;
-  border-radius: 12px;
-  height: 48px;
-  font-size: 16px;
-  box-shadow: 0 4px 12px rgba(253, 216, 53, 0.3);
-  transition: transform 0.15s ease-in-out, box-shadow 0.2s ease;
-}
-
-ion-button.confirm-btn:active {
-  transform: scale(0.97);
-}
-
-/* ==================== */
-/* SPINNER/LOADER */
-/* ==================== */
-.loading-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+// ─── Loading ─────────────────────────────────────────────────
+.payment-loading {
+  display:        flex;
+  align-items:    center;
   justify-content: center;
-  color: #fdd835;
-  margin-top: 40px;
+  gap:            10px;
+  padding:        24px;
+  color:          var(--ds-text-2);
+  font-size:      14px;
 
-  p {
-    margin-top: 12px;
-    font-size: 14px;
-    color: #fdd835;
+  ion-spinner { --color: var(--ds-accent); }
+}
+
+// ─── Methods list ─────────────────────────────────────────────
+.payment-methods {
+  display:        flex;
+  flex-direction: column;
+  gap:            10px;
+}
+
+.payment-method {
+  display:       flex;
+  align-items:   center;
+  gap:           14px;
+  background:    var(--ds-bg-surface);
+  border:        1px solid var(--ds-border);
+  border-radius: var(--ds-r-lg);
+  padding:       16px;
+  cursor:        pointer;
+  transition:    border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+
+  &:active { transform: scale(0.98); }
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--ds-border-accent);
+      box-shadow:   var(--ds-glow-cyan);
+    }
+  }
+
+  &__icon {
+    width:         52px;
+    height:        52px;
+    border-radius: var(--ds-r-md);
+    display:       flex;
+    align-items:   center;
+    justify-content: center;
+    flex-shrink:   0;
+    overflow:      hidden;
+
+    img {
+      width:       100%;
+      height:      100%;
+      object-fit:  contain;
+      padding:     8px;
+    }
+
+    &--paypal { background: rgba(0, 48, 135, 0.3); }
+    &--qr     { background: var(--ds-bg-elevated); }
+  }
+
+  &__info {
+    flex: 1;
+
+    h3 {
+      font-family:  var(--ds-font-heading);
+      font-size:    15px;
+      font-weight:  700;
+      color:        var(--ds-text-1);
+      margin:       0 0 4px;
+    }
+    p {
+      font-size:   12px;
+      color:       var(--ds-text-2);
+      margin:      0;
+      line-height: 1.4;
+    }
+  }
+
+  &__arrow {
+    font-size: 18px;
+    color:     var(--ds-text-3);
   }
 }
 
-/* ==================== */
-/* RESPONSIVE */
-/* ==================== */
-@media (max-width: 480px) {
-  ion-avatar img {
-    width: 40px;
-    height: 40px;
-  }
-
-  ion-item.payment-item {
-    padding: 10px;
-  }
-
-  ion-button.confirm-btn {
-    height: 42px;
-    font-size: 14px;
-  }
+// ─── PayPal container ─────────────────────────────────────────
+.paypal-container {
+  margin-top:    var(--ds-sp-lg);
+  background:    var(--ds-bg-surface);
+  border:        1px solid var(--ds-border);
+  border-radius: var(--ds-r-lg);
+  padding:       var(--ds-sp-md);
 }
 
+// ─── Security badge ───────────────────────────────────────────
+.payment-security {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             6px;
+  margin-top:      var(--ds-sp-xl);
+  color:           var(--ds-text-3);
+  font-size:       12px;
+
+  ion-icon { font-size: 14px; color: var(--ds-success); }
+}

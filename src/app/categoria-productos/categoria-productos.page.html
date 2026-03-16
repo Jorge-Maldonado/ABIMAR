@@ -1,45 +1,56 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-back-button defaultHref="/home" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>{{ categoriaNombre }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" style="--background: #1b1b1b;">
+<ion-content class="cat-content">
 
   <!-- Buscador -->
-  <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar productos..."
-                 style="--color: white; --placeholder-color: #aaa;"></ion-searchbar>
+  <div class="cat-search ds-searchbar">
+    <ion-searchbar
+      [(ngModel)]="searchTerm"
+      placeholder="Buscar en {{ categoriaNombre }}..."
+      [showClearButton]="searchTerm ? 'always' : 'never'">
+    </ion-searchbar>
+  </div>
 
-  <ion-grid>
+  <!-- Grid de productos -->
+  <ion-grid class="product-grid" *ngIf="productosFiltrados.length > 0">
     <ion-row>
       <ion-col size="6" *ngFor="let p of productosFiltrados">
-        <div class="card">
-          <div class="card-top">
-            <img [src]="p.imagen" alt="{{p.nombre}}">
-            <div class="card-icons">
-              <ion-button fill="clear" (click)="agregarCarrito(p)">
-                <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+        <div class="cat-product-card" (click)="comprarProducto(p)">
+          <div class="cat-product-card__img-wrap">
+            <img [src]="p.imagen" [alt]="p.nombre" class="cat-product-card__img">
+            <div class="cat-overlay">
+              <ion-button fill="clear" class="cat-overlay-btn" (click)="$event.stopPropagation(); agregarCarrito(p)">
+                <ion-icon name="cart-outline"></ion-icon>
               </ion-button>
-              <ion-button fill="clear" (click)="agregarFavorito(p)">
-                <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
+              <ion-button fill="clear" class="cat-overlay-btn" (click)="$event.stopPropagation(); agregarFavorito(p)">
+                <ion-icon name="heart-outline"></ion-icon>
               </ion-button>
             </div>
           </div>
-          <div class="card-info">
-            <p>Bs {{ p.precio | number:'1.2-2' }}</p>
-            <h6>{{ p.nombre }}</h6>
+          <div class="cat-product-card__body">
+            <p class="cat-product-card__price">Bs {{ p.precio | number:'1.2-2' }}</p>
+            <p class="cat-product-card__name">{{ p.nombre }}</p>
+            <ion-button expand="block" class="btn-buy cat-buy-btn" (click)="$event.stopPropagation(); comprarProducto(p)">
+              Comprar
+            </ion-button>
           </div>
-          <ion-button (click)="comprarProducto(p)">Comprar</ion-button>
         </div>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <p *ngIf="productosFiltrados.length === 0" style="color: #ccc; text-align:center; margin-top:20px;">
-    No hay productos en esta categoría
-  </p>
+  <!-- Empty state -->
+  <div class="ds-empty" *ngIf="productosFiltrados.length === 0">
+    <ion-icon name="cube-outline"></ion-icon>
+    <h3>Sin productos</h3>
+    <p>No hay productos en esta categoría{{ searchTerm ? ' para "' + searchTerm + '"' : '' }}</p>
+  </div>
 
 </ion-content>

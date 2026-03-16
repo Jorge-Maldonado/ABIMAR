@@ -1,69 +1,117 @@
+// ─── Side menu ────────────────────────────────────────────────
 ion-menu {
-  --width: 80%;
-  --background: #000000 !important;  /* Fondo negro del menú */
-  --color: #ffffff;  /* Color de texto blanco */
-  --border-color: transparent;  /* Eliminar bordes predeterminados */
+  --width:        78%;
+  --background:   var(--ds-bg-surface);
+  --border-color: transparent;
 }
 
-.main-list {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding-top: 20px;
+.side-menu {
+  height:          100%;
+  display:         flex;
+  flex-direction:  column;
+  padding-top:     env(safe-area-inset-top, 16px);
+}
 
-  ion-list {
-    width: 100%;
-    padding: 0;
-    background: #000000;
+// Header
+.menu-header {
+  display:      flex;
+  align-items:  center;
+  gap:          14px;
+  padding:      24px 20px 20px;
+}
 
-    ion-item {
-      font-size: 18px;
-      font-weight: 500;
-      color: #ffffff; /* Texto blanco por defecto */
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      --background: black;
+.menu-avatar {
+  width:           52px;
+  height:          52px;
+  border-radius:   50%;
+  background:      var(--ds-accent-tint);
+  border:          2px solid var(--ds-border-accent);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
 
-      ion-label {
-        color: #ffffff !important;
-        font-weight: 500;
-      }
+  ion-icon {
+    font-size:  24px;
+    color:      var(--ds-accent);
+  }
+}
 
-      .menu-icon {
-        font-size: 24px;
-        margin-right: 16px;
-        color: #fdd835; /* Amarillo para los íconos */
-      }
+.menu-user-info {
+  h3 {
+    font-family:   var(--ds-font-heading);
+    font-size:     16px;
+    font-weight:   700;
+    color:         var(--ds-text-1);
+    margin:        0 0 2px;
+  }
+  span {
+    font-size:  12px;
+    color:      var(--ds-text-3);
+  }
+}
 
-      &:hover {
-        background-color: rgba(253, 216, 53, 0.06); /* Efecto hover con fondo suave amarillo */
-        ion-label, .menu-icon {
-          color: #fdd835 !important;
-        }
-      }
-    }
+.menu-divider {
+  height:     1px;
+  background: var(--ds-border);
+  margin:     0 20px 12px;
+}
 
-    .selected {
-      border-left: 5px solid #fdd835; /* Resalta la opción seleccionada con borde amarillo */
-      background-color: rgba(253, 216, 53, 0.06); /* Fondo suave amarillo para la opción seleccionada */
-      ion-label, .menu-icon {
-        color: #fdd835 !important;
-      }
-    }
+// Menu items
+ion-list {
+  background: transparent !important;
+  flex:       1;
+  padding:    0 10px;
+}
+
+ion-item {
+  --background:           transparent;
+  --color:                var(--ds-text-2);
+  --border-radius:        var(--ds-r-md);
+  --inner-border-width:   0;
+  --padding-start:        14px;
+  --min-height:           52px;
+  margin-bottom:          4px;
+  border-radius:          var(--ds-r-md);
+  font-size:              15px;
+  font-weight:            500;
+  transition:             background 0.15s ease, color 0.15s ease;
+
+  ion-icon {
+    font-size:  20px;
+    color:      var(--ds-text-3);
+    margin-right: 12px;
+    transition: color 0.15s ease;
   }
 
-  ion-button {
-    position: absolute;
-    bottom: 10%;
-    right: 10%;
-    font-size: 24px;
-    --ripple-color: transparent;
+  ion-label { color: var(--ds-text-2); }
 
-    ion-icon {
-      color: #fdd835; /* Color amarillo para el ícono de cerrar */
-    }
+  &:hover {
+    --background: var(--ds-bg-overlay);
+    ion-label, ion-icon { color: var(--ds-text-1); }
   }
+}
+
+.menu-item--active {
+  --background: var(--ds-accent-tint) !important;
+  border-left:  3px solid var(--ds-accent);
+  border-radius: 0 var(--ds-r-md) var(--ds-r-md) 0;
+
+  ion-label, ion-icon { color: var(--ds-accent) !important; }
+}
+
+// Footer
+.menu-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--ds-border);
+}
+
+.menu-close-btn {
+  --color:      var(--ds-text-3);
+  --ripple-color: transparent;
+  font-size:    13px;
+
+  ion-icon { font-size: 18px; margin-right: 6px; }
+
+  &:hover { --color: var(--ds-text-1); }
 }

@@ -1,15 +1,47 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Confirmación</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="confirm-content">
+  <div class="confirm-body">
 
-<ion-content class="ion-padding">
-  <h2>¡Gracias por tu compra!</h2>
-  <p>Método de pago: {{ metodo }}</p>
-  <p>Total pagado: {{ total | number:'1.2-2' }} USD</p>
+    <!-- Icono de éxito animado -->
+    <div class="confirm-icon">
+      <div class="confirm-icon__ring"></div>
+      <ion-icon name="checkmark-outline"></ion-icon>
+    </div>
 
-  <ion-button expand="block" routerLink="/home" color="primary">
-    Volver al inicio
-  </ion-button>
+    <!-- Texto -->
+    <h1 class="confirm-title">¡Pedido confirmado!</h1>
+    <p class="confirm-subtitle">Tu compra fue procesada exitosamente</p>
+
+    <!-- Detalle del pedido -->
+    <div class="confirm-card">
+      <div class="confirm-card__row">
+        <span>Método de pago</span>
+        <strong>{{ metodo }}</strong>
+      </div>
+      <div class="confirm-card__divider"></div>
+      <div class="confirm-card__row">
+        <span>Total pagado</span>
+        <strong class="confirm-card__total">Bs. {{ total | number:'1.2-2' }}</strong>
+      </div>
+      <div class="confirm-card__divider"></div>
+      <div class="confirm-card__row">
+        <span>Estado</span>
+        <span class="confirm-card__status">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          Pagado
+        </span>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="confirm-actions">
+      <ion-button expand="block" class="btn-primary" routerLink="/my-orders" routerDirection="root">
+        <ion-icon slot="start" name="receipt-outline"></ion-icon>
+        Ver mis pedidos
+      </ion-button>
+      <ion-button expand="block" class="btn-ghost" routerLink="/home" routerDirection="root">
+        Seguir comprando
+      </ion-button>
+    </div>
+
+  </div>
 </ion-content>

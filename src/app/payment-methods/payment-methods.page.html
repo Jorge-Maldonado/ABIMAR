@@ -1,45 +1,59 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" class="backbtn"></ion-back-button>
+      <ion-back-button defaultHref="/checkout" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>Métodos de pago</ion-title>
+    <ion-title>Método de pago</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="payment-content">
 
-  <h2 class="section-title">Selecciona tu método de pago</h2>
+  <div class="payment-body">
 
-  <!-- Loader de PayPal -->
-  <ion-spinner *ngIf="mostrarPayPal && !paypalCargado" name="crescent" class="loader-paypal"></ion-spinner>
+    <p class="payment-subtitle">Elige cómo quieres pagar tu pedido</p>
 
-  <!-- Lista de métodos -->
-  <ion-list class="payment-list">
-    <!-- PayPal -->
-    <ion-item (click)="pagarConPayPal()" class="payment-item">
-      <ion-avatar slot="start">
-        <img src="assets/paypal.png" alt="PayPal" />
-      </ion-avatar>
-      <ion-label>
-        <h3>PayPal</h3>
-        <p>Paga con tu cuenta PayPal (modo prueba sandbox)</p>
-      </ion-label>
-    </ion-item>
+    <!-- Spinner mientras carga PayPal -->
+    <div class="payment-loading" *ngIf="mostrarPayPal && !paypalCargado">
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>Cargando PayPal…</span>
+    </div>
 
-    <!-- QR -->
-    <ion-item (click)="pagarConQR()" class="payment-item">
-      <ion-avatar slot="start">
-        <img src="assets/qr.png" alt="QR" />
-      </ion-avatar>
-      <ion-label>
-        <h3>Pago con QR</h3>
-        <p>Escanea y paga mediante tu app bancaria</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+    <!-- Métodos de pago -->
+    <div class="payment-methods">
 
-  <!-- Contenedor PayPal -->
-  <div id="paypal-button-container" *ngIf="mostrarPayPal"></div>
+      <div class="payment-method" (click)="pagarConPayPal()">
+        <div class="payment-method__icon payment-method__icon--paypal">
+          <img src="assets/paypal.png" alt="PayPal" />
+        </div>
+        <div class="payment-method__info">
+          <h3>PayPal</h3>
+          <p>Paga con tu cuenta PayPal de forma segura</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="payment-method__arrow"></ion-icon>
+      </div>
 
+      <div class="payment-method" (click)="pagarConQR()">
+        <div class="payment-method__icon payment-method__icon--qr">
+          <img src="assets/qr.png" alt="QR" />
+        </div>
+        <div class="payment-method__info">
+          <h3>Pago con QR</h3>
+          <p>Escanea con tu app bancaria y paga al instante</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="payment-method__arrow"></ion-icon>
+      </div>
+
+    </div>
+
+    <!-- Contenedor botón PayPal -->
+    <div id="paypal-button-container" *ngIf="mostrarPayPal" class="paypal-container"></div>
+
+    <!-- Badge de seguridad -->
+    <div class="payment-security">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <span>Pagos encriptados y seguros</span>
+    </div>
+
+  </div>
 </ion-content>
