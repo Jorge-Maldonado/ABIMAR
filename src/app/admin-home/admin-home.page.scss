@@ -1,54 +1,172 @@
-ion-toolbar {
-  --border-width: 0 !important;
-}
-.header-md::after {
-  background: none !important;
+// ─── Layout ────────────────────────────────────────────────
+ion-split-pane {
+  --side-width: 260px;
 }
 
-.admin-container {
-  text-align: center;
+// ─── Menú lateral ──────────────────────────────────────────
+ion-menu {
+  --background: var(--ds-bg-surface);
+  border-right: 1px solid var(--ds-border);
 }
 
-.title {
-  color: #fdd835;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: bold;
-  margin-top: 16px;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+// Contenedor
+.side-menu {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.subtitle {
-  color: #ccc;
-  margin-bottom: 24px;
+// ─── Header usuario ─────────────────────────────────────────
+.menu-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 16px 16px;
 }
 
-.menu-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+.menu-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--ds-accent-tint);
+  border: 2px solid var(--ds-border-accent);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 22px;
+    color: var(--ds-accent);
+  }
 }
 
-.menu-card {
-  background: rgba(255,255,255,0.05);
-  border: 2px solid #00e5ff;
-  border-radius: 12px;
-  text-align: center;
-  color: white;
-  transition: transform 0.2s;
+.menu-user-info {
+  h3 {
+    font-family: var(--ds-font-heading);
+    font-size: 15px;
+    color: var(--ds-text-1);
+    margin: 0;
+  }
+
+  span {
+    font-size: 12px;
+    color: var(--ds-text-3);
+  }
 }
 
-.menu-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(0,229,255,0.5);
+.menu-divider {
+  height: 1px;
+  background: var(--ds-border);
+  margin: 0 12px 12px;
 }
 
-ion-card-title {
-  font-size: 1rem;
-  margin-top: 8px;
-  color: #fdd835;
-  font-weight: bold;
+// ─── Menu items (CLAVE: override limpio) ────────────────────
+ion-menu ion-item.menu-item {
+  --background: transparent;
+  --color: var(--ds-text-2);
+  --inner-border-width: 0;
+  --padding-start: 14px;
+
+  margin: 4px 8px;
+  border-radius: var(--ds-r-md);
+  font-size: 14px;
+
+  transition: all 0.2s ease;
+
+  ion-icon {
+    color: var(--ds-text-3);
+    font-size: 20px;
+    margin-right: 10px;
+    transition: color 0.2s;
+  }
+
+  ion-label {
+    color: var(--ds-text-2);
+    transition: color 0.2s;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      --background: var(--ds-bg-overlay);
+
+      ion-icon,
+      ion-label {
+        color: var(--ds-text-1);
+      }
+
+      transform: translateX(4px);
+    }
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
 }
 
-ion-icon {
-  color: #00e5ff;
+// ─── Estado activo (IMPORTANTE UX) ──────────────────────────
+.menu-item--active {
+  --background: var(--ds-accent-tint) !important;
+  border-left: 3px solid var(--ds-accent);
+  border-radius: 0 var(--ds-r-md) var(--ds-r-md) 0;
+
+  ion-icon,
+  ion-label {
+    color: var(--ds-accent) !important;
+  }
+}
+
+// ─── Toolbar admin ──────────────────────────────────────────
+#main-content ion-toolbar {
+  --background: var(--ds-bg-surface);
+  border-bottom: 1px solid var(--ds-border);
+}
+
+// ─── Contenido ──────────────────────────────────────────────
+.admin-content {
+  --background: var(--ds-bg-base);
+}
+
+// ─── Glass effect (pro) ─────────────────────────────────────
+@supports (backdrop-filter: blur(10px)) {
+  ion-menu {
+    backdrop-filter: blur(10px);
+    background: rgba(22, 22, 26, 0.85);
+  }
+}
+
+/* ─── Footer logout ───────────────────────────── */
+.menu-footer {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid var(--ds-border);
+}
+
+.menu-logout-btn {
+  --color: var(--ds-danger);
+  font-size: 14px;
+  font-weight: 600;
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      --color: #ff6b6b;
+    }
+  }
+}
+
+/* Botón top */
+.logout-btn {
+  --color: var(--ds-text-3);
+
+  ion-icon {
+    font-size: 22px;
+  }
+
+  &:hover {
+    --color: var(--ds-danger);
+  }
 }

@@ -1,49 +1,81 @@
-<ion-content class="ion-padding" style="--background: #1b1b1b;">
-  <div class="ion-padding container"
-       style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);">
+<ion-content class="roles-page">
 
-    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">Roles</h1>
-    <h2 style="color: #aaa; text-align: center; font-size: 16px; font-weight: normal; margin-bottom: 20px;">
-      Gestión de roles del sistema
-    </h2>
+  <div class="roles-container">
 
-    <div class="form-container">
-      <ion-item lines="none">
-        <ion-label position="floating" style="color: white;">Descripción</ion-label>
-        <ion-input [(ngModel)]="descripcion" style="color: white;"></ion-input>
-      </ion-item>
-
-      <ion-item lines="none">
-        <ion-label position="floating" style="color: white;">Estado</ion-label>
-        <ion-input type="number" [(ngModel)]="estado" style="color: white;"></ion-input>
-      </ion-item>
-
-      <ion-button expand="block" class="main-button" *ngIf="!editId" (click)="createRole()">Crear Rol</ion-button>
-      <ion-button expand="block" color="warning" *ngIf="editId" (click)="updateRole()">Guardar Cambios</ion-button>
-      <ion-button expand="block" color="medium" fill="clear" *ngIf="editId" (click)="resetForm()">Cancelar</ion-button>
+    <!-- Header -->
+    <div class="roles-header">
+      <h1 class="roles-title">Roles</h1>
+      <p class="roles-subtitle">Gestión de roles del sistema</p>
     </div>
 
-    <ion-item-divider style="margin: 20px 0; border-top: 1px solid #444; --background: transparent;">
-      <ion-label style="color: #fdd835; font-weight: bold;">Lista de Roles</ion-label>
-    </ion-item-divider>
+    <!-- Formulario -->
+    <div class="roles-form">
 
-    <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar rol..." style="--color: white; --placeholder-color: #aaa;"></ion-searchbar>
+      <ion-item class="ds-form-item" lines="none">
+        <ion-label position="floating">Descripción</ion-label>
+        <ion-input [(ngModel)]="descripcion"></ion-input>
+      </ion-item>
 
-    <ion-list *ngIf="rolesFiltrados().length > 0; else noRoles">
-      <ion-item *ngFor="let rol of rolesFiltrados()" lines="none" style="color: white;">
+      <ion-item class="ds-form-item" lines="none">
+        <ion-label position="floating">Estado</ion-label>
+        <ion-input type="number" [(ngModel)]="estado"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" class="btn-primary" *ngIf="!editId" (click)="createRole()">
+        Crear Rol
+      </ion-button>
+
+      <ion-button expand="block" class="btn-buy" *ngIf="editId" (click)="updateRole()">
+        Guardar Cambios
+      </ion-button>
+
+      <ion-button expand="block" fill="clear" class="btn-ghost" *ngIf="editId" (click)="resetForm()">
+        Cancelar
+      </ion-button>
+
+    </div>
+
+    <!-- Divider -->
+    <div class="roles-divider"></div>
+
+    <!-- Buscador -->
+    <div class="roles-search ds-searchbar">
+      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar rol..."></ion-searchbar>
+    </div>
+
+    <!-- Lista -->
+    <ion-list *ngIf="rolesFiltrados().length > 0; else noRoles" class="roles-list">
+
+      <ion-item *ngFor="let rol of rolesFiltrados()" class="role-item" lines="none">
+
         <ion-label>
           <h2>{{ rol.descripcion }}</h2>
           <p>Estado: {{ rol.estado }}</p>
         </ion-label>
+
         <ion-buttons slot="end">
-          <ion-button color="warning" fill="clear" (click)="editRole(rol)">Editar</ion-button>
-          <ion-button color="danger" fill="clear" (click)="deleteRole(rol.idrol)">Eliminar</ion-button>
+          <ion-button fill="clear" class="btn-warning" (click)="editRole(rol)">
+            Editar
+          </ion-button>
+
+          <ion-button fill="clear" class="btn-danger" (click)="deleteRole(rol.idrol)">
+            Eliminar
+          </ion-button>
         </ion-buttons>
+
       </ion-item>
+
     </ion-list>
 
+    <!-- Empty -->
     <ng-template #noRoles>
-      <p style="color: #ccc; text-align: center; margin-top: 20px;">No hay roles disponibles</p>
+      <div class="ds-empty">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <h3>No hay roles</h3>
+        <p>No existen roles registrados</p>
+      </div>
     </ng-template>
+
   </div>
+
 </ion-content>

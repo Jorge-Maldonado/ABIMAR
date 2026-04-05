@@ -1,66 +1,107 @@
 <ion-split-pane contentId="main-content">
+
   <!-- Menú lateral -->
   <ion-menu contentId="main-content" side="start" menuId="adminMenu">
+
     <ion-header>
-      <ion-toolbar color="dark">
-        <ion-title>Administrador</ion-title>
+      <ion-toolbar>
+        <ion-title class="toolbar-brand">
+          Admin<span class="toolbar-brand__dot">.</span>
+        </ion-title>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content style="--background:#1b1b1b;">
-      <ion-list>
-        <ion-menu-toggle autoHide="false">
-          <ion-item (click)="go('dashboard')" detail="false" lines="none">
-            <ion-icon name="speedometer-outline" slot="start" color="warning"></ion-icon>
-            <ion-label>Dashboard</ion-label>
-          </ion-item>
-        </ion-menu-toggle>
+    <ion-content>
+      <div class="side-menu">
 
-        <ion-menu-toggle autoHide="false">
-          <ion-item (click)="go('roles')" detail="false" lines="none">
-            <ion-icon name="people-circle" slot="start" color="warning"></ion-icon>
-            <ion-label>Gestión de Roles</ion-label>
-          </ion-item>
-        </ion-menu-toggle>
+        <!-- Header usuario -->
+        <div class="menu-header">
+          <div class="menu-avatar">
+            <ion-icon name="person"></ion-icon>
+          </div>
+          <div class="menu-user-info">
+            <h3>Admin</h3>
+            <span>Panel control</span>
+          </div>
+        </div>
 
-        <ion-menu-toggle autoHide="false">
-          <ion-item (click)="go('usuarios')" detail="false" lines="none">
-            <ion-icon name="person-circle" slot="start" color="warning"></ion-icon>
-            <ion-label>Gestión de Usuarios</ion-label>
-          </ion-item>
-        </ion-menu-toggle>
+        <div class="menu-divider"></div>
 
-        <ion-menu-toggle autoHide="false">
-          <ion-item (click)="go('categorias')" detail="false" lines="none">
-            <ion-icon name="albums" slot="start" color="warning"></ion-icon>
-            <ion-label>Gestión de Categorías</ion-label>
-          </ion-item>
-        </ion-menu-toggle>
+        <!-- MENÚ -->
+        <ion-list>
 
-        <ion-menu-toggle autoHide="false">
-          <ion-item (click)="go('productos')" detail="false" lines="none">
-            <ion-icon name="cube" slot="start" color="warning"></ion-icon>
-            <ion-label>Gestión de Productos</ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-      </ion-list>
+          <ion-menu-toggle autoHide="false">
+            <ion-item class="menu-item" (click)="go('dashboard')" lines="none">
+              <ion-icon name="speedometer-outline" slot="start"></ion-icon>
+              <ion-label>Dashboard</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle autoHide="false">
+            <ion-item class="menu-item" (click)="go('roles')" lines="none">
+              <ion-icon name="people-circle" slot="start"></ion-icon>
+              <ion-label>Roles</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle autoHide="false">
+            <ion-item class="menu-item" (click)="go('usuarios')" lines="none">
+              <ion-icon name="person-circle" slot="start"></ion-icon>
+              <ion-label>Usuarios</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle autoHide="false">
+            <ion-item class="menu-item" (click)="go('categorias')" lines="none">
+              <ion-icon name="albums" slot="start"></ion-icon>
+              <ion-label>Categorías</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle autoHide="false">
+            <ion-item class="menu-item" (click)="go('productos')" lines="none">
+              <ion-icon name="cube" slot="start"></ion-icon>
+              <ion-label>Productos</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+        </ion-list>
+
+        <!-- 🔻 FOOTER LOGOUT -->
+        <div class="menu-footer">
+          <ion-button expand="block" fill="clear" class="menu-logout-btn" (click)="logout()">
+            <ion-icon name="log-out-outline" slot="start"></ion-icon>
+            Cerrar sesión
+          </ion-button>
+        </div>
+
+      </div>
     </ion-content>
   </ion-menu>
 
   <!-- Contenido principal -->
   <div class="ion-page" id="main-content">
     <ion-header>
-      <ion-toolbar color="dark">
+      <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-menu-button menu="adminMenu" autoHide="false" color="light"></ion-menu-button>
+          <ion-menu-button menu="adminMenu"></ion-menu-button>
         </ion-buttons>
+
         <ion-title>Panel de Administración</ion-title>
+
+        <!-- 🔻 Logout rápido arriba (opcional PRO) -->
+        <ion-buttons slot="end">
+          <ion-button class="logout-btn" (click)="logout()">
+            <ion-icon name="log-out-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
-      <!-- Aquí se cargan las páginas hijas -->
+    <ion-content class="admin-content">
       <ion-router-outlet></ion-router-outlet>
     </ion-content>
   </div>
+
 </ion-split-pane>

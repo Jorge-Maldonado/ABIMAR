@@ -1,90 +1,115 @@
-<ion-content class="ion-padding" style="--background: #1b1b1b;">
-  <div class="ion-padding container"
-    style="border: 2px solid #00e5ff; border-radius: 12px; padding: 20px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);">
-    <h1 style="color: #fdd835; text-align: center; font-family: 'Montserrat', sans-serif;">Usuarios</h1>
-    <h2 style="color: #aaa; text-align: center; font-size: 16px; font-weight: normal; margin-bottom: 20px;">
-      Gestión de usuarios
-    </h2>
+<ion-content class="users-page">
 
-    <div class="form-container">
-      <ion-item lines="none">
-        <ion-label position="floating" style="color: white;">Nombres</ion-label>
-        <ion-input [(ngModel)]="nombres" style="color: white;"></ion-input>
+  <div class="users-container">
+
+    <!-- Header -->
+    <div class="users-header">
+      <h1 class="users-title">Usuarios</h1>
+      <p class="users-subtitle">Gestión de usuarios</p>
+    </div>
+
+    <!-- Formulario -->
+    <div class="users-form">
+
+      <ion-item class="ds-form-item" lines="none">
+        <ion-label position="floating">Nombres</ion-label>
+        <ion-input [(ngModel)]="nombres"></ion-input>
       </ion-item>
 
-      <ion-item lines="none">
-        <ion-label position="floating" style="color: white;">Apellidos</ion-label>
-        <ion-input [(ngModel)]="apellidos" style="color: white;"></ion-input>
+      <ion-item class="ds-form-item" lines="none">
+        <ion-label position="floating">Apellidos</ion-label>
+        <ion-input [(ngModel)]="apellidos"></ion-input>
       </ion-item>
 
-      <ion-item lines="none">
-        <ion-label position="floating" style="color: white;">Documento</ion-label>
-        <ion-input [(ngModel)]="documento" style="color: white;"></ion-input>
+      <ion-item class="ds-form-item" lines="none">
+        <ion-label position="floating">Documento</ion-label>
+        <ion-input [(ngModel)]="documento"></ion-input>
       </ion-item>
 
-      <ion-item lines="none">
-        <ion-label position="floating" style="color: white;">Teléfono</ion-label>
-        <ion-input type="number" [(ngModel)]="telefono" style="color: white;"></ion-input>
+      <ion-item class="ds-form-item" lines="none">
+        <ion-label position="floating">Teléfono</ion-label>
+        <ion-input type="number" [(ngModel)]="telefono"></ion-input>
       </ion-item>
 
-      <!-- Combo de Roles -->
-      <ion-item lines="none" class="select-item">
-        <ion-label position="floating" style="color: white;">Rol</ion-label>
-        <ion-select [(ngModel)]="idRol" placeholder="Seleccionar rol" interface="alert" [okText]="'OK'"
-          [cancelText]="'Cancelar'">
+      <!-- Rol -->
+      <ion-item class="ds-form-item" lines="none">
+        <ion-label position="floating">Rol</ion-label>
+        <ion-select [(ngModel)]="idRol" placeholder="Seleccionar rol">
           <ion-select-option *ngFor="let r of roles" [value]="r.idrol">
             {{ r.descripcion || r.nombre || ('Rol ' + r.idrol) }}
           </ion-select-option>
         </ion-select>
       </ion-item>
 
-      <!-- 🔹 Nuevo campo: Correo -->
-      <ion-item lines="none">
-        <ion-label position="floating" style="color: white;">Correo electrónico</ion-label>
-        <ion-input type="email" [(ngModel)]="email" style="color: white;" autocomplete="email"></ion-input>
+      <!-- Email -->
+      <ion-item class="ds-form-item" lines="none">
+        <ion-label position="floating">Correo electrónico</ion-label>
+        <ion-input type="email" [(ngModel)]="email"></ion-input>
       </ion-item>
 
-      <!-- 🔹 Nuevo campo: Contraseña -->
-      <ion-item lines="none">
-        <ion-label position="floating" style="color: white;">Contraseña</ion-label>
-        <ion-input type="password" [(ngModel)]="password" style="color: white;" autocomplete="new-password"></ion-input>
+      <!-- Password -->
+      <ion-item class="ds-form-item" lines="none">
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="password" [(ngModel)]="password"></ion-input>
       </ion-item>
 
-      <!-- Botones de acción -->
-      <ion-button expand="block" class="main-button" *ngIf="!editId" (click)="createUsuario()">Crear
-        Usuario</ion-button>
-      <ion-button expand="block" color="warning" *ngIf="editId" (click)="updateUsuario()">Guardar Cambios</ion-button>
-      <ion-button expand="block" color="medium" fill="clear" *ngIf="editId" (click)="resetForm()">Cancelar</ion-button>
+      <!-- Botones -->
+      <ion-button expand="block" class="btn-primary" *ngIf="!editId" (click)="createUsuario()">
+        Crear Usuario
+      </ion-button>
+
+      <ion-button expand="block" class="btn-buy" *ngIf="editId" (click)="updateUsuario()">
+        Guardar Cambios
+      </ion-button>
+
+      <ion-button expand="block" fill="clear" class="btn-ghost" *ngIf="editId" (click)="resetForm()">
+        Cancelar
+      </ion-button>
+
     </div>
 
-    <ion-item-divider style="margin: 20px 0; border-top: 1px solid #444; --background: transparent;">
-      <ion-label style="color: #fdd835; font-weight: bold;">Lista de Usuarios</ion-label>
-    </ion-item-divider>
+    <!-- Divider -->
+    <div class="users-divider"></div>
 
-    <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar usuario..."
-      style="--color: white; --placeholder-color: #aaa; --input-color: white;"></ion-searchbar>
+    <!-- Search -->
+    <div class="users-search ds-searchbar">
+      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar usuario..."></ion-searchbar>
+    </div>
 
-    <ion-list *ngIf="usuariosFiltrados().length > 0; else noUsuarios">
-      <ion-item *ngFor="let u of usuariosFiltrados()" lines="none" style="color: white;">
+    <!-- Lista -->
+    <ion-list *ngIf="usuariosFiltrados().length > 0; else noUsuarios" class="users-list">
+
+      <ion-item *ngFor="let u of usuariosFiltrados()" class="user-item" lines="none">
+
         <ion-label>
           <h2>{{ u.nombres }} {{ u.apellidos }}</h2>
           <p>Documento: {{ u.documento }} - Tel: {{ u.telefono }}</p>
-          <p style="color: #ddd; font-size: 13px;">Rol: {{ getRoleName(u.rolId) }}</p>
+          <span class="user-role">Rol: {{ getRoleName(u.rolId) }}</span>
         </ion-label>
+
         <ion-buttons slot="end">
-          <ion-button color="warning" fill="clear" (click)="editUsuario(u)">Editar</ion-button>
-          <ion-button color="danger" fill="clear" (click)="deleteUsuario(u)">
-            Eliminar
+          <ion-button fill="clear" class="btn-warning" (click)="editUsuario(u)">
+            Editar
           </ion-button>
 
+          <ion-button fill="clear" class="btn-danger" (click)="deleteUsuario(u)">
+            Eliminar
+          </ion-button>
         </ion-buttons>
+
       </ion-item>
+
     </ion-list>
 
+    <!-- Empty -->
     <ng-template #noUsuarios>
-      <p style="color: #ccc; text-align: center; margin-top: 20px;">
-        No hay usuarios disponibles
-      </p>
+      <div class="ds-empty">
+        <ion-icon name="people-outline"></ion-icon>
+        <h3>No hay usuarios</h3>
+        <p>No existen usuarios registrados</p>
+      </div>
     </ng-template>
+
   </div>
+
 </ion-content>

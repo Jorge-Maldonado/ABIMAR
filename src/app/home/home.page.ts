@@ -125,7 +125,7 @@ export class HomePage implements OnInit {
   }
 
   get productosFiltrados() {
-    if (!this.searchTerm || this.searchTerm.length < 4) return [];
+    if (!this.searchTerm || this.searchTerm.length < 2) return [];
     const term = this.searchTerm.toLowerCase();
     return this.productos.filter(
       p =>

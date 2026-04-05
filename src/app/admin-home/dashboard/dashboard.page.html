@@ -1,43 +1,67 @@
-<ion-content class="ion-padding custom-dashboard">
+<ion-content class="custom-dashboard">
+
   <ion-grid>
+
     <ion-row>
       <ion-col size="6">
-        <ion-card button [routerLink]="['/admin-home','roles']" class="dash-card">
+        <ion-card 
+          button 
+          [routerLink]="['/admin-home','roles']" 
+          class="dash-card ds-card roles">
+
           <ion-card-content>
             <ion-icon name="people-circle" class="dash-icon"></ion-icon>
             <h2>Roles</h2>
           </ion-card-content>
+
         </ion-card>
       </ion-col>
 
       <ion-col size="6">
-        <ion-card button [routerLink]="['/admin-home','usuarios']" class="dash-card">
+        <ion-card 
+          button 
+          [routerLink]="['/admin-home','usuarios']" 
+          class="dash-card ds-card users">
+
           <ion-card-content>
             <ion-icon name="person-circle" class="dash-icon"></ion-icon>
             <h2>Usuarios</h2>
           </ion-card-content>
+
         </ion-card>
       </ion-col>
     </ion-row>
 
     <ion-row>
       <ion-col size="6">
-        <ion-card button [routerLink]="['/admin-home','categorias']" class="dash-card">
+        <ion-card 
+          button 
+          [routerLink]="['/admin-home','categorias']" 
+          class="dash-card ds-card cats">
+
           <ion-card-content>
             <ion-icon name="albums" class="dash-icon"></ion-icon>
             <h2>Categorías</h2>
           </ion-card-content>
+
         </ion-card>
       </ion-col>
 
       <ion-col size="6">
-        <ion-card button [routerLink]="['/admin-home','productos']" class="dash-card">
+        <ion-card 
+          button 
+          [routerLink]="['/admin-home','productos']" 
+          class="dash-card ds-card products">
+
           <ion-card-content>
             <ion-icon name="cube" class="dash-icon"></ion-icon>
             <h2>Productos</h2>
           </ion-card-content>
+
         </ion-card>
       </ion-col>
     </ion-row>
+
   </ion-grid>
+
 </ion-content>

@@ -2,14 +2,18 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService<T> {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
+  url(path: string) {
+    return `${environment.apiBase}/${path}`;
+  }
   // 👉 POST
   post(url: string, data: T, headersObj?: { [key: string]: string }): Observable<any> {
     const headers = new HttpHeaders(headersObj || {

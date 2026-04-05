@@ -14,4 +14,20 @@ export class AdminHomePage {
     await this.router.navigate(['/admin-home', segment]);
     await this.menu.close('adminMenu');
   }
+
+  logout() {
+  // 🔹 1. Limpiar sesión
+  localStorage.clear(); // o removeItem('token') si usas JWT
+
+  // 🔹 2. Cerrar menú (UX limpia)
+  this.menu.close('adminMenu');
+
+  // 🔹 3. Redirigir a login
+  this.router.navigateByUrl('/login', { replaceUrl: true });
 }
+}
+
+
+
+
+

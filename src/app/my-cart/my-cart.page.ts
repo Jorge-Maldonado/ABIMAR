@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-my-cart',
@@ -9,39 +10,27 @@ export class MyCartPage implements OnInit {
 
   carrito: any[] = [];
 
-  constructor() { }
+  constructor(private cartService: CartService) {}
 
   ngOnInit() {
-    this.cargarCarrito();
-  }
-
-  cargarCarrito() {
-    const data = localStorage.getItem('carrito');
-    this.carrito = data ? JSON.parse(data) : [];
+    this.cartService.items$.subscribe(data => {
+      this.carrito = data;
+    });
   }
 
   incrementarCantidad(item: any) {
-    item.cantidad += 1;
-    this.actualizarLocalStorage();
+    this.cartService.incrementar(item.id);
   }
 
   decrementarCantidad(item: any) {
-    if (item.cantidad > 1) {
-      item.cantidad -= 1;
-      this.actualizarLocalStorage();
-    }
+    this.cartService.decrementar(item.id);
   }
 
   eliminarProducto(item: any) {
-    this.carrito = this.carrito.filter(p => p.idproducto !== item.idproducto);
-    this.actualizarLocalStorage();
-  }
-
-  actualizarLocalStorage() {
-    localStorage.setItem('carrito', JSON.stringify(this.carrito));
+    this.cartService.eliminar(item.id);
   }
 
   get total() {
-    return this.carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+    return this.cartService.total;
   }
 }

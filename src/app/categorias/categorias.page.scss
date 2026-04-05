@@ -1,106 +1,104 @@
-ion-toolbar {
-  --border-width: 0 !important;
-  --background: #1b1b1b;
-  --color: #fdd835;
-  font-family: 'Montserrat', sans-serif;
-}
-.header-md::after {
-  background: none !important;
+/* ─── Page background ───────────────────────────────────── */
+.custom-categorias {
+  --background: var(--ds-bg-base);
 }
 
-.container h1 {
-  margin-top: 0;
-  font-size: 24px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba(253, 216, 53, 0.6);
+/* ─── Container principal ──────────────────────────────── */
+.container {
+  border: 1px solid var(--ds-border-accent);
+  border-radius: var(--ds-r-lg);
+  padding: var(--ds-sp-lg);
+  background: var(--ds-bg-surface);
+  box-shadow: var(--ds-glow-cyan);
 }
 
-/* ✅ Formulario */
+/* ─── Header ───────────────────────────────────────────── */
+.page-header {
+  text-align: center;
+  margin-bottom: var(--ds-sp-md);
+}
+
+.page-title {
+  font-family: var(--ds-font-heading);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ds-price);
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--ds-text-3);
+  margin-top: 4px;
+}
+
+/* ─── Formulario ───────────────────────────────────────── */
 .form-container {
-  margin-top: 24px;
+  margin-top: var(--ds-sp-md);
+
+  ion-button {
+    margin-top: 10px;
+  }
 }
 
-.form-container ion-item {
-  --padding-start: 10px;
-  --border-color: #00e5ff;
-  --background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  margin-bottom: 12px;
-  color: white;
-  box-shadow: 0 2px 8px rgba(0, 229, 255, 0.2);
-}
-
-.form-container ion-label {
-  color: #a6a6a6 !important;
+/* ─── Lista título ─────────────────────────────────────── */
+.list-title {
   font-size: 14px;
+  font-weight: 600;
+  color: var(--ds-price);
+  margin-bottom: var(--ds-sp-sm);
 }
 
-.form-container ion-input {
-  color: #fff !important;
+/* ─── Item categoría ───────────────────────────────────── */
+.categoria-item {
+  --background: var(--ds-bg-elevated);
+  --border-radius: var(--ds-r-md);
+  margin: 6px 0;
+  border-radius: var(--ds-r-md);
+  transition: all 0.2s ease;
+  box-shadow: var(--ds-shadow-sm);
+
+  h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ds-text-1);
+    margin: 0 0 2px;
+  }
+
+  p {
+    font-size: 12px;
+    color: var(--ds-text-2);
+    margin: 0;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-2px);
+      border: 1px solid var(--ds-border-accent);
+      box-shadow: var(--ds-glow-cyan);
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
-.form-container ion-button {
-  margin-top: 16px;
+/* ─── Botones acciones ─────────────────────────────────── */
+.btn-action-warning {
+  --color: var(--ds-price);
+  font-size: 12px;
 }
 
-.main-button {
-  --background: #fdd835;
-  --background-hover: #ffe066;
-  --color: #1b1b1b;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: bold;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(253, 216, 53, 0.5);
-  transition: transform 0.2s ease-in-out;
-}
-.main-button:active {
-  transform: scale(0.97);
+.btn-action-danger {
+  --color: var(--ds-danger);
+  font-size: 12px;
 }
 
-/* ✅ Buscador */
-ion-searchbar {
-  --color: #fff; /* iconos */
-  --placeholder-color: #aaa; /* placeholder */
-  --input-color: #fff; /* texto escrito */
-  --background: rgba(255, 255, 255, 0.05);
-  border: 1px solid #00e5ff;
-  border-radius: 8px;
-  margin: 12px 0 20px;
-}
-
-/* ✅ Lista de productos */
-ion-list {
-  background: transparent !important;
-  margin-top: 20px;
-}
-
-ion-item {
-  --inner-border-width: 0 !important;
-  --background: rgba(255, 255, 255, 0.08);
-  --border-radius: 8px;
-  margin: 8px 0;
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 229, 255, 0.2);
-  transition: transform 0.2s ease-in-out;
-}
-ion-item:hover {
-  transform: translateY(-2px);
-}
-
-ion-item h2 {
-  color: #fdd835;
-  font-weight: bold;
-  font-size: 16px;
-}
-
-ion-item p {
-  color: #ccc;
-  font-size: 14px;
-}
-
-/* ✅ Miniaturas */
-ion-thumbnail img {
-  border-radius: 6px;
-  object-fit: cover;
+/* ─── Botón warning custom ─────────────────────────────── */
+.btn-warning {
+  --background: var(--ds-price);
+  --color: #000;
+  font-weight: 700;
+  border-radius: var(--ds-r-md);
 }

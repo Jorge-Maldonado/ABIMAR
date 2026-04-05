@@ -404,3 +404,17 @@ ion-item {
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--ds-border-md); border-radius: 2px; }
+
+
+// estilos loader 
+.custom-loader {
+  --background: rgba(15, 23, 42, 0.9);
+  --spinner-color: #00E5FF;
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+
+  .loading-wrapper {
+    border-radius: 16px;
+    padding: 20px;
+  }
+}

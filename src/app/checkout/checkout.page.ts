@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-checkout',
@@ -8,61 +9,41 @@ import { Component, OnInit } from '@angular/core';
 export class CheckoutPage implements OnInit {
 
   carrito: any[] = [];
-  descuento: number = 0; // Por ahora 0
-  subtotal: number = 0;
 
-  constructor() { }
+  descuento: number = 0;
+  envio: number = 0;
+
+  constructor(private cartService: CartService) {}
 
   ngOnInit() {
-    this.cargarCarrito();
+    this.cartService.items$.subscribe(data => {
+      this.carrito = data;
+    });
   }
 
-  // Carga el carrito desde localStorage
-  cargarCarrito() {
-    const data = localStorage.getItem('carrito');
-    this.carrito = data ? JSON.parse(data) : [];
-    this.calcularSubtotal();
-  }
-
-  // Incrementa cantidad del producto
+  // ✅ MANTENIDOS para el HTML
   incrementarCantidad(item: any) {
-    item.cantidad += 1;
-    this.actualizarLocalStorage();
+    this.cartService.incrementar(item.id);
   }
 
-  // Decrementa cantidad del producto
   decrementarCantidad(item: any) {
-    if (item.cantidad > 1) {
-      item.cantidad -= 1;
-      this.actualizarLocalStorage();
-    }
+    this.cartService.decrementar(item.id);
   }
 
-  // Elimina un producto del carrito
   eliminarProducto(item: any) {
-    this.carrito = this.carrito.filter(p => p.idproducto !== item.idproducto);
-    this.actualizarLocalStorage();
+    this.cartService.eliminar(item.id);
   }
 
-  // Actualiza localStorage con la nueva data y recalcula subtotal
-  actualizarLocalStorage() {
-    localStorage.setItem('carrito', JSON.stringify(this.carrito));
-    this.calcularSubtotal();
+  get subtotal() {
+    return this.cartService.total;
   }
 
-  // Calcula subtotal sumando precio * cantidad
-  calcularSubtotal() {
-    this.subtotal = this.carrito.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
-  }
-
-  // Calcula el envío como 10% del subtotal
-  get envio() {
-    return this.subtotal * 0.10;
-  }
-
-  // Total final considerando subtotal, descuento y envío
   get total() {
     return this.subtotal - this.descuento + this.envio;
   }
 
+  confirmarCompra() {
+    alert('Compra realizada correctamente ✅');
+    this.cartService.limpiar();
+  }
 }

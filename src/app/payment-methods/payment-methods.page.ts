@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { CartService } from '../services/cart.service';
 
 declare var paypal: any;
 
@@ -14,7 +15,7 @@ export class PaymentMethodsPage implements OnInit {
   mostrarPayPal = false;
   paypalCargado = false;
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) { }
+  constructor(private router: Router, private cdr: ChangeDetectorRef, private cartService: CartService) { }
 
   ngOnInit() {
     this.calcularTotal();
@@ -101,6 +102,10 @@ export class PaymentMethodsPage implements OnInit {
 
   pagarConQR() {
     this.router.navigate(['/qr-payment']);
+  }
+
+  get getTotal() {
+    return this.cartService.total;
   }
 
 }
