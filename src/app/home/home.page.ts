@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
-import { ToastController, AlertController } from '@ionic/angular';
+import { ToastController, AlertController, MenuController } from '@ionic/angular';
 import { UtilService } from '../util.service';
-import { MenuController } from '@ionic/angular';
+import { CartService } from '../services/cart.service'; // ✅ IMPORTANTE
 
 @Component({
   selector: 'app-home',
@@ -30,17 +30,17 @@ export class HomePage implements OnInit {
     private toastController: ToastController,
     private alertCtrl: AlertController,
     private util: UtilService,
-    private menu: MenuController
+    private menu: MenuController,
+    private cartService: CartService // ✅ CLAVE
   ) { }
 
   ngOnInit() {
-    //const isGuest = localStorage.getItem('guestAccess') === 'true';
     this.usuarioEmail = localStorage.getItem('usuario') || 'Invitado';
 
-    // Suscribirse al estado de iconos
     this.util.getShowIcons().subscribe(s => {
       this.showIcons = s;
     });
+
     this.loadCategorias();
     this.loadProductos();
   }
@@ -76,7 +76,9 @@ export class HomePage implements OnInit {
           if (Array.isArray(res)) {
             this.categorias = res.map((c, index) => ({
               ...c,
-              imagen: c.imagen && c.imagen.trim() !== '' ? c.imagen : `assets/categories/category-${index + 1}.png`,
+              imagen: c.imagen && c.imagen.trim() !== ''
+                ? c.imagen
+                : `assets/categories/category-${index + 1}.png`,
             }));
           } else {
             this.categorias = [];
@@ -140,23 +142,13 @@ export class HomePage implements OnInit {
     });
   }
 
+  // ===============================
+  // 🛒 CORRECTO (REACTIVO)
+  // ===============================
   async agregarCarrito(producto: any) {
-    // Obtener carrito actual
-    let carrito: any[] = JSON.parse(localStorage.getItem('carrito') || '[]');
 
-    // Verificar si el producto ya está en el carrito
-    const index = carrito.findIndex(p => p.idproducto === producto.idproducto);
+    this.cartService.add(producto); // 🔥 YA NO USAR localStorage
 
-    if (index >= 0) {
-      // Si ya existe, incrementar cantidad
-      carrito[index].cantidad += 1;
-    } else {
-      // Si no existe, agregar con cantidad 1
-      carrito.push({ ...producto, cantidad: 1 });
-    }
-
-    // Guardar de nuevo en localStorage
-    localStorage.setItem('carrito', JSON.stringify(carrito));
     await this.mostrarToast(`"${producto.nombre}" agregado al carrito 🛒`, 'warning');
   }
 
@@ -173,7 +165,7 @@ export class HomePage implements OnInit {
     const toast = await this.toastController.create({
       message: mensaje,
       duration: 2000,
-      color: color,
+      color,
       position: 'bottom',
       cssClass: 'custom-toast'
     });

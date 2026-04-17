@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar class="toolbar-qr">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/payment-methods"></ion-back-button>
@@ -7,28 +7,41 @@
   </ion-toolbar>
 </ion-header>
 
+<ion-content class="qr-content">
 
-<ion-content class="ion-padding">
   <div *ngIf="!cargando; else cargandoTpl" class="qr-wrapper">
-    <h2 class="titulo">Escanea el código QR</h2>
-    <p class="subtexto">Usa tu app bancaria para pagar el monto total</p>
 
-    <div class="qr-container">
-      <qrcode [qrdata]="textoQR" [width]="220" [errorCorrectionLevel]="'M'"></qrcode>
+    <h2 class="qr-title">Escanea el código QR</h2>
+    <p class="qr-subtext">Usa tu app bancaria para pagar el monto total</p>
+
+    <div class="qr-card">
+      <qrcode
+        [qrdata]="textoQR"
+        [width]="220"
+        [errorCorrectionLevel]="'M'">
+      </qrcode>
     </div>
 
-    <h3 class="total">Total: {{ total | number: '1.2-2' }} Bs</h3>
+    <h3 class="qr-total">
+      Total: {{ total | number: '1.2-2' }} Bs
+    </h3>
 
-    <ion-button expand="block" color="warning" class="main-button" (click)="confirmarPago()">
+    <ion-button
+      expand="block"
+      class="btn-buy qr-btn"
+      (click)="confirmarPago()">
       Confirmar Pago
+      <ion-icon slot="end" name="checkmark-outline"></ion-icon>
     </ion-button>
 
   </div>
 
+  <!-- Loader -->
   <ng-template #cargandoTpl>
-    <div class="loading-message">
+    <div class="qr-loading">
       <ion-spinner name="crescent"></ion-spinner>
       <p>Generando código QR...</p>
     </div>
   </ng-template>
+
 </ion-content>

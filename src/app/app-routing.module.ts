@@ -75,6 +75,10 @@ const routes: Routes = [
   {
     path: 'qr-payment',
     loadChildren: () => import('./qr-payment/qr-payment.module').then( m => m.QrPaymentPageModule)
+  },
+  {
+    path: 'pedidos',
+    loadChildren: () => import('./admin/pedidos/pedidos.module').then( m => m.PedidosPageModule)
   }
 
 ];

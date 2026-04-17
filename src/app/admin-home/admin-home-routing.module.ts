@@ -27,6 +27,10 @@ const routes: Routes = [
         path: 'productos',
         loadChildren: () => import('../productos/productos.module').then(m => m.ProductosPageModule)
       },
+      {
+        path: 'pedidos',
+        loadChildren: () => import('../admin/pedidos/pedidos.module').then(m => m.PedidosPageModule)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
@@ -36,4 +40,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AdminHomePageRoutingModule {}
+export class AdminHomePageRoutingModule { }

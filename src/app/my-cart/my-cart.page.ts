@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CartService } from '../services/cart.service';
 
 @Component({
@@ -6,28 +6,29 @@ import { CartService } from '../services/cart.service';
   templateUrl: './my-cart.page.html',
   styleUrls: ['./my-cart.page.scss'],
 })
-export class MyCartPage implements OnInit {
+export class MyCartPage {
 
   carrito: any[] = [];
 
   constructor(private cartService: CartService) {}
 
-  ngOnInit() {
+  // 🔥 Ionic lifecycle (clave)
+  ionViewWillEnter() {
     this.cartService.items$.subscribe(data => {
       this.carrito = data;
     });
   }
 
   incrementarCantidad(item: any) {
-    this.cartService.incrementar(item.id);
+    this.cartService.incrementar(item.idproducto);
   }
 
   decrementarCantidad(item: any) {
-    this.cartService.decrementar(item.id);
+    this.cartService.decrementar(item.idproducto);
   }
 
   eliminarProducto(item: any) {
-    this.cartService.eliminar(item.id);
+    this.cartService.eliminar(item.idproducto);
   }
 
   get total() {

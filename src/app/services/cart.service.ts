@@ -10,6 +10,9 @@ export class CartService {
 
   constructor() {}
 
+  // ===============================
+  // 📦 STORAGE
+  // ===============================
   private loadCart(): any[] {
     try {
       return JSON.parse(localStorage.getItem('carrito') || '[]');
@@ -32,47 +35,89 @@ export class CartService {
     return this.cartSubject.value;
   }
 
+  // ===============================
+  // 🆔 NORMALIZADOR (CLAVE PRO)
+  // ===============================
+  private getId(producto: any): number {
+    return producto.idproducto || producto.id;
+  }
+
+  // ===============================
+  // ➕ ADD
+  // ===============================
   add(producto: any) {
     const cart = [...this.items];
-    const index = cart.findIndex(p => p.id === producto.id);
+
+    const id = this.getId(producto);
+
+    const index = cart.findIndex(p =>
+      this.getId(p) === id &&
+      JSON.stringify(p.options || {}) === JSON.stringify(producto.options || {})
+    );
 
     if (index > -1) {
       cart[index].cantidad += 1;
     } else {
-      cart.push({ ...producto, cantidad: 1 });
+      cart.push({
+        ...producto,
+        idproducto: id, // 🔥 normalizamos
+        cantidad: 1,
+        options: producto.options || {}
+      });
     }
 
     this.saveCart(cart);
   }
 
-  incrementar(id: number) {
+  // ===============================
+  // 🔼 INCREMENTAR
+  // ===============================
+  incrementar(idproducto: number) {
     const cart = this.items.map(p =>
-      p.id === id ? { ...p, cantidad: p.cantidad + 1 } : p
+      this.getId(p) === idproducto
+        ? { ...p, cantidad: p.cantidad + 1 }
+        : p
     );
+
     this.saveCart(cart);
   }
 
-  decrementar(id: number) {
+  // ===============================
+  // 🔽 DECREMENTAR
+  // ===============================
+  decrementar(idproducto: number) {
     let cart = this.items.map(p =>
-      p.id === id ? { ...p, cantidad: p.cantidad - 1 } : p
+      this.getId(p) === idproducto
+        ? { ...p, cantidad: p.cantidad - 1 }
+        : p
     );
 
     cart = cart.filter(p => p.cantidad > 0);
+
     this.saveCart(cart);
   }
 
-  eliminar(id: number) {
-    const cart = this.items.filter(p => p.id !== id);
+  // ===============================
+  // ❌ ELIMINAR
+  // ===============================
+  eliminar(idproducto: number) {
+    const cart = this.items.filter(p => this.getId(p) !== idproducto);
     this.saveCart(cart);
   }
 
+  // ===============================
+  // 🧹 LIMPIAR
+  // ===============================
   limpiar() {
     localStorage.removeItem('carrito');
     this.cartSubject.next([]);
   }
 
+  // ===============================
+  // 💰 TOTAL
+  // ===============================
   get total() {
-    return this.items.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+    return this.items.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
   }
 
   get totalItems() {

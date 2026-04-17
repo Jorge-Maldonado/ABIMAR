@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Pedidos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- LOADING -->
+  <ion-spinner *ngIf="loading" class="center-spinner"></ion-spinner>
+
+  <!-- LISTA -->
+  <ion-list *ngIf="!loading">
+
+    <ion-item *ngFor="let p of pedidos">
+
+      <ion-label>
+        <h2>Pedido #{{ p.idpedido }}</h2>
+        <p><strong>Monto:</strong> Bs {{ p.monto }}</p>
+        <p><strong>Fecha:</strong> {{ p.fecha | date:'short' }}</p>
+        <p><strong>Pago:</strong> {{ p.tipoPagoId }}</p>
+        <p><strong>Estado:</strong> 
+          <ion-badge [color]="getColor(p.status)">
+            {{ p.status }}
+          </ion-badge>
+        </p>
+      </ion-label>
+
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>
