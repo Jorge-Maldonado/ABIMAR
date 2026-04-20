@@ -14,4 +14,11 @@ export class PedidoService {
   listarPedidos(): Observable<any[]> {
     return this.http.post<any[]>(`${this.API}/pedido/list`, {});
   }
+
+  getDetallePedido(pedidoId: number): Observable<any[]> {
+    return this.http.post<any[]>(
+      `${this.API}/detallepedido/byPedido?pedidoId=${pedidoId}`,
+      {}
+    );
+  }
 }

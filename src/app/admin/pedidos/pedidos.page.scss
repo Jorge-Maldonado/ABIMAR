@@ -1,0 +1,87 @@
+.custom-pedidos {
+  --background: var(--ds-bg-base);
+}
+
+.container {
+  border: 1px solid var(--ds-border-accent);
+  border-radius: var(--ds-r-lg);
+  padding: var(--ds-sp-lg);
+  background: var(--ds-bg-surface);
+  box-shadow: var(--ds-glow-cyan);
+}
+
+/* Header */
+.page-header {
+  text-align: center;
+  margin-bottom: var(--ds-sp-md);
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ds-price);
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--ds-text-3);
+}
+
+/* Filters */
+.filters {
+  margin: 10px 0;
+
+  ion-segment {
+    --background: var(--ds-bg-elevated);
+    border-radius: var(--ds-r-md);
+  }
+}
+
+/* Pedido */
+.pedido-item {
+  --background: var(--ds-bg-elevated);
+  border-radius: var(--ds-r-md);
+  margin: 8px 0;
+  padding: 10px;
+}
+
+.pedido-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cliente {
+  font-size: 12px;
+  color: var(--ds-accent);
+  margin: 4px 0;
+}
+
+.pedido-info {
+  font-size: 12px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price {
+  color: var(--ds-price);
+  font-weight: 700;
+}
+
+/* Buttons */
+.btn-action-primary {
+  --color: var(--ds-accent);
+}
+
+.btn-action-warning {
+  --color: var(--ds-price);
+}
+
+/* Empty */
+.ds-empty {
+  text-align: center;
+  margin-top: 40px;
+}

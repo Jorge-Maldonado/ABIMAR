@@ -1,33 +1,165 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Pedidos</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="custom-pedidos">
 
-<ion-content>
+  <div class="container">
 
-  <!-- LOADING -->
-  <ion-spinner *ngIf="loading" class="center-spinner"></ion-spinner>
+    <!-- Header -->
+    <div class="page-header">
+      <h1 class="page-title">Gestión de Pedidos</h1>
+      <p class="page-subtitle">Administración de órdenes del sistema</p>
+    </div>
 
-  <!-- LISTA -->
-  <ion-list *ngIf="!loading">
+    <!-- 🔍 Buscador -->
+    <div class="ds-searchbar">
+      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar por ID, cliente..."></ion-searchbar>
+    </div>
 
-    <ion-item *ngFor="let p of pedidos">
+    <!-- 🎯 Filtros -->
+    <div class="filters">
+      <ion-segment [(ngModel)]="filtroEstado">
+        <ion-segment-button value="ALL">Todos</ion-segment-button>
+        <ion-segment-button value="PENDIENTE">Pendientes</ion-segment-button>
+        <ion-segment-button value="PAGADO">Pagados</ion-segment-button>
+        <ion-segment-button value="CANCELADO">Cancelados</ion-segment-button>
+      </ion-segment>
+    </div>
 
-      <ion-label>
-        <h2>Pedido #{{ p.idpedido }}</h2>
-        <p><strong>Monto:</strong> Bs {{ p.monto }}</p>
-        <p><strong>Fecha:</strong> {{ p.fecha | date:'short' }}</p>
-        <p><strong>Pago:</strong> {{ p.tipoPagoId }}</p>
-        <p><strong>Estado:</strong> 
-          <ion-badge [color]="getColor(p.status)">
-            {{ p.status }}
-          </ion-badge>
-        </p>
-      </ion-label>
+    <!-- Loading -->
+    <div class="ds-loading" *ngIf="loading">
+      <ion-spinner></ion-spinner>
+      <p>Cargando pedidos...</p>
+    </div>
 
-    </ion-item>
+    <!-- Lista -->
+    <ion-list *ngIf="!loading && pedidosFiltrados().length > 0; else emptyState">
 
-  </ion-list>
+      <ion-item *ngFor="let p of pedidosFiltrados(); trackBy: trackByPedido" class="pedido-item">
+
+        <ion-label>
+
+          <!-- Header -->
+          <div class="pedido-header">
+            <h2>#{{ p.idpedido }}</h2>
+
+            <ion-badge [color]="getColor(p.status)">
+              {{ p.status }}
+            </ion-badge>
+          </div>
+
+          <!-- Cliente -->
+          <p class="cliente">
+            👤 {{ p.clienteNombre || 'Cliente no identificado' }}
+          </p>
+
+          <!-- Info -->
+          <div class="pedido-info">
+
+            <div class="info-row">
+              <span>Monto</span>
+              <span class="price">Bs {{ p.monto | number:'1.2-2' }}</span>
+            </div>
+
+            <div class="info-row">
+              <span>Pago</span>
+              <span>{{ getMetodoPago(p.tipoPagoId) }}</span>
+            </div>
+
+            <div class="info-row">
+              <span>Fecha</span>
+              <span>{{ p.fecha | date:'short' }}</span>
+            </div>
+
+          </div>
+
+        </ion-label>
+
+        <!-- Acciones -->
+        <ion-buttons slot="end">
+
+          <ion-button fill="clear" class="btn-action-primary" (click)="verDetalle(p)">
+            Ver
+          </ion-button>
+
+          <ion-button fill="clear" class="btn-action-warning" (click)="cambiarEstado(p)">
+            Estado
+          </ion-button>
+
+        </ion-buttons>
+
+      </ion-item>
+
+    </ion-list>
+
+    <!-- Empty -->
+    <ng-template #emptyState>
+      <div class="ds-empty">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <h3>No hay pedidos</h3>
+        <p>No existen órdenes registradas</p>
+      </div>
+    </ng-template>
+
+  </div>
+
+  <!-- 🔥 DETALLE DEL PEDIDO -->
+  <div *ngIf="pedidoSeleccionado" class="container" style="margin-top:20px">
+
+    <div class="page-header">
+      <h2 class="page-title">Detalle Pedido #{{ pedidoSeleccionado.idpedido }}</h2>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loadingDetalle" class="ds-loading">
+      <ion-spinner></ion-spinner>
+      <p>Cargando detalle...</p>
+    </div>
+
+    <!-- Lista -->
+    <ion-list *ngIf="!loadingDetalle && detalleSeleccionado.length > 0">
+
+      <ion-item *ngFor="let d of detalleSeleccionado">
+
+        <ion-label>
+
+          <h3>Producto #{{ d.productoId }}</h3>
+
+          <div class="pedido-info">
+
+            <div class="info-row">
+              <span>Cantidad</span>
+              <span>{{ d.cantidad }}</span>
+            </div>
+
+            <div class="info-row">
+              <span>Precio</span>
+              <span>Bs {{ d.precio | number:'1.2-2' }}</span>
+            </div>
+
+            <div class="info-row">
+              <span>Subtotal</span>
+              <span>Bs {{ d.subtotal | number:'1.2-2' }}</span>
+            </div>
+
+          </div>
+
+        </ion-label>
+
+      </ion-item>
+
+    </ion-list>
+
+    <!-- Total -->
+    <div *ngIf="!loadingDetalle && detalleSeleccionado.length > 0" class="total-box">
+      <span>Total</span>
+      <strong>
+        Bs {{ totalDetalle | number:'1.2-2' }}
+      </strong>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!loadingDetalle && detalleSeleccionado.length === 0" class="ds-empty">
+      <p>No hay detalles</p>
+    </div>
+
+  </div>
 
 </ion-content>
