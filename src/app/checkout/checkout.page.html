@@ -98,7 +98,7 @@
 
 <ion-footer class="ion-no-border checkout-footer">
   <div class="checkout-footer__inner" *ngIf="carrito.length > 0">
-    <ion-button expand="block" class="btn-buy" routerLink="/payment-methods" routerDirection="forward">
+    <ion-button expand="block" class="btn-buy" (click)="registrarPedido()">
       Ir a pagar
       <ion-icon slot="end" name="lock-closed-outline"></ion-icon>
     </ion-button>

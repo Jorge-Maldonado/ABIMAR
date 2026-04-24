@@ -67,12 +67,17 @@ export class LoginPage implements OnInit {
         }
       ).subscribe(
 
-        async (response) => {
+        async (response: any) => {
 
           if (response.status === 200) {
 
+            const body = response.body; // "Login correcto, 1"
+            const parts = body.split(',');
+            const personalId = parts[1]?.trim(); // "1"
+
             localStorage.setItem('usuario', this.email);
             localStorage.setItem('guestAccess', 'false');
+            localStorage.setItem('personal', personalId);
 
             this.isGuest = false;
             this.util.setGuest(false);

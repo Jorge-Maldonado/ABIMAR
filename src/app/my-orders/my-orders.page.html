@@ -11,24 +11,34 @@
   <div class="orders-body">
 
     <!-- Pedidos (datos de ejemplo mientras no hay backend) -->
-    <div class="order-card" *ngFor="let order of pedidos">
+    <div class="order-card" *ngFor="let order of pedidos" (click)="abrirPedido(order)">
+
       <div class="order-card__header">
-        <div class="order-card__img-wrap">
-          <img [src]="order.imagen" [alt]="order.nombre" />
-        </div>
+
         <div class="order-card__info">
-          <p class="order-card__name">{{ order.nombre }}</p>
-          <p class="order-card__brand">{{ order.marca }}</p>
-          <p class="order-card__price">Bs. {{ order.precio | number:'1.2-2' }}</p>
+          <p class="order-card__name">
+            Pedido #{{ order.idpedido }}
+          </p>
+
+          <p class="order-card__brand">
+            {{ order.direccionEnvio }}
+          </p>
+
+          <p class="order-card__price">
+            Bs. {{ order.monto | number:'1.2-2' }}
+          </p>
+
+          <p class="order-card__date">
+            {{ order.fecha | date:'short' }}
+          </p>
         </div>
-        <span class="order-card__badge">Entregado</span>
+
+        <span class="order-card__badge" [ngClass]="getEstadoClase(order.status)">
+          {{ order.status }}
+        </span>
+
       </div>
-      <div class="order-card__footer">
-        <ion-button expand="block" class="btn-ghost order-repeat-btn">
-          <ion-icon slot="start" name="refresh-outline"></ion-icon>
-          Pedir de nuevo
-        </ion-button>
-      </div>
+
     </div>
 
     <!-- Empty state -->

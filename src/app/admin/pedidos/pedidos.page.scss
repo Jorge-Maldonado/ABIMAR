@@ -2,24 +2,27 @@
   --background: var(--ds-bg-base);
 }
 
+/* CONTENEDOR */
 .container {
   border: 1px solid var(--ds-border-accent);
   border-radius: var(--ds-r-lg);
   padding: var(--ds-sp-lg);
   background: var(--ds-bg-surface);
   box-shadow: var(--ds-glow-cyan);
+  margin-bottom: 16px;
 }
 
-/* Header */
+/* HEADER */
 .page-header {
   text-align: center;
-  margin-bottom: var(--ds-sp-md);
+  margin-bottom: 16px;
 }
 
 .page-title {
   font-size: 22px;
   font-weight: 800;
   color: var(--ds-price);
+  margin-bottom: 4px;
 }
 
 .page-subtitle {
@@ -27,61 +30,220 @@
   color: var(--ds-text-3);
 }
 
-/* Filters */
+/* SEARCH */
+.ds-searchbar {
+  margin-bottom: 12px;
+
+  ion-searchbar {
+    --background: var(--ds-bg-elevated);
+    --border-radius: 12px;
+  }
+}
+
+/* FILTERS */
 .filters {
-  margin: 10px 0;
+  margin-bottom: 16px;
 
   ion-segment {
     --background: var(--ds-bg-elevated);
     border-radius: var(--ds-r-md);
+    padding: 4px;
   }
 }
 
-/* Pedido */
-.pedido-item {
-  --background: var(--ds-bg-elevated);
-  border-radius: var(--ds-r-md);
-  margin: 8px 0;
-  padding: 10px;
+/* LOADING */
+.ds-loading {
+  text-align: center;
+  margin-top: 20px;
+
+  ion-spinner {
+    margin-bottom: 6px;
+  }
+
+  p {
+    font-size: 13px;
+    color: var(--ds-text-3);
+  }
 }
 
+/* LISTA */
+ion-list {
+  background: transparent;
+  padding: 0;
+}
+
+/* CARD PEDIDO */
+.pedido-item {
+  --background: var(--ds-bg-elevated);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* HOVER */
+.pedido-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+
+/* HEADER PEDIDO */
 .pedido-header {
   display: flex;
   justify-content: space-between;
+  align-items: center; /* 🔥 FIX centrado */
+  gap: 8px;
+}
+
+.pedido-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
   align-items: center;
 }
 
+/* CLIENTE */
 .cliente {
   font-size: 12px;
   color: var(--ds-accent);
-  margin: 4px 0;
+  margin: 6px 0;
 }
 
+/* INFO */
 .pedido-info {
   font-size: 12px;
+  margin-top: 6px;
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
+  margin: 2px 0;
 }
 
+/* PRECIO */
 .price {
   color: var(--ds-price);
   font-weight: 700;
 }
 
-/* Buttons */
+/* BOTONES */
+ion-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+ion-button {
+  height: 28px;
+  font-size: 11px;
+  border-radius: 8px;
+}
+
+/* BOTONES CUSTOM */
 .btn-action-primary {
-  --color: var(--ds-accent);
+  --color: #00e0ff;
 }
 
 .btn-action-warning {
-  --color: var(--ds-price);
+  --color: #ffb020;
 }
 
-/* Empty */
+/* EMPTY */
 .ds-empty {
   text-align: center;
   margin-top: 40px;
+  opacity: 0.8;
+
+  ion-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  p {
+    font-size: 12px;
+    color: var(--ds-text-3);
+  }
+}
+
+/* 🔥 DETALLE */
+.total-box {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--ds-bg-elevated);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.total-box strong {
+  color: var(--ds-price);
+  font-size: 16px;
+}
+
+/* DETALLE ITEMS */
+ion-item {
+  --background: transparent;
+  margin-bottom: 6px;
+}
+
+ion-item h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* 🔥 STATUS PRO */
+ion-badge {
+  display: flex;              /* 🔥 FIX REAL */
+  align-items: center;        /* 🔥 centra vertical */
+  justify-content: center;    /* 🔥 centra horizontal */
+  gap: 4px;
+
+  font-weight: 600;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  min-height: 22px;
+}
+
+/* ICONO DEL BADGE */
+ion-badge ion-icon {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* COLORES PRO */
+ion-badge[color="success"] {
+  --background: rgba(0, 255, 150, 0.15);
+  --color: #00ffa6;
+  border: 1px solid rgba(0,255,150,0.3);
+}
+
+ion-badge[color="warning"] {
+  --background: rgba(255, 176, 32, 0.15);
+  --color: #ffb020;
+  border: 1px solid rgba(255,176,32,0.3);
+}
+
+ion-badge[color="danger"] {
+  --background: rgba(255, 80, 80, 0.15);
+  --color: #ff5050;
+  border: 1px solid rgba(255,80,80,0.3);
+}
+
+ion-badge[color="medium"] {
+  --background: rgba(180,180,180,0.1);
+  --color: #aaa;
 }

@@ -41,6 +41,7 @@
             <h2>#{{ p.idpedido }}</h2>
 
             <ion-badge [color]="getColor(p.status)">
+              <ion-icon [name]="getStatusIcon(p.status)"></ion-icon>
               {{ p.status }}
             </ion-badge>
           </div>

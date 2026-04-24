@@ -1,6 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartService } from '../services/cart.service';
+import { ActivatedRoute } from '@angular/router';
+
 
 declare var paypal: any;
 
@@ -14,10 +16,13 @@ export class PaymentMethodsPage implements OnInit {
   total: number = 0;
   mostrarPayPal = false;
   paypalCargado = false;
+  pedidoId: any | null = null;
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef, private cartService: CartService) { }
+  constructor(private router: Router, private cdr: ChangeDetectorRef, private cartService: CartService, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.pedidoId = this.route.snapshot.queryParamMap.get('pedidoId');
+    console.log('PEDIDO ID:', this.pedidoId);
     this.calcularTotal();
     this.cargarPayPalScript();
   }
@@ -101,7 +106,9 @@ export class PaymentMethodsPage implements OnInit {
   }
 
   pagarConQR() {
-    this.router.navigate(['/qr-payment']);
+    this.router.navigate(['/qr-payment'], {
+      queryParams: { pedidoId: this.pedidoId }
+    });
   }
 
   get getTotal() {
