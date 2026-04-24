@@ -2,11 +2,11 @@
 set -e
 
 # 1. Verificar que estés en la rama main
-#current_branch=$(git symbolic-ref --short HEAD)
-#if [ "$current_branch" != "main" ]; then
-#  echo "❌ Debes estar en la rama 'main'. Estás en '$current_branch'."
-#  exit 1
-#fi
+current_branch=$(git symbolic-ref --short HEAD)
+if [ "$current_branch" != "main" ]; then
+  echo "❌ Debes estar en la rama 'main'. Estás en '$current_branch'."
+  exit 1
+fi
 
 echo "🔨 Ejecutando build de Ionic..."
 npm run build
