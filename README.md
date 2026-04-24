@@ -11,8 +11,15 @@ Nombre: cualquiera
 Mastercard: 5555 5555 5555 4444
 American Express: 3782 822463 10005
 
+
+
 contraseña paypal
 NzJ2FafR@68zTLk
+
+usuario
+m61d0n6d0@gmail.com
+admin
+jorge.maldonado@hotmail.com
 ## Pages Included
 
 1. Welcome Screen
