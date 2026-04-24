@@ -1,5 +1,18 @@
 # Ionic ecommerce app UI
+deploy front
+sh deploy.sh
+pruebas paypal
+💳 Tarjeta de prueba más común (Visa)
+Número: 4111 1111 1111 1111
+Fecha de expiración: cualquier fecha futura (ej: 12/2030)
+CVV: cualquier 3 dígitos (ej: 123)
+Nombre: cualquiera
+🧪 Otras tarjetas de prueba
+Mastercard: 5555 5555 5555 4444
+American Express: 3782 822463 10005
 
+contraseña paypal
+NzJ2FafR@68zTLk
 ## Pages Included
 
 1. Welcome Screen

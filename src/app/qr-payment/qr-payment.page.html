@@ -15,21 +15,14 @@
     <p class="qr-subtext">Usa tu app bancaria para pagar el monto total</p>
 
     <div class="qr-card">
-      <qrcode
-        [qrdata]="textoQR"
-        [width]="220"
-        [errorCorrectionLevel]="'M'">
-      </qrcode>
+      <img src="assets/qr/qr.jpg" alt="QR de pago" class="qr-image" />
     </div>
 
     <h3 class="qr-total">
       Total: {{ total | number: '1.2-2' }} Bs
     </h3>
 
-    <ion-button
-      expand="block"
-      class="btn-buy qr-btn"
-      (click)="confirmarPago()">
+    <ion-button expand="block" class="btn-buy qr-btn" (click)="confirmarPago()">
       Confirmar Pago
       <ion-icon slot="end" name="checkmark-outline"></ion-icon>
     </ion-button>
