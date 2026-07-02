@@ -2,78 +2,284 @@
 
   <div class="roles-container">
 
-    <!-- Header -->
+    <!-- ================= HEADER ================= -->
+
     <div class="roles-header">
-      <h1 class="roles-title">Roles</h1>
-      <p class="roles-subtitle">Gestión de roles del sistema</p>
-    </div>
 
-    <!-- Formulario -->
-    <div class="roles-form">
+      <div>
 
-      <ion-item class="ds-form-item" lines="none">
-        <ion-label position="floating">Descripción</ion-label>
-        <ion-input [(ngModel)]="descripcion"></ion-input>
-      </ion-item>
+        <div class="page-chip">
+          Administración
+        </div>
 
-      <ion-item class="ds-form-item" lines="none">
-        <ion-label position="floating">Estado</ion-label>
-        <ion-input type="number" [(ngModel)]="estado"></ion-input>
-      </ion-item>
+        <h1 class="roles-title">
+          Gestión de Roles
+        </h1>
 
-      <ion-button expand="block" class="btn-primary" *ngIf="!editId" (click)="createRole()">
-        Crear Rol
-      </ion-button>
+        <p class="roles-subtitle">
+          Administra los perfiles y permisos disponibles dentro del sistema.
+        </p>
 
-      <ion-button expand="block" class="btn-buy" *ngIf="editId" (click)="updateRole()">
-        Guardar Cambios
-      </ion-button>
-
-      <ion-button expand="block" fill="clear" class="btn-ghost" *ngIf="editId" (click)="resetForm()">
-        Cancelar
-      </ion-button>
-
-    </div>
-
-    <!-- Divider -->
-    <div class="roles-divider"></div>
-
-    <!-- Buscador -->
-    <div class="roles-search ds-searchbar">
-      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar rol..."></ion-searchbar>
-    </div>
-
-    <!-- Lista -->
-    <ion-list *ngIf="rolesFiltrados().length > 0; else noRoles" class="roles-list">
-
-      <ion-item *ngFor="let rol of rolesFiltrados()" class="role-item" lines="none">
-
-        <ion-label>
-          <h2>{{ rol.descripcion }}</h2>
-          <p>Estado: {{ rol.estado }}</p>
-        </ion-label>
-
-        <ion-buttons slot="end">
-          <ion-button fill="clear" class="btn-warning" (click)="editRole(rol)">
-            Editar
-          </ion-button>
-
-          <ion-button fill="clear" class="btn-danger" (click)="deleteRole(rol.idrol)">
-            Eliminar
-          </ion-button>
-        </ion-buttons>
-
-      </ion-item>
-
-    </ion-list>
-
-    <!-- Empty -->
-    <ng-template #noRoles>
-      <div class="ds-empty">
-        <ion-icon name="alert-circle-outline"></ion-icon>
-        <h3>No hay roles</h3>
-        <p>No existen roles registrados</p>
       </div>
+
+      <div class="roles-resume">
+
+        <div class="resume-number">
+          {{roles.length}}
+        </div>
+
+        <div class="resume-label">
+          Roles
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= FORM ================= -->
+
+    <div class="form-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <h2>
+
+            {{editId ? 'Editar Rol' : 'Nuevo Rol'}}
+
+          </h2>
+
+          <p>
+
+            Complete la información del rol
+
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="form-grid">
+
+        <ion-item class="ds-form-item" lines="none">
+
+          <ion-label position="stacked">
+            Descripción
+          </ion-label>
+
+          <ion-input
+            [(ngModel)]="descripcion"
+            placeholder="Ej: Administrador">
+          </ion-input>
+
+        </ion-item>
+
+        <ion-item class="ds-form-item" lines="none">
+
+          <ion-label position="stacked">
+            Estado
+          </ion-label>
+
+          <ion-input
+            type="number"
+            [(ngModel)]="estado">
+          </ion-input>
+
+        </ion-item>
+
+      </div>
+
+      <div class="buttons">
+
+        <ion-button
+          *ngIf="!editId"
+          class="btn-primary"
+          expand="block"
+          (click)="createRole()">
+
+          Crear Rol
+
+        </ion-button>
+
+        <ion-button
+          *ngIf="editId"
+          class="btn-buy"
+          expand="block"
+          (click)="updateRole()">
+
+          Guardar Cambios
+
+        </ion-button>
+
+        <ion-button
+
+          *ngIf="editId"
+
+          fill="clear"
+
+          class="btn-ghost"
+
+          expand="block"
+
+          (click)="resetForm()">
+
+          Cancelar
+
+        </ion-button>
+
+      </div>
+
+    </div>
+
+    <!-- ================= SEARCH ================= -->
+
+    <div class="search-card">
+
+      <ion-searchbar
+
+        mode="md"
+
+        animated="true"
+
+        [(ngModel)]="searchTerm"
+
+        placeholder="Buscar rol...">
+
+      </ion-searchbar>
+
+    </div>
+
+    <!-- ================= LIST ================= -->
+
+    <div
+
+      class="roles-grid"
+
+      *ngIf="rolesFiltrados().length>0;else noRoles">
+
+      <div
+
+        class="role-card"
+
+        *ngFor="let rol of rolesFiltrados()">
+
+        <div class="role-top">
+
+          <div class="role-avatar">
+
+            {{rol.descripcion?.charAt(0) || 'R'}}
+
+          </div>
+
+          <div class="role-info">
+
+            <h2>
+
+              {{rol.descripcion}}
+
+            </h2>
+
+            <div class="role-status">
+
+              <span
+
+                class="status active"
+
+                *ngIf="rol.estado==1">
+
+                Activo
+
+              </span>
+
+              <span
+
+                class="status inactive"
+
+                *ngIf="rol.estado!=1">
+
+                Inactivo
+
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="role-footer">
+
+          <ion-button
+
+            fill="clear"
+
+            class="btn-warning"
+
+            (click)="editRole(rol)">
+
+            <ion-icon
+
+              slot="start"
+
+              name="create-outline">
+
+            </ion-icon>
+
+            Editar
+
+          </ion-button>
+
+          <ion-button
+
+            fill="clear"
+
+            class="btn-danger"
+
+            (click)="deleteRole(rol.idrol)">
+
+            <ion-icon
+
+              slot="start"
+
+              name="trash-outline">
+
+            </ion-icon>
+
+            Eliminar
+
+          </ion-button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= EMPTY ================= -->
+
+    <ng-template #noRoles>
+
+      <div class="empty-card">
+
+        <ion-icon
+          name="people-outline">
+        </ion-icon>
+
+        <h2>
+
+          No existen roles
+
+        </h2>
+
+        <p>
+
+          Cuando registres un nuevo rol aparecerá aquí.
+
+        </p>
+
+      </div>
+
     </ng-template>
 
   </div>

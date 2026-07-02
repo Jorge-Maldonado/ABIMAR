@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../services/api.service';
 import { AlertController } from '@ionic/angular';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -8,278 +8,830 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./usuarios.page.scss'],
 })
 export class UsuariosPage implements OnInit {
-  nombres: string = '';
-  apellidos: string = '';
-  documento: string = '';
+
+  //====================================================
+  // FORMULARIO
+  //====================================================
+
+  nombres = '';
+  apellidos = '';
+  documento = '';
   telefono: number | null = null;
+
   idRol: number | null = null;
-  email: string = '';
-  password: string = '';
+
+  email = '';
+  password = '';
+
+  //====================================================
+  // DATOS
+  //====================================================
 
   usuarios: any[] = [];
+
   roles: any[] = [];
+
   editId: number | null = null;
+
+  searchTerm = '';
+
+  loading = false;
+
   originalData: any = {};
-  searchTerm: string = '';
 
   constructor(
     private apiService: ApiService<any>,
     private alertCtrl: AlertController
-  ) {}
+  ) { }
 
-  ngOnInit() {
+  //====================================================
+  // INIT
+  //====================================================
+
+  ngOnInit(): void {
+
     this.loadRoles();
+
     this.loadUsuarios();
+
   }
 
-  // 🔹 Cargar roles
-  loadRoles() {
+  //====================================================
+  // ROLES
+  //====================================================
+
+  loadRoles(): void {
+
     this.apiService
-      .post('https://backend-abimar.onrender.com/abimar/core/api/rol/list', {})
-      .subscribe(
-        (res: any) => {
-          this.roles = Array.isArray(res) ? res : res ? [res] : [];
+      .post(
+        'https://backend-abimar.onrender.com/abimar/core/api/rol/list',
+        {}
+      )
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.roles = Array.isArray(res)
+
+            ? res
+
+            : res
+
+              ? [res]
+
+              : [];
+
         },
-        (err) => console.error('Error cargando roles:', err)
-      );
+
+        error: (err) => {
+
+          console.error('Error cargando roles', err);
+
+        }
+
+      });
+
   }
 
-  // 🔹 Cargar y combinar personas con sus usuarios
-  async loadUsuarios() {
+  //====================================================
+  // USUARIOS
+  //====================================================
+
+  async loadUsuarios(): Promise<void> {
+
+    this.loading = true;
+
     try {
+
       const personas: any = await this.apiService
         .post('https://backend-abimar.onrender.com/abimar/core/api/persona/list', {})
         .toPromise();
+
 
       const usuariosLogin: any = await this.apiService
         .post('https://backend-abimar.onrender.com/abimar/core/api/usuario/list', {})
         .toPromise();
 
-      const listaPersonas = Array.isArray(personas) ? personas : personas ? [personas] : [];
-      const listaUsuarios = Array.isArray(usuariosLogin) ? usuariosLogin : usuariosLogin ? [usuariosLogin] : [];
 
-      this.usuarios = listaPersonas.map((p) => {
-        const login = listaUsuarios.find((u) => Number(u.personal) === Number(p.idpersona));
-        return {
-          ...p,
-          emailUser: login ? login.emailUser : '',
-          idusuario: login ? login.idusuario : null,
-          token: login ? login.token : null,
-        };
+      const listaPersonas = Array.isArray(personas)
+
+        ? personas
+
+        : personas
+
+          ? [personas]
+
+          : [];
+
+      const listaUsuarios = Array.isArray(usuariosLogin)
+
+        ? usuariosLogin
+
+        : usuariosLogin
+
+          ? [usuariosLogin]
+
+          : [];
+
+      //------------------------------------------------
+      // MAP PARA EVITAR find() EN CADA ITERACIÓN
+      //------------------------------------------------
+
+      const loginMap = new Map<number, any>();
+
+      listaUsuarios.forEach((u: any) => {
+
+        loginMap.set(Number(u.personal), u);
+
       });
 
-      console.log('Usuarios combinados:', this.usuarios);
+      //------------------------------------------------
+
+      this.usuarios = listaPersonas.map((persona: any) => {
+
+        const login = loginMap.get(Number(persona.idpersona));
+
+        return {
+
+          ...persona,
+
+          emailUser: login?.emailUser || '',
+
+          idusuario: login?.idusuario || null,
+
+          token: login?.token || null
+
+        };
+
+      });
+
+      console.log(
+
+        'Usuarios combinados',
+
+        this.usuarios
+
+      );
+
     } catch (error) {
-      console.error('Error cargando usuarios:', error);
+
+      console.error(
+
+        'Error cargando usuarios',
+
+        error
+
+      );
+
+    } finally {
+
+      this.loading = false;
+
     }
+
   }
 
-  // 🔹 Crear usuario y su login
-  async createUsuario() {
+  //====================================================
+  // CREAR
+  //====================================================
+
+  async createUsuario(): Promise<void> {
+
     if (!this.idRol) {
-      this.showAlert('Error', 'Debe seleccionar un rol antes de crear el usuario');
+
+      this.showAlert(
+
+        'Error',
+
+        'Debe seleccionar un rol antes de crear el usuario'
+
+      );
+
       return;
+
     }
-    if (!this.email.trim() || !this.password.trim()) {
-      this.showAlert('Error', 'Debe ingresar correo y contraseña');
+
+    if (!this.email.trim()) {
+
+      this.showAlert(
+
+        'Error',
+
+        'Debe ingresar un correo electrónico'
+
+      );
+
       return;
+
+    }
+
+    if (!this.password.trim()) {
+
+      this.showAlert(
+
+        'Error',
+
+        'Debe ingresar una contraseña'
+
+      );
+
+      return;
+
+    }
+
+    if (!this.nombres.trim()) {
+
+      this.showAlert(
+
+        'Error',
+
+        'Debe ingresar los nombres'
+
+      );
+
+      return;
+
+    }
+
+    if (!this.apellidos.trim()) {
+
+      this.showAlert(
+
+        'Error',
+
+        'Debe ingresar los apellidos'
+
+      );
+
+      return;
+
+    }
+
+    if (!this.documento.trim()) {
+
+      this.showAlert(
+
+        'Error',
+
+        'Debe ingresar el documento'
+
+      );
+
+      return;
+
     }
 
     const persona = {
-      apellidos: this.apellidos,
-      documento: this.documento,
-      estado: 1,
-      fechaCreacion: new Date().toISOString(),
-      identificacion: this.documento,
-      idpersona: 0,
-      nombres: this.nombres,
-      razonSocial: `${this.nombres} ${this.apellidos}`,
-      rolId: this.idRol,
-      telefono: this.telefono,
-      tipoDocumentoId: 1,
-    };
 
+      apellidos: this.apellidos,
+
+      documento: this.documento,
+
+      estado: 1,
+
+      fechaCreacion: new Date().toISOString(),
+
+      identificacion: this.documento,
+
+      idpersona: 0,
+
+      nombres: this.nombres,
+
+      razonSocial: `${this.nombres} ${this.apellidos}`,
+
+      rolId: this.idRol,
+
+      telefono: this.telefono,
+
+      tipoDocumentoId: 1,
+
+    };
     try {
+
+      //------------------------------------------------
+      // CREAR PERSONA
+      //------------------------------------------------
+
       const personaResp: any = await this.apiService
-        .post('https://backend-abimar.onrender.com/abimar/core/api/persona/create', persona)
+        .post('https://backend-abimar.onrender.com/abimar/core/api/usuario/create', persona)
         .toPromise();
 
+      //------------------------------------------------
+      // CREAR LOGIN
+      //------------------------------------------------
+
       const loginData = {
-        emailUser: this.email,
+
+        emailUser: this.email.trim(),
+
         password: this.password,
+
         token: this.generateToken(32),
+
         personal: personaResp.idpersona,
+
       };
 
       await this.apiService
         .post('https://backend-abimar.onrender.com/abimar/core/api/usuario/create', loginData)
         .toPromise();
 
+      //------------------------------------------------
+
       await this.showAlert(
+
         '¡Usuario creado!',
+
         `Usuario creado correctamente.<br><b>Correo:</b> ${loginData.emailUser}`
+
       );
 
       this.resetForm();
+
       this.loadUsuarios();
-    } catch (error) {
-      console.error('Error creando usuario:', error);
-      this.showAlert('Error', 'No se pudo crear el usuario o su login.');
+
     }
+
+    catch (error) {
+
+      console.error(
+
+        'Error creando usuario',
+
+        error
+
+      );
+
+      this.showAlert(
+
+        'Error',
+
+        'No se pudo crear el usuario o su login.'
+
+      );
+
+    }
+
   }
 
-  // 🔹 Editar usuario
-  editUsuario(u: any) {
-    this.editId = u.idpersona;
-    this.nombres = u.nombres || '';
-    this.apellidos = u.apellidos || '';
-    this.documento = u.documento || '';
-    this.telefono = u.telefono ?? null;
-    this.idRol = u.rolId ? Number(u.rolId) : null;
-    this.email = u.emailUser || '';
+  //====================================================
+  // EDITAR
+  //====================================================
+
+  editUsuario(usuario: any): void {
+
+    this.editId = usuario.idpersona;
+
+    this.nombres = usuario.nombres || '';
+
+    this.apellidos = usuario.apellidos || '';
+
+    this.documento = usuario.documento || '';
+
+    this.telefono = usuario.telefono ?? null;
+
+    this.idRol = usuario.rolId
+
+      ? Number(usuario.rolId)
+
+      : null;
+
+    this.email = usuario.emailUser || '';
+
     this.password = '';
-    this.originalData = { ...u };
+
+    //------------------------------------------------
+    // SOLO LOS DATOS NECESARIOS
+    //------------------------------------------------
+
+    this.originalData = {
+
+      idusuario: usuario.idusuario,
+
+      fechaCreacion: usuario.fechaCreacion,
+
+      estado: usuario.estado,
+
+      tipoDocumentoId: usuario.tipoDocumentoId
+
+    };
+
+    //------------------------------------------------
+    // UX
+    //------------------------------------------------
+
+    window.scrollTo({
+
+      top: 0,
+
+      behavior: 'smooth'
+
+    });
+
   }
 
-  // 🔹 Actualizar usuario
-  async updateUsuario() {
-    if (!this.editId) return;
+  //====================================================
+  // ACTUALIZAR
+  //====================================================
+
+  async updateUsuario(): Promise<void> {
+
+    if (!this.editId) {
+
+      return;
+
+    }
 
     const persona = {
+
       idpersona: this.editId,
+
       nombres: this.nombres,
+
       apellidos: this.apellidos,
+
       documento: this.documento,
+
       telefono: this.telefono,
+
       identificacion: this.documento,
+
       razonSocial: `${this.nombres} ${this.apellidos}`,
-      fechaCreacion: this.originalData.fechaCreacion || new Date().toISOString(),
-      estado: this.originalData.estado ?? 1,
+
+      fechaCreacion:
+
+        this.originalData.fechaCreacion ||
+
+        new Date().toISOString(),
+
+      estado:
+
+        this.originalData.estado ?? 1,
+
       rolId: this.idRol,
-      tipoDocumentoId: this.originalData.tipoDocumentoId ?? 1,
+
+      tipoDocumentoId:
+
+        this.originalData.tipoDocumentoId ?? 1,
+
     };
 
     try {
+
+      //------------------------------------------------
+      // PERSONA
+      //------------------------------------------------
+
       await this.apiService
         .post('https://backend-abimar.onrender.com/abimar/core/api/persona/update', persona)
         .toPromise();
+      //------------------------------------------------
+      // LOGIN
+      //------------------------------------------------
 
       if (this.email.trim()) {
+
         const loginData: any = {
+
           idusuario: this.originalData.idusuario,
+
           personal: this.editId,
-          emailUser: this.email,
+
+          emailUser: this.email.trim(),
+
         };
-        if (this.password.trim()) loginData.password = this.password;
+
+        if (this.password.trim()) {
+
+          loginData.password = this.password;
+
+        }
 
         await this.apiService
           .post('https://backend-abimar.onrender.com/abimar/core/api/usuario/update', loginData)
           .toPromise();
+
       }
 
-      await this.showAlert('Actualizado', 'Los datos del usuario se han actualizado correctamente.');
+      //------------------------------------------------
+
+      await this.showAlert(
+
+        'Actualizado',
+
+        'Los datos del usuario se han actualizado correctamente.'
+
+      );
+
       this.resetForm();
+
       this.loadUsuarios();
-    } catch (error) {
-      console.error('Error actualizando usuario:', error);
-      this.showAlert('Error', 'No se pudo actualizar la persona o el login.');
+
     }
+
+    catch (error) {
+
+      console.error(
+
+        'Error actualizando usuario',
+
+        error
+
+      );
+
+      this.showAlert(
+
+        'Error',
+
+        'No se pudo actualizar la persona o el login.'
+
+      );
+
+    }
+
   }
 
-  // 🔹 Eliminar usuario (persona + login)
-  async deleteUsuario(u: any) {
-    const confirm = await this.alertCtrl.create({
-      header: 'Confirmar eliminación',
-      message: `¿Seguro que deseas eliminar al usuario <b>${u.nombres} ${u.apellidos}</b>?`,
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Eliminar',
-          handler: async () => {
-            try {
-              console.log('Intentando eliminar:', {
-                idpersona: u.idpersona,
-                idusuario: u.idusuario
-              });
+  //====================================================
+  // ELIMINAR
+  //====================================================
 
-              // 🔸 1. Eliminar login primero (si existe)
-              if (u.idusuario) {
+  async deleteUsuario(usuario: any): Promise<void> {
+
+    const confirm = await this.alertCtrl.create({
+
+      header: 'Confirmar eliminación',
+
+      message:
+
+        `¿Seguro que deseas eliminar al usuario <b>${usuario.nombres} ${usuario.apellidos}</b>?`,
+
+      buttons: [
+
+        {
+
+          text: 'Cancelar',
+
+          role: 'cancel'
+
+        },
+
+        {
+
+          text: 'Eliminar',
+
+          handler: async () => {
+
+            try {
+
+              //------------------------------------------------
+
+              console.log(
+
+                'Eliminando usuario',
+
+                usuario
+
+              );
+
+              //------------------------------------------------
+              // LOGIN
+              //------------------------------------------------
+
+              if (usuario.idusuario) {
+
                 await this.apiService
-                  .post(
-                    `https://backend-abimar.onrender.com/abimar/core/api/usuario/delete?id=${u.idusuario}`,
-                    {}
-                  )
+                  .post(`https://backend-abimar.onrender.com/abimar/core/api/usuario/delete?id=${usuario.idusuario}`, {})
                   .toPromise();
-                console.log('Login eliminado correctamente');
+
               }
 
-              // 🔸 2. Eliminar persona
-              await this.apiService
-                .post(
-                  `https://backend-abimar.onrender.com/abimar/core/api/persona/delete?id=${u.idpersona}`,
-                  {}
-                )
-                .toPromise();
-              console.log('Persona eliminada correctamente');
+              //------------------------------------------------
+              // PERSONA
+              //------------------------------------------------
 
-              await this.showAlert('Eliminado', 'Usuario eliminado correctamente.');
+              await this.apiService
+                .post(`https://backend-abimar.onrender.com/abimar/core/api/persona/delete?id=${usuario.idpersona}`, {})
+                .toPromise();
+              //------------------------------------------------
+
+              await this.showAlert(
+
+                'Eliminado',
+
+                'Usuario eliminado correctamente.'
+
+              );
+
               this.loadUsuarios();
-            } catch (error) {
-              console.error('Error eliminando usuario:', error);
-              if (error.error) console.error('Detalle del error:', error.error);
-              this.showAlert('Error', 'No se pudo eliminar el usuario. Ver consola para detalles.');
+
             }
-          },
-        },
-      ],
+
+            catch (error) {
+
+              console.error(
+
+                'Error eliminando usuario',
+
+                error
+
+              );
+
+              if (error?.error) {
+
+                console.error(error.error);
+
+              }
+
+              this.showAlert(
+
+                'Error',
+
+                'No se pudo eliminar el usuario.'
+
+              );
+
+            }
+
+          }
+
+        }
+
+      ]
+
     });
 
     await confirm.present();
+
   }
 
-  // 🔹 Mostrar nombre del rol
-  getRoleName(rolId: any) {
-    if (rolId === null || rolId === undefined) return '-';
-    const r = this.roles.find((x) => Number(x.idrol) === Number(rolId));
-    return r ? r.descripcion || r.nombre || `Rol ${r.idrol}` : String(rolId);
-  }
+  //====================================================
+  // ROL
+  //====================================================
 
-  // 🔹 Filtrar usuarios
-  usuariosFiltrados() {
-    if (!this.searchTerm) return this.usuarios;
-    const term = this.searchTerm.toLowerCase();
-    return this.usuarios.filter(
-      (u) =>
-        (`${u.nombres || ''} ${u.apellidos || ''}`.toLowerCase().includes(term)) ||
-        (u.documento || '').toLowerCase().includes(term)
+  getRoleName(rolId: any): string {
+
+    if (rolId === null || rolId === undefined) {
+
+      return '-';
+
+    }
+
+    const rol = this.roles.find(
+
+      r => Number(r.idrol) === Number(rolId)
+
     );
+
+    return rol
+
+      ? rol.descripcion ||
+
+      rol.nombre ||
+
+      `Rol ${rol.idrol}`
+
+      : String(rolId);
+
   }
 
-  // 🔹 Utilidades
+  //====================================================
+  // BUSCADOR
+  //====================================================
+
+  usuariosFiltrados(): any[] {
+
+    if (!this.searchTerm.trim()) {
+
+      return this.usuarios;
+
+    }
+
+    const term = this.searchTerm.toLowerCase();
+
+    return this.usuarios.filter(usuario =>
+
+      (`${usuario.nombres || ''} ${usuario.apellidos || ''}`
+
+        .toLowerCase()
+
+        .includes(term))
+
+      ||
+
+      (usuario.documento || '')
+
+        .toLowerCase()
+
+        .includes(term)
+
+      ||
+
+      (usuario.emailUser || '')
+
+        .toLowerCase()
+
+        .includes(term)
+
+      ||
+
+      String(usuario.telefono || '')
+
+        .includes(term)
+
+      ||
+
+      this.getRoleName(usuario.rolId)
+
+        .toLowerCase()
+
+        .includes(term)
+
+    );
+
+  }
+  //====================================================
+  // TOKEN
+  //====================================================
+
   private generateToken(length: number = 32): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    return Array.from({ length }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    return Array.from(
+
+      { length },
+
+      () => chars.charAt(
+
+        Math.floor(Math.random() * chars.length)
+
+      )
+
+    ).join('');
+
   }
 
-  private async showAlert(header: string, message: string) {
+  //====================================================
+  // ALERTAS
+  //====================================================
+
+  private async showAlert(
+
+    header: string,
+
+    message: string
+
+  ): Promise<void> {
+
     const alert = await this.alertCtrl.create({
+
       header,
+
       message,
+
       backdropDismiss: true,
-      buttons: ['Aceptar'],
+
+      buttons: [
+
+        {
+
+          text: 'Aceptar'
+
+        }
+
+      ]
+
     });
+
     await alert.present();
+
   }
 
-  resetForm() {
+  //====================================================
+  // LIMPIAR FORMULARIO
+  //====================================================
+
+  resetForm(): void {
+
     this.nombres = '';
+
     this.apellidos = '';
+
     this.documento = '';
+
     this.telefono = null;
+
     this.idRol = null;
+
     this.email = '';
+
     this.password = '';
+
     this.editId = null;
+
     this.originalData = {};
+
   }
+
 }

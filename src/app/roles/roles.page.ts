@@ -7,81 +7,230 @@ import { ApiService } from '../services/api.service';
   styleUrls: ['./roles.page.scss'],
 })
 export class RolesPage implements OnInit {
-  descripcion: string = '';
-  estado: number = 1;
+
+  descripcion = '';
+  estado = 1;
+
   roles: any[] = [];
+
   editId: number | null = null;
-  originalData: any = {};
+
   searchTerm = '';
 
-  constructor(private apiService: ApiService<any>) {}
+  loading = false;
 
-  ngOnInit() {
+  constructor(
+    private apiService: ApiService<any>
+  ) {}
+
+  ngOnInit(): void {
     this.loadRoles();
   }
 
-  loadRoles() {
+  //====================================================
+  // LISTAR
+  //====================================================
+
+  loadRoles(): void {
+
+    this.loading = true;
+
     this.apiService
-      .post('https://backend-abimar.onrender.com/abimar/core/api/rol/list', {})
-      .subscribe(
-        (res: any) => { this.roles = Array.isArray(res) ? res : res ? [res] : []; },
-        (err) => console.error('Error cargando roles:', err)
-      );
+      .post(
+        'https://backend-abimar.onrender.com/abimar/core/api/rol/list',
+        {}
+      )
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.roles = Array.isArray(res)
+            ? res
+            : res
+            ? [res]
+            : [];
+
+          this.loading = false;
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+          this.loading = false;
+
+        }
+
+      });
+
   }
 
-  createRole() {
-    const rol = { descripcion: this.descripcion, estado: this.estado, idrol: 0 };
-    this.apiService
-      .post('https://backend-abimar.onrender.com/abimar/core/api/rol/create', rol)
-      .subscribe(
-        () => { this.resetForm(); this.loadRoles(); },
-        (err) => console.error('Error creando rol:', err)
-      );
-  }
+  //====================================================
+  // CREAR
+  //====================================================
 
-  editRole(r: any) {
-    this.editId = r.idrol;
-    this.descripcion = r.descripcion || '';
-    this.estado = r.estado ?? 1;
-    this.originalData = { ...r };
-  }
+  createRole(): void {
 
-  updateRole() {
-    if (!this.editId) return;
+    if (!this.descripcion.trim()) {
+      return;
+    }
+
     const payload = {
-      idrol: this.editId,
-      descripcion: this.descripcion,
+
+      idrol: 0,
+
+      descripcion: this.descripcion.trim(),
+
       estado: this.estado
+
     };
+
     this.apiService
-      .post('https://backend-abimar.onrender.com/abimar/core/api/rol/update', payload)
-      .subscribe(
-        () => { this.resetForm(); this.loadRoles(); },
-        (err) => console.error('Error actualizando rol:', err)
-      );
+      .post(
+        'https://backend-abimar.onrender.com/abimar/core/api/rol/create',
+        payload
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.resetForm();
+
+          this.loadRoles();
+
+        },
+
+        error: (err) => console.error(err)
+
+      });
+
   }
 
-  deleteRole(id: number) {
-    this.apiService
-      .post(`https://backend-abimar.onrender.com/abimar/core/api/rol/delete?id=${id}`, {})
-      .subscribe(
-        () => this.loadRoles(),
-        (err) => console.error('Error eliminando rol:', err)
-      );
+  //====================================================
+  // EDITAR
+  //====================================================
+
+  editRole(role: any): void {
+
+    this.editId = role.idrol;
+
+    this.descripcion = role.descripcion;
+
+    this.estado = role.estado;
+
+    window.scrollTo({
+
+      top: 0,
+
+      behavior: 'smooth'
+
+    });
+
   }
 
-  resetForm() {
+  //====================================================
+  // ACTUALIZAR
+  //====================================================
+
+  updateRole(): void {
+
+    if (!this.editId) {
+      return;
+    }
+
+    const payload = {
+
+      idrol: this.editId,
+
+      descripcion: this.descripcion.trim(),
+
+      estado: this.estado
+
+    };
+
+    this.apiService
+      .post(
+        'https://backend-abimar.onrender.com/abimar/core/api/rol/update',
+        payload
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.resetForm();
+
+          this.loadRoles();
+
+        },
+
+        error: (err) => console.error(err)
+
+      });
+
+  }
+
+  //====================================================
+  // ELIMINAR
+  //====================================================
+
+  deleteRole(id: number): void {
+
+    if (!confirm('¿Desea eliminar este rol?')) {
+      return;
+    }
+
+    this.apiService
+      .post(
+        `https://backend-abimar.onrender.com/abimar/core/api/rol/delete?id=${id}`,
+        {}
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.loadRoles();
+
+        },
+
+        error: (err) => console.error(err)
+
+      });
+
+  }
+
+  //====================================================
+  // LIMPIAR
+  //====================================================
+
+  resetForm(): void {
+
     this.descripcion = '';
+
     this.estado = 1;
+
     this.editId = null;
-    this.originalData = {};
+
   }
 
-  rolesFiltrados() {
-    if (!this.searchTerm) return this.roles;
+  //====================================================
+  // BUSCADOR
+  //====================================================
+
+  rolesFiltrados(): any[] {
+
+    if (!this.searchTerm.trim()) {
+      return this.roles;
+    }
+
     const term = this.searchTerm.toLowerCase();
+
     return this.roles.filter(r =>
-      (r.descripcion || '').toLowerCase().includes(term)
+      (r.descripcion || '')
+        .toLowerCase()
+        .includes(term)
     );
+
   }
+
 }

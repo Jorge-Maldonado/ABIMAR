@@ -1,103 +1,937 @@
-// ─── Page ─────────────────────────────────────────────
+/* ==========================================================
+   USERS PAGE
+   Dashboard Moderno
+========================================================== */
+
 .users-page {
   --background: var(--ds-bg-base);
-  padding: var(--ds-sp-md);
 }
 
-// ─── Container ────────────────────────────────────────
 .users-container {
-  background: var(--ds-bg-surface);
-  border: 1px solid var(--ds-border-accent);
-  border-radius: var(--ds-r-lg);
-  padding: var(--ds-sp-lg);
-  box-shadow: var(--ds-glow-cyan);
+  max-width: 1600px;
+  margin: auto;
+  padding: 24px;
 }
 
-// ─── Header ───────────────────────────────────────────
+/* ==========================================================
+   HEADER
+========================================================== */
+
 .users-header {
-  text-align: center;
-  margin-bottom: var(--ds-sp-md);
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 24px;
+
+  margin-bottom: 30px;
+
+  flex-wrap: wrap;
+
+}
+
+.page-chip {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 6px 14px;
+
+  border-radius: 30px;
+
+  background: var(--ds-bg-elevated);
+
+  border: 1px solid var(--ds-border-accent);
+
+  color: var(--ds-price);
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  margin-bottom: 12px;
+
 }
 
 .users-title {
-  font-family: var(--ds-font-heading);
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--ds-price);
+
   margin: 0;
-  text-shadow: 0 0 10px var(--ds-price-glow);
+
+  font-size: 34px;
+
+  color: var(--ds-price);
+
+  font-weight: 800;
+
 }
 
 .users-subtitle {
-  font-size: 13px;
+
+  margin-top: 10px;
+
   color: var(--ds-text-2);
-  margin-top: 4px;
+
+  font-size: 14px;
+
+  max-width: 600px;
+
+  line-height: 1.5;
+
 }
 
-// ─── Form ─────────────────────────────────────────────
-.users-form {
-  margin-top: var(--ds-sp-md);
+/* ==========================================================
+   TARJETA ESTADÍSTICA
+========================================================== */
 
-  ion-button {
-    margin-top: 12px;
-  }
+.users-resume {
+
+  width: 140px;
+
+  height: 140px;
+
+  border-radius: 24px;
+
+  background: var(--ds-bg-surface);
+
+  border: 1px solid var(--ds-border-accent);
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  box-shadow: var(--ds-glow-cyan);
+
 }
 
-// ─── Divider ──────────────────────────────────────────
-.users-divider {
-  height: 1px;
-  background: var(--ds-border);
-  margin: var(--ds-sp-lg) 0;
+.resume-number {
+
+  font-size: 42px;
+
+  font-weight: 800;
+
+  color: var(--ds-price);
+
 }
 
-// ─── Search ───────────────────────────────────────────
-.users-search {
-  margin-bottom: var(--ds-sp-md);
+.resume-label {
+
+  margin-top: 8px;
+
+  font-size: 13px;
+
+  color: var(--ds-text-2);
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+
 }
 
-// ─── List ─────────────────────────────────────────────
-.users-list {
-  margin-top: var(--ds-sp-md);
+/* ==========================================================
+   LAYOUT
+========================================================== */
+
+.users-layout {
+
+  display: grid;
+
+  grid-template-columns: 380px 1fr;
+
+  gap: 26px;
+
+  align-items: start;
+
 }
 
-// ─── Item ─────────────────────────────────────────────
-.user-item {
+/* ==========================================================
+   FORM
+========================================================== */
+
+.form-card {
+
+  position: sticky;
+
+  top: 20px;
+
+  background: var(--ds-bg-surface);
+
+  border-radius: 24px;
+
+  border: 1px solid var(--ds-border-accent);
+
+  padding: 24px;
+
+  box-shadow: var(--ds-glow-cyan);
+
+}
+
+.card-header {
+
+  margin-bottom: 24px;
+
+}
+
+.card-header h2 {
+
+  margin: 0;
+
+  color: var(--ds-price);
+
+  font-size: 22px;
+
+  font-weight: 700;
+
+}
+
+.card-header p {
+
+  margin-top: 8px;
+
+  color: var(--ds-text-2);
+
+  font-size: 13px;
+
+}
+
+.form-grid {
+
+  display: grid;
+
+  grid-template-columns: 1fr;
+
+  gap: 16px;
+
+}
+
+.full-width {
+
+  grid-column: 1 / -1;
+
+}
+
+.ds-form-item {
+
   --background: var(--ds-bg-elevated);
-  border-radius: var(--ds-r-md);
-  margin-bottom: 8px;
-  transition: all 0.2s ease;
 
-  h2 {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ds-price);
-    margin: 0;
-  }
+  border: 1px solid var(--ds-border);
 
-  p {
-    font-size: 13px;
-    color: var(--ds-text-2);
-    margin: 2px 0;
-  }
+  border-radius: 16px;
 
-  .user-role {
-    font-size: 12px;
-    color: var(--ds-accent);
-  }
+  overflow: hidden;
 
-  @media (hover: hover) {
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--ds-glow-cyan);
-    }
-  }
+  transition: .25s;
+
 }
 
-// ─── Buttons extra ───────────────────────────────────
+.ds-form-item:hover {
+
+  border-color: var(--ds-border-accent);
+
+}
+
+.ds-form-item ion-label {
+
+  color: var(--ds-text-2) !important;
+
+  font-size: 13px !important;
+
+}
+
+.ds-form-item ion-input,
+.ds-form-item ion-select {
+
+  font-size: 15px;
+
+}
+
+.buttons {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-top: 24px;
+
+}
+
+.buttons ion-button {
+
+  height: 48px;
+
+  font-weight: 700;
+
+}
+
+/* ==========================================================
+   BUSCADOR
+========================================================== */
+
+.search-card {
+
+  margin-bottom: 24px;
+
+}
+
+.search-card ion-searchbar {
+
+  --background: var(--ds-bg-surface);
+
+  --border-radius: 18px;
+
+  --box-shadow: none;
+
+  --icon-color: var(--ds-price);
+
+  --color: var(--ds-text);
+
+  --placeholder-color: var(--ds-text-2);
+
+  border: 1px solid var(--ds-border-accent);
+
+  border-radius: 18px;
+
+}
+/* ==========================================================
+   GRID DE USUARIOS
+========================================================== */
+
+.users-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+
+  gap: 22px;
+
+  align-items: stretch;
+
+}
+
+/* ==========================================================
+   CARD
+========================================================== */
+
+.user-card {
+
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  background: var(--ds-bg-surface);
+
+  border: 1px solid var(--ds-border-accent);
+
+  border-radius: 22px;
+
+  padding: 22px;
+
+  overflow: hidden;
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    border-color .25s ease;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+
+  animation: userFade .35s ease;
+
+}
+
+.user-card:hover {
+
+  transform: translateY(-6px);
+
+  border-color: var(--ds-price);
+
+  box-shadow: var(--ds-glow-cyan);
+
+}
+
+/* Barra superior */
+
+.user-card::before {
+
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+
+  left: 0;
+
+  width: 100%;
+
+  height: 4px;
+
+  background: var(--ds-price);
+
+  opacity: .75;
+
+}
+
+/* ==========================================================
+   CABECERA
+========================================================== */
+
+.user-top {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  margin-bottom: 22px;
+
+}
+
+/* ==========================================================
+   AVATAR
+========================================================== */
+
+.user-avatar {
+
+  width: 66px;
+
+  height: 66px;
+
+  min-width: 66px;
+
+  border-radius: 18px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  background: rgba(255,255,255,.04);
+
+  border: 1px solid var(--ds-border-accent);
+
+  color: var(--ds-price);
+
+  font-size: 22px;
+
+  font-weight: 800;
+
+  transition: .30s;
+
+}
+
+.user-card:hover .user-avatar {
+
+  transform: rotate(-6deg) scale(1.08);
+
+}
+
+/* ==========================================================
+   INFO
+========================================================== */
+
+.user-info {
+
+  flex: 1;
+
+}
+
+.user-info h2 {
+
+  margin: 0;
+
+  font-size: 19px;
+
+  color: var(--ds-price);
+
+  font-weight: 700;
+
+  line-height: 1.3;
+
+}
+
+.user-info small {
+
+  display: block;
+
+  margin-top: 5px;
+
+  color: var(--ds-text-2);
+
+}
+
+/* ==========================================================
+   CHIP ROL
+========================================================== */
+
+.role-chip {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-top: 12px;
+
+  padding: 6px 16px;
+
+  border-radius: 30px;
+
+  background: rgba(255,255,255,.05);
+
+  border: 1px solid var(--ds-border-accent);
+
+  color: var(--ds-price);
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+}
+
+/* ==========================================================
+   DATOS
+========================================================== */
+
+.user-data {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-top: 10px;
+
+  margin-bottom: 22px;
+
+}
+
+.user-data div {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  color: var(--ds-text);
+
+  font-size: 14px;
+
+  word-break: break-word;
+
+}
+
+.user-data ion-icon {
+
+  color: var(--ds-price);
+
+  font-size: 18px;
+
+  min-width: 18px;
+
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.user-footer {
+
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: auto;
+
+  padding-top: 18px;
+
+  border-top: 1px solid var(--ds-border);
+
+}
+
+.user-footer ion-button {
+
+  flex: 1;
+
+  margin: 0;
+
+  --border-radius: 14px;
+
+  font-weight: 600;
+
+}
+
 .btn-warning {
+
   --color: var(--ds-price);
+
 }
 
 .btn-danger {
+
   --color: var(--ds-danger);
+
 }
+
+/* ==========================================================
+   EFECTOS
+========================================================== */
+
+.user-footer ion-button:hover {
+
+  transform: translateY(-2px);
+
+}
+
+.user-card:hover h2 {
+
+  color: var(--ds-price);
+
+}
+
+.user-card:hover .role-chip {
+
+  transform: scale(1.05);
+
+}
+
+.role-chip {
+
+  transition: .25s;
+
+}
+
+.user-avatar {
+
+  transition: transform .30s ease;
+
+}
+
+/* ==========================================================
+   ANIMACIÓN
+========================================================== */
+
+@keyframes userFade {
+
+  from {
+
+    opacity: 0;
+
+    transform: translateY(18px);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: translateY(0);
+
+  }
+
+}
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.empty-card {
+
+  min-height: 420px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  text-align: center;
+
+  background: var(--ds-bg-surface);
+
+  border: 2px dashed var(--ds-border-accent);
+
+  border-radius: 24px;
+
+  padding: 40px;
+
+}
+
+.empty-card ion-icon {
+
+  font-size: 70px;
+
+  color: var(--ds-price);
+
+  margin-bottom: 20px;
+
+}
+
+.empty-card h2 {
+
+  margin: 0;
+
+  font-size: 24px;
+
+  font-weight: 700;
+
+  color: var(--ds-price);
+
+}
+
+.empty-card p {
+
+  margin-top: 12px;
+
+  max-width: 360px;
+
+  color: var(--ds-text-2);
+
+  line-height: 1.6;
+
+}
+
+/* ==========================================================
+   HOVER GENERAL
+========================================================== */
+
+.form-card,
+.search-card,
+.user-card {
+
+  transition: .30s;
+
+}
+
+.form-card:hover,
+.search-card:hover {
+
+  box-shadow: var(--ds-glow-cyan);
+
+}
+
+/* ==========================================================
+   INPUTS
+========================================================== */
+
+ion-input {
+
+  --highlight-color-focused: var(--ds-price);
+
+}
+
+ion-select {
+
+  --placeholder-color: var(--ds-text-2);
+
+}
+
+ion-searchbar {
+
+  --cancel-button-color: var(--ds-price);
+
+}
+
+/* ==========================================================
+   ICONOS
+========================================================== */
+
+.user-footer ion-icon {
+
+  font-size: 18px;
+
+}
+
+/* ==========================================================
+   MICRO ANIMACIONES
+========================================================== */
+
+.user-card {
+
+  cursor: pointer;
+
+}
+
+.user-card:hover .user-avatar {
+
+  box-shadow: var(--ds-glow-cyan);
+
+}
+
+.user-card:hover .user-data ion-icon {
+
+  transform: scale(1.15);
+
+}
+
+.user-data ion-icon {
+
+  transition: .25s;
+
+}
+
+.user-card:hover .role-chip {
+
+  box-shadow: var(--ds-glow-cyan);
+
+}
+
+/* ==========================================================
+   SCROLL
+========================================================== */
+
+.users-page::-webkit-scrollbar {
+
+  width: 8px;
+
+}
+
+.users-page::-webkit-scrollbar-thumb {
+
+  background: var(--ds-border-accent);
+
+  border-radius: 20px;
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width:1200px){
+
+  .users-layout{
+
+    grid-template-columns:1fr;
+
+  }
+
+  .form-card{
+
+    position:relative;
+
+    top:0;
+
+  }
+
+}
+
+@media (max-width:768px){
+
+  .users-container{
+
+    padding:18px;
+
+  }
+
+  .users-title{
+
+    font-size:28px;
+
+  }
+
+  .users-header{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+  }
+
+  .users-resume{
+
+    width:100%;
+
+    height:100px;
+
+    flex-direction:row;
+
+    gap:14px;
+
+  }
+
+  .users-grid{
+
+    grid-template-columns:1fr;
+
+  }
+
+  .user-footer{
+
+    flex-direction:column;
+
+  }
+
+  .user-footer ion-button{
+
+    width:100%;
+
+  }
+
+}
+
+@media (max-width:480px){
+
+  .users-title{
+
+    font-size:24px;
+
+  }
+
+  .users-subtitle{
+
+    font-size:13px;
+
+  }
+
+  .user-top{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+  }
+
+  .user-avatar{
+
+    width:60px;
+
+    height:60px;
+
+  }
+
+  .user-info{
+
+    width:100%;
+
+  }
+
+  .user-data{
+
+    gap:14px;
+
+  }
+
+}
+
+/* ==========================================================
+   FIN
+========================================================== */

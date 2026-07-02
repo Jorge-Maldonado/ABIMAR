@@ -1,98 +1,751 @@
-// ─── Page ─────────────────────────────────────────────
+/* ==========================================================
+   ROLES PAGE
+   Diseño Dashboard Moderno
+========================================================== */
+
 .roles-page {
   --background: var(--ds-bg-base);
-  padding: var(--ds-sp-md);
 }
 
-// ─── Container ────────────────────────────────────────
 .roles-container {
-  background: var(--ds-bg-surface);
-  border: 1px solid var(--ds-border-accent);
-  border-radius: var(--ds-r-lg);
-  padding: var(--ds-sp-lg);
-  box-shadow: var(--ds-glow-cyan);
+  padding: 24px;
+  max-width: 1400px;
+  margin: auto;
 }
 
-// ─── Header ───────────────────────────────────────────
+/* ==========================================================
+   HEADER
+========================================================== */
+
 .roles-header {
-  text-align: center;
-  margin-bottom: var(--ds-sp-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.page-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 30px;
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-accent);
+  color: var(--ds-price);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
 }
 
 .roles-title {
-  font-family: var(--ds-font-heading);
-  font-size: 22px;
+  margin: 0;
+  font-size: 34px;
   font-weight: 800;
   color: var(--ds-price);
-  margin: 0;
-  text-shadow: 0 0 10px var(--ds-price-glow);
+  line-height: 1.2;
 }
 
 .roles-subtitle {
+  margin-top: 10px;
+  color: var(--ds-text-2);
+  font-size: 14px;
+  max-width: 520px;
+  line-height: 1.5;
+}
+
+.roles-resume {
+  width: 130px;
+  height: 130px;
+  border-radius: 24px;
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-accent);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--ds-glow-cyan);
+  flex-shrink: 0;
+}
+
+.resume-number {
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--ds-price);
+}
+
+.resume-label {
+  margin-top: 6px;
   font-size: 13px;
   color: var(--ds-text-2);
-  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-// ─── Form ─────────────────────────────────────────────
-.roles-form {
-  margin-top: var(--ds-sp-md);
+/* ==========================================================
+   FORMULARIO
+========================================================== */
 
-  ion-button {
-    margin-top: 12px;
-  }
+.form-card {
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-accent);
+  border-radius: 22px;
+  padding: 26px;
+  margin-bottom: 30px;
+  box-shadow: var(--ds-glow-cyan);
 }
 
-// ─── Divider ──────────────────────────────────────────
-.roles-divider {
-  height: 1px;
-  background: var(--ds-border);
-  margin: var(--ds-sp-lg) 0;
+.card-header {
+  margin-bottom: 24px;
 }
 
-// ─── Search ───────────────────────────────────────────
-.roles-search {
-  margin-bottom: var(--ds-sp-md);
+.card-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ds-price);
 }
 
-// ─── List ─────────────────────────────────────────────
-.roles-list {
-  margin-top: var(--ds-sp-md);
+.card-header p {
+  margin-top: 6px;
+  color: var(--ds-text-2);
+  font-size: 14px;
 }
 
-// ─── Item ─────────────────────────────────────────────
-.role-item {
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.ds-form-item {
   --background: var(--ds-bg-elevated);
-  border-radius: var(--ds-r-md);
-  margin-bottom: 8px;
-  transition: all 0.2s ease;
-
-  h2 {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ds-price);
-    margin: 0;
-  }
-
-  p {
-    font-size: 13px;
-    color: var(--ds-text-2);
-    margin: 2px 0 0;
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--ds-glow-cyan);
-    }
-  }
+  border: 1px solid var(--ds-border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: .25s;
 }
 
-// ─── Buttons extras ───────────────────────────────────
+.ds-form-item:hover {
+  border-color: var(--ds-border-accent);
+}
+
+.ds-form-item ion-label {
+  color: var(--ds-text-2) !important;
+  font-size: 13px !important;
+  margin-bottom: 6px;
+}
+
+.ds-form-item ion-input {
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  font-size: 15px;
+}
+
+.buttons {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.buttons ion-button {
+  flex: 1;
+  min-width: 180px;
+}
+
+/* ==========================================================
+   BUSCADOR
+========================================================== */
+
+.search-card {
+  margin-bottom: 30px;
+}
+
+.search-card ion-searchbar {
+  --background: var(--ds-bg-surface);
+  --border-radius: 18px;
+  --box-shadow: none;
+  --color: var(--ds-text);
+  --placeholder-color: var(--ds-text-2);
+  --icon-color: var(--ds-price);
+  border: 1px solid var(--ds-border-accent);
+  border-radius: 18px;
+}
+/* ==========================================================
+   GRID DE ROLES
+========================================================== */
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 22px;
+  align-items: stretch;
+}
+
+/* ==========================================================
+   CARD
+========================================================== */
+
+.role-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-accent);
+  border-radius: 22px;
+
+  padding: 22px;
+
+  overflow: hidden;
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    border-color .25s ease;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.15);
+
+  animation: roleFade .35s ease;
+}
+
+.role-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--ds-price);
+  box-shadow: var(--ds-glow-cyan);
+}
+
+/* brillo superior */
+
+.role-card::before {
+
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 4px;
+
+  background: var(--ds-price);
+
+  opacity: .65;
+
+}
+
+/* ==========================================================
+   CABECERA CARD
+========================================================== */
+
+.role-top {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  margin-bottom: 24px;
+
+}
+
+/* ==========================================================
+   AVATAR
+========================================================== */
+
+.role-avatar {
+
+  width: 62px;
+
+  height: 62px;
+
+  min-width: 62px;
+
+  border-radius: 18px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  background: rgba(255,255,255,.04);
+
+  border: 1px solid var(--ds-border-accent);
+
+  color: var(--ds-price);
+
+  font-size: 24px;
+
+  font-weight: 800;
+
+  transition: .25s;
+
+}
+
+.role-card:hover .role-avatar {
+
+  transform: rotate(-6deg) scale(1.08);
+
+}
+
+/* ==========================================================
+   INFO
+========================================================== */
+
+.role-info {
+
+  flex: 1;
+
+}
+
+.role-info h2 {
+
+  margin: 0;
+
+  color: var(--ds-price);
+
+  font-size: 19px;
+
+  font-weight: 700;
+
+  word-break: break-word;
+
+}
+
+.role-info p {
+
+  margin-top: 6px;
+
+  color: var(--ds-text-2);
+
+  font-size: 13px;
+
+}
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.role-status {
+
+  margin-top: 14px;
+
+}
+
+.status {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 6px 16px;
+
+  border-radius: 30px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  letter-spacing: .3px;
+
+}
+
+.active {
+
+  background: rgba(50,255,150,.12);
+
+  color: #46d98b;
+
+  border: 1px solid rgba(50,255,150,.18);
+
+}
+
+.inactive {
+
+  background: rgba(255,80,80,.12);
+
+  color: #ff7373;
+
+  border: 1px solid rgba(255,80,80,.18);
+
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.role-footer {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: auto;
+
+  padding-top: 18px;
+
+  border-top: 1px solid var(--ds-border);
+
+}
+
+.role-footer ion-button {
+
+  flex: 1;
+
+  margin: 0;
+
+  --border-radius: 14px;
+
+  font-weight: 600;
+
+}
+
 .btn-warning {
+
   --color: var(--ds-price);
+
 }
 
 .btn-danger {
+
   --color: var(--ds-danger);
+
 }
+
+/* ==========================================================
+   EFECTO BOTONES
+========================================================== */
+
+.role-footer ion-button:hover {
+
+  transform: translateY(-2px);
+
+}
+
+/* ==========================================================
+   ANIMACIONES
+========================================================== */
+
+@keyframes roleFade {
+
+  from {
+
+    opacity: 0;
+
+    transform: translateY(18px);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: translateY(0);
+
+  }
+
+}
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.empty-card {
+
+  min-height: 350px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  text-align: center;
+
+  padding: 40px;
+
+  background: var(--ds-bg-surface);
+
+  border: 1px dashed var(--ds-border-accent);
+
+  border-radius: 24px;
+
+}
+
+.empty-card ion-icon {
+
+  font-size: 72px;
+
+  color: var(--ds-price);
+
+  margin-bottom: 20px;
+
+  opacity: .9;
+
+}
+
+.empty-card h2 {
+
+  margin: 0;
+
+  color: var(--ds-price);
+
+  font-size: 24px;
+
+  font-weight: 700;
+
+}
+
+.empty-card p {
+
+  margin-top: 12px;
+
+  max-width: 340px;
+
+  color: var(--ds-text-2);
+
+  line-height: 1.6;
+
+}
+
+/* ==========================================================
+   SCROLL
+========================================================== */
+
+.roles-page::-webkit-scrollbar {
+
+  width: 8px;
+
+}
+
+.roles-page::-webkit-scrollbar-thumb {
+
+  background: var(--ds-border-accent);
+
+  border-radius: 20px;
+
+}
+
+/* ==========================================================
+   HOVER GENERAL
+========================================================== */
+
+.form-card,
+.search-card,
+.role-card {
+
+  transition: .30s;
+
+}
+
+.form-card:hover,
+.search-card:hover {
+
+  box-shadow: var(--ds-glow-cyan);
+
+}
+
+/* ==========================================================
+   INPUTS
+========================================================== */
+
+ion-input {
+
+  --highlight-color-focused: var(--ds-price);
+
+}
+
+ion-searchbar {
+
+  --cancel-button-color: var(--ds-price);
+
+}
+
+/* ==========================================================
+   BOTONES
+========================================================== */
+
+.buttons ion-button {
+
+  height: 50px;
+
+  font-weight: 700;
+
+  letter-spacing: .4px;
+
+}
+
+.role-footer ion-button ion-icon {
+
+  font-size: 18px;
+
+}
+
+/* ==========================================================
+   MICRO ANIMACIONES
+========================================================== */
+
+.role-card {
+
+  cursor: pointer;
+
+}
+
+.role-card:hover h2 {
+
+  color: var(--ds-price);
+
+}
+
+.role-card:hover .status {
+
+  transform: scale(1.04);
+
+}
+
+.status {
+
+  transition: .25s;
+
+}
+
+.role-avatar {
+
+  transition: transform .30s ease;
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 992px) {
+
+  .roles-header {
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+  }
+
+  .roles-resume {
+
+    width: 100%;
+
+    height: 100px;
+
+    flex-direction: row;
+
+    gap: 14px;
+
+  }
+
+}
+
+@media (max-width:768px){
+
+  .roles-container{
+
+    padding:18px;
+
+  }
+
+  .roles-title{
+
+    font-size:28px;
+
+  }
+
+  .form-card{
+
+    padding:18px;
+
+  }
+
+  .buttons{
+
+    flex-direction:column;
+
+  }
+
+  .buttons ion-button{
+
+    width:100%;
+
+  }
+
+  .roles-grid{
+
+    grid-template-columns:1fr;
+
+  }
+
+  .role-footer{
+
+    flex-direction:column;
+
+  }
+
+  .role-footer ion-button{
+
+    width:100%;
+
+  }
+
+}
+
+@media (max-width:480px){
+
+  .roles-title{
+
+    font-size:24px;
+
+  }
+
+  .roles-subtitle{
+
+    font-size:13px;
+
+  }
+
+  .role-top{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+  }
+
+  .role-avatar{
+
+    width:58px;
+
+    height:58px;
+
+  }
+
+  .role-info{
+
+    width:100%;
+
+  }
+
+}
+
+/* ==========================================================
+   FIN
+========================================================== */
