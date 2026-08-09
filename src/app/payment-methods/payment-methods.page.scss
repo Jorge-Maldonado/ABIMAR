@@ -7,8 +7,37 @@
 .payment-subtitle {
   font-size:     14px;
   color:         var(--ds-text-2);
-  margin:        0 0 var(--ds-sp-lg);
+  margin:        0 0 var(--ds-sp-md);
   text-align:    center;
+}
+
+.payment-total {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  gap:             4px;
+  margin-bottom:   var(--ds-sp-lg);
+  padding:         14px 16px;
+  background:      var(--ds-bg-surface);
+  border:          1px solid var(--ds-border);
+  border-radius:   var(--ds-r-lg);
+
+  span {
+    font-size: 13px;
+    color:     var(--ds-text-2);
+  }
+
+  strong {
+    font-family: var(--ds-font-heading);
+    font-size:   22px;
+    font-weight: 700;
+    color:       var(--ds-price);
+  }
+
+  small {
+    font-size: 12px;
+    color:     var(--ds-text-2);
+  }
 }
 
 // ─── Loading ─────────────────────────────────────────────────

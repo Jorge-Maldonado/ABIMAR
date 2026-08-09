@@ -1,56 +1,106 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
+      <ion-menu-button menu="mainMenu" autoHide="false"></ion-menu-button>
       <ion-back-button defaultHref="/home" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ categoriaNombre }}</ion-title>
+    <ion-title>{{ categoriaNombre || 'Categoría' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" class="cat-cart-btn" *ngIf="!isGuestUser" routerLink="/my-cart">
+        <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+        <ion-badge class="cart-qty-badge" *ngIf="cartCount > 0">{{ cartCount }}</ion-badge>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="cat-content">
 
-  <!-- Buscador -->
-  <div class="cat-search ds-searchbar">
-    <ion-searchbar
-      [(ngModel)]="searchTerm"
-      placeholder="Buscar en {{ categoriaNombre }}..."
-      [showClearButton]="searchTerm ? 'always' : 'never'">
-    </ion-searchbar>
-  </div>
+  <ion-refresher slot="fixed" (ionRefresh)="loadProductos($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-  <!-- Grid de productos -->
-  <ion-grid class="product-grid" *ngIf="productosFiltrados.length > 0">
-    <ion-row>
-      <ion-col size="6" *ngFor="let p of productosFiltrados">
-        <div class="cat-product-card" (click)="comprarProducto(p)">
-          <div class="cat-product-card__img-wrap">
-            <img [src]="p.imagen" [alt]="p.nombre" class="cat-product-card__img">
-            <div class="cat-overlay">
-              <ion-button fill="clear" class="cat-overlay-btn" (click)="$event.stopPropagation(); agregarCarrito(p)">
-                <ion-icon name="cart-outline"></ion-icon>
-              </ion-button>
-              <ion-button fill="clear" class="cat-overlay-btn" (click)="$event.stopPropagation(); agregarFavorito(p)">
-                <ion-icon name="heart-outline"></ion-icon>
-              </ion-button>
+  <div class="cat-shell">
+
+    <header class="cat-hero">
+      <p class="cat-hero__eyebrow">Categoría</p>
+      <h1>{{ categoriaNombre || 'Productos' }}</h1>
+      <p *ngIf="!loading">{{ productos.length }} producto{{ productos.length === 1 ? '' : 's' }} disponible{{ productos.length === 1 ? '' : 's' }}</p>
+    </header>
+
+    <div class="cat-search ds-searchbar" *ngIf="!loading && productos.length > 0">
+      <ion-searchbar
+        [(ngModel)]="searchTerm"
+        placeholder="Buscar en {{ categoriaNombre }}..."
+        [showClearButton]="searchTerm ? 'always' : 'never'"
+        animated="true"
+        debounce="150">
+      </ion-searchbar>
+    </div>
+
+    <div class="ds-loading" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando productos...</p>
+    </div>
+
+    <ng-container *ngIf="!loading">
+      <ion-grid class="product-grid" *ngIf="productosFiltrados.length > 0">
+        <ion-row>
+          <ion-col size="6" size-md="4" size-lg="3" *ngFor="let p of productosFiltrados">
+            <div class="product-card" (click)="comprarProducto(p)">
+              <div class="product-card__img-wrap">
+                <img
+                  class="product-card__image"
+                  [src]="p.imagen"
+                  [alt]="p.nombre"
+                  loading="lazy"
+                  (error)="$event.target.src='assets/no-image.png'">
+                <div class="product-card__actions-float" *ngIf="!isGuestUser">
+                  <button
+                    type="button"
+                    class="pc-action pc-action--cart"
+                    aria-label="Agregar al carrito"
+                    (click)="$event.stopPropagation(); agregarCarrito(p)">
+                    <ion-icon name="cart-outline"></ion-icon>
+                  </button>
+                  <button
+                    type="button"
+                    class="pc-action pc-action--fav"
+                    aria-label="Favorito"
+                    [class.pc-action--active]="esFavorito(p)"
+                    (click)="$event.stopPropagation(); agregarFavorito(p)">
+                    <ion-icon [name]="esFavorito(p) ? 'heart' : 'heart-outline'"></ion-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="product-card__body">
+                <p class="product-card__name">{{ p.nombre }}</p>
+                <p class="product-card__price"><span>Bs</span> {{ p.precio | number:'1.2-2' }}</p>
+                <ion-button
+                  expand="block"
+                  class="btn-buy cat-buy-btn"
+                  (click)="$event.stopPropagation(); comprarProducto(p)">
+                  Ver detalle
+                </ion-button>
+              </div>
             </div>
-          </div>
-          <div class="cat-product-card__body">
-            <p class="cat-product-card__price">Bs {{ p.precio | number:'1.2-2' }}</p>
-            <p class="cat-product-card__name">{{ p.nombre }}</p>
-            <ion-button expand="block" class="btn-buy cat-buy-btn" (click)="$event.stopPropagation(); comprarProducto(p)">
-              Comprar
-            </ion-button>
-          </div>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
-  <!-- Empty state -->
-  <div class="ds-empty" *ngIf="productosFiltrados.length === 0">
-    <ion-icon name="cube-outline"></ion-icon>
-    <h3>Sin productos</h3>
-    <p>No hay productos en esta categoría{{ searchTerm ? ' para "' + searchTerm + '"' : '' }}</p>
+      <div class="ds-empty" *ngIf="productosFiltrados.length === 0">
+        <ion-icon name="cube-outline"></ion-icon>
+        <h3>{{ searchTerm ? 'Sin resultados' : 'Sin productos' }}</h3>
+        <p>
+          {{ searchTerm
+            ? ('No hay coincidencias para "' + searchTerm + '"')
+            : 'No hay productos activos en esta categoría' }}
+        </p>
+        <ion-button class="btn-primary empty-cta" (click)="irAHome()">
+          Volver al inicio
+        </ion-button>
+      </div>
+    </ng-container>
+
   </div>
-
 </ion-content>

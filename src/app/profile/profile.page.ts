@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, MenuController } from '@ionic/angular';
+import { UtilService } from '../util.service';
 
 @Component({
   selector: 'app-profile',
@@ -21,11 +22,18 @@ export class ProfilePage implements OnInit {
 
   constructor(
     private apiService: ApiService<any>,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private menu: MenuController,
+    private util: UtilService
   ) {}
 
   ngOnInit() {
     this.loadProfile();
+  }
+
+  ionViewWillEnter() {
+    this.util.setMenuState(true);
+    this.menu.enable(true, 'mainMenu');
   }
 
   async loadProfile() {

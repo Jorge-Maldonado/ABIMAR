@@ -1,52 +1,184 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" text=""></ion-back-button>
+      <ion-menu-button menu="mainMenu" autoHide="false"></ion-menu-button>
     </ion-buttons>
     <ion-title>Mis pedidos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="cargarPedidos()" [disabled]="loading">
+        <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="orders-content">
+
+  <ion-refresher slot="fixed" (ionRefresh)="cargarPedidos($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <div class="orders-body">
 
-    <!-- Pedidos (datos de ejemplo mientras no hay backend) -->
-    <div class="order-card" *ngFor="let order of pedidos" (click)="abrirPedido(order)">
+    <header class="orders-hero" *ngIf="!loading && personalId">
+      <h1>Tus compras</h1>
+      <p>Consulta el estado y completa pagos pendientes</p>
+    </header>
 
-      <div class="order-card__header">
+    <!-- Stats / filtros -->
+    <div class="stats" *ngIf="!loading && pedidos.length > 0">
+      <button type="button" class="stat" [class.stat--active]="filtroEstado === 'ALL'" (click)="filtroEstado = 'ALL'">
+        <span class="stat__value">{{ countAll }}</span>
+        <span class="stat__label">Todos</span>
+      </button>
+      <button type="button" class="stat stat--warn" [class.stat--active]="filtroEstado === 'PENDIENTE'" (click)="filtroEstado = 'PENDIENTE'">
+        <span class="stat__value">{{ countPendiente }}</span>
+        <span class="stat__label">Pendientes</span>
+      </button>
+      <button type="button" class="stat stat--ok" [class.stat--active]="filtroEstado === 'PAGADO'" (click)="filtroEstado = 'PAGADO'">
+        <span class="stat__value">{{ countPagado }}</span>
+        <span class="stat__label">Pagados</span>
+      </button>
+      <button type="button" class="stat stat--bad" [class.stat--active]="filtroEstado === 'CANCELADO'" (click)="filtroEstado = 'CANCELADO'">
+        <span class="stat__value">{{ countCancelado }}</span>
+        <span class="stat__label">Cancelados</span>
+      </button>
+    </div>
 
-        <div class="order-card__info">
-          <p class="order-card__name">
-            Pedido #{{ order.idpedido }}
-          </p>
+    <div class="ds-loading" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando tus pedidos...</p>
+    </div>
 
-          <p class="order-card__brand">
+    <ng-container *ngIf="!loading">
+
+      <!-- Sin sesión -->
+      <div class="ds-empty" *ngIf="!personalId">
+        <ion-icon name="log-in-outline"></ion-icon>
+        <h3>Inicia sesión</h3>
+        <p>Necesitas una cuenta para ver tus pedidos</p>
+        <ion-button class="btn-primary empty-cta" (click)="irALogin()">
+          Ir al login
+        </ion-button>
+      </div>
+
+      <!-- Lista -->
+      <div class="order-list" *ngIf="personalId && pedidosFiltrados().length > 0">
+
+        <article
+          class="order-card"
+          *ngFor="let order of pedidosFiltrados(); trackBy: trackByPedido"
+          [class.order-card--open]="isOpen(order)"
+          (click)="toggleDetalle(order)">
+
+          <div class="order-card__top">
+            <div class="order-card__id">
+              <ion-icon name="receipt-outline"></ion-icon>
+              <strong>#{{ order.idpedido }}</strong>
+            </div>
+            <span class="order-card__badge" [ngClass]="getEstadoClase(order.status)">
+              <ion-icon [name]="getStatusIcon(order.status)"></ion-icon>
+              {{ order.status }}
+            </span>
+          </div>
+
+          <div class="order-card__amount">
+            Bs. {{ order.monto | number:'1.2-2' }}
+          </div>
+
+          <div class="order-card__meta">
+            <div class="meta-chip">
+              <ion-icon [name]="getMetodoIcon(order.tipoPagoId)"></ion-icon>
+              <span>{{ getMetodoPago(order.tipoPagoId) }}</span>
+            </div>
+            <div class="meta-chip">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>{{ order.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+
+          <p class="order-card__address" *ngIf="order.direccionEnvio">
+            <ion-icon name="location-outline"></ion-icon>
             {{ order.direccionEnvio }}
           </p>
 
-          <p class="order-card__price">
-            Bs. {{ order.monto | number:'1.2-2' }}
-          </p>
+          <div class="order-card__actions" (click)="$event.stopPropagation()">
+            <ion-button size="small" fill="outline" class="btn-ghost-sm" (click)="toggleDetalle(order, $event)">
+              <ion-icon slot="start" [name]="isOpen(order) ? 'chevron-up-outline' : 'eye-outline'"></ion-icon>
+              {{ isOpen(order) ? 'Ocultar' : 'Ver detalle' }}
+            </ion-button>
 
-          <p class="order-card__date">
-            {{ order.fecha | date:'short' }}
-          </p>
-        </div>
+            <ion-button
+              *ngIf="order.status === 'PENDIENTE'"
+              size="small"
+              class="btn-pay-sm"
+              (click)="continuarPago(order, $event)">
+              <ion-icon slot="start" name="card-outline"></ion-icon>
+              Pagar ahora
+            </ion-button>
+          </div>
 
-        <span class="order-card__badge" [ngClass]="getEstadoClase(order.status)">
-          {{ order.status }}
-        </span>
+          <!-- Detalle -->
+          <div class="order-detail" *ngIf="isOpen(order)" (click)="$event.stopPropagation()">
+            <div class="order-detail__head">
+              <h3>Productos</h3>
+            </div>
 
+            <div class="ds-loading ds-loading--sm" *ngIf="loadingDetalle">
+              <ion-spinner name="crescent"></ion-spinner>
+              <p>Cargando detalle...</p>
+            </div>
+
+            <ng-container *ngIf="!loadingDetalle">
+              <div class="line" *ngFor="let d of detalle">
+                <div class="line__main">
+                  <strong>{{ d.productoNombre || ('Producto #' + d.productoId) }}</strong>
+                  <div class="line__meta">
+                    <span class="qty-badge" aria-label="Cantidad">
+                      <span class="qty-badge__label">Cant.</span>
+                      <span class="qty-badge__num">{{ d.cantidad }}</span>
+                    </span>
+                    <span class="line__unit">Bs {{ d.precio | number:'1.2-2' }} c/u</span>
+                  </div>
+                </div>
+                <strong class="line__sub">Bs {{ d.subtotal | number:'1.2-2' }}</strong>
+              </div>
+
+              <div class="ds-empty ds-empty--sm" *ngIf="detalle.length === 0">
+                <p>Sin líneas de detalle</p>
+              </div>
+
+              <div class="order-detail__total" *ngIf="detalle.length > 0">
+                <span>Total</span>
+                <strong>Bs. {{ (totalDetalle || order.monto) | number:'1.2-2' }}</strong>
+              </div>
+            </ng-container>
+          </div>
+
+        </article>
       </div>
 
-    </div>
+      <!-- Vacío con sesión -->
+      <div class="ds-empty" *ngIf="personalId && pedidos.length === 0">
+        <ion-icon name="bag-handle-outline"></ion-icon>
+        <h3>Sin pedidos aún</h3>
+        <p>Cuando compres, tus órdenes aparecerán aquí</p>
+        <ion-button class="btn-primary empty-cta" (click)="irAComprar()">
+          Ir a la tienda
+        </ion-button>
+      </div>
 
-    <!-- Empty state -->
-    <div class="ds-empty" *ngIf="pedidos.length === 0">
-      <ion-icon name="receipt-outline"></ion-icon>
-      <h3>Sin pedidos aún</h3>
-      <p>Tus compras aparecerán aquí</p>
-    </div>
+      <!-- Filtro sin resultados -->
+      <div class="ds-empty" *ngIf="personalId && pedidos.length > 0 && pedidosFiltrados().length === 0">
+        <ion-icon name="filter-outline"></ion-icon>
+        <h3>Sin resultados</h3>
+        <p>No hay pedidos con ese estado</p>
+        <ion-button fill="outline" class="btn-ghost-sm empty-cta" (click)="filtroEstado = 'ALL'">
+          Ver todos
+        </ion-button>
+      </div>
+
+    </ng-container>
 
   </div>
 </ion-content>

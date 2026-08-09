@@ -1,17 +1,48 @@
 // ─── Layout ────────────────────────────────────────────────
 ion-split-pane {
-  --side-width: 260px;
+  --side-width: 280px;
 }
 
 // ─── Menú lateral ──────────────────────────────────────────
 ion-menu {
   --background: var(--ds-bg-surface);
+  --width: 280px;
   border-right: 1px solid var(--ds-border);
+}
+
+.admin-menu-toolbar {
+  --background: var(--ds-bg-surface);
+  --border-width: 0 0 1px 0;
+  --border-color: var(--ds-border);
+}
+
+.toolbar-brand {
+  font-family: var(--ds-font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.toolbar-brand__dot {
+  color: var(--ds-accent);
+}
+
+.menu-close-icon {
+  --color: var(--ds-text-3);
+}
+
+.admin-menu-content {
+  --background: var(--ds-bg-surface);
+}
+
+.menu-list {
+  background: transparent;
+  padding: 0 4px 8px;
 }
 
 // Contenedor
 .side-menu {
   height: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -117,7 +148,7 @@ ion-menu ion-item.menu-item {
 }
 
 // ─── Toolbar admin ──────────────────────────────────────────
-#main-content ion-toolbar {
+#admin-main-content ion-toolbar {
   --background: var(--ds-bg-surface);
   border-bottom: 1px solid var(--ds-border);
 }
@@ -125,14 +156,6 @@ ion-menu ion-item.menu-item {
 // ─── Contenido ──────────────────────────────────────────────
 .admin-content {
   --background: var(--ds-bg-base);
-}
-
-// ─── Glass effect (pro) ─────────────────────────────────────
-@supports (backdrop-filter: blur(10px)) {
-  ion-menu {
-    backdrop-filter: blur(10px);
-    background: rgba(22, 22, 26, 0.85);
-  }
 }
 
 /* ─── Footer logout ───────────────────────────── */

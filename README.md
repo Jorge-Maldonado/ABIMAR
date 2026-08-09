@@ -10,7 +10,7 @@ Nombre: cualquiera
 🧪 Otras tarjetas de prueba
 Mastercard: 5555 5555 5555 4444
 American Express: 3782 822463 10005
-
+PIN 6 digitos : 111111
 
 
 contraseña paypal

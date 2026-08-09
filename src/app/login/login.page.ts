@@ -30,7 +30,7 @@ export class LoginPage implements OnInit {
   ngOnInit() { }
 
   ionViewWillEnter() {
-    this.menu.enable(false);
+    this.menu.enable(false, 'mainMenu');
     this.util.setMenuState(false);
     this.util.setShowIcons(false);
   }
@@ -81,13 +81,14 @@ export class LoginPage implements OnInit {
 
             this.isGuest = false;
             this.util.setGuest(false);
-            this.util.setMenuState(true);
-            this.menu.enable(true);
             this.util.setShowIcons(true);
 
             await this.loader.hide(); // 🔥 IMPORTANTE antes del alert
 
             if (this.email === 'jorge.maldonado@hotmail.com') {
+              // Admin: menú cliente off; adminMenu lo activa AdminHomePage
+              this.util.setMenuState(false);
+              await this.menu.enable(false, 'mainMenu');
 
               const alert = await this.alertCtrl.create({
                 header: '¡Bienvenido Admin!',
@@ -102,6 +103,8 @@ export class LoginPage implements OnInit {
               await alert.present();
 
             } else {
+              this.util.setMenuState(true);
+              await this.menu.enable(true, 'mainMenu');
 
               const alert = await this.alertCtrl.create({
                 header: '¡Login exitoso!',

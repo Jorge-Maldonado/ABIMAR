@@ -26,11 +26,11 @@ export class SignupPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.menu.enable(false);
+    this.menu.enable(false, 'mainMenu');
   }
 
-  ionViewWillEnter() { this.menu.enable(false); }
-  ionViewWillLeave() { this.menu.enable(true); }
+  ionViewWillEnter() { this.menu.enable(false, 'mainMenu'); }
+  ionViewWillLeave() { this.menu.enable(true, 'mainMenu'); }
 
   togglePassword() { this.showPassword = !this.showPassword; }
 

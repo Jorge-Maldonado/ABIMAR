@@ -9,13 +9,22 @@ import { ActivatedRoute } from '@angular/router';
 export class ConfirmPage implements OnInit {
   metodo = '';
   total = 0;
+  pedidoId = '';
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.metodo = params['metodo'] || '';
-      this.total = +params['total'] || 0;
+      this.pedidoId = params['pedidoId'] || localStorage.getItem('pedidoId') || '';
+
+      const fromQuery = Number(params['total']);
+      if (!isNaN(fromQuery) && fromQuery > 0) {
+        this.total = fromQuery;
+      } else {
+        const stored = Number(localStorage.getItem('totalPedido'));
+        this.total = !isNaN(stored) && stored > 0 ? stored : 0;
+      }
     });
   }
 }

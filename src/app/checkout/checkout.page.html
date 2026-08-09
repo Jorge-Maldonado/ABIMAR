@@ -11,35 +11,49 @@
 
   <div class="checkout-body" *ngIf="carrito.length > 0; else vacio">
 
-    <!-- Productos -->
     <div class="checkout-section">
       <h3 class="checkout-section__title">
         <ion-icon name="bag-outline"></ion-icon>
-        Productos ({{ carrito.length }})
+        Productos ({{ totalItems }} unid.)
       </h3>
 
       <div class="checkout-item" *ngFor="let item of carrito">
-        <img [src]="item.imagen" [alt]="item.nombre" class="checkout-item__img" />
+        <div class="checkout-item__thumb">
+          <img [src]="item.imagen" [alt]="item.nombre" class="checkout-item__img" />
+          <span class="qty-badge checkout-item__qty-float" aria-label="Cantidad">
+            <span class="qty-badge__num">{{ item.cantidad }}</span>
+          </span>
+        </div>
+
         <div class="checkout-item__info">
           <p class="checkout-item__name">{{ item.nombre }}</p>
           <p class="checkout-item__brand">{{ item.marca || item.nombre }}</p>
+          <p class="checkout-item__unit-price">
+            Bs. {{ item.precio | number:'1.2-2' }} <span>c/u</span>
+          </p>
 
           <div class="checkout-item__row">
-            <div class="qty-control">
-              <button class="qty-btn" (click)="decrementarCantidad(item)">−</button>
-              <span class="qty-value">{{ item.cantidad }}</span>
-              <button class="qty-btn" (click)="incrementarCantidad(item)">+</button>
+            <div class="qty-control" role="group" aria-label="Cantidad">
+              <button type="button" class="qty-btn" aria-label="Disminuir cantidad" (click)="decrementarCantidad(item)">
+                <ion-icon name="remove-outline"></ion-icon>
+              </button>
+              <span class="qty-value" aria-live="polite">{{ item.cantidad }}</span>
+              <button type="button" class="qty-btn" aria-label="Aumentar cantidad" (click)="incrementarCantidad(item)">
+                <ion-icon name="add-outline"></ion-icon>
+              </button>
             </div>
-            <span class="checkout-item__price">Bs. {{ item.precio | number:'1.2-2' }}</span>
+            <span class="checkout-item__price">
+              Bs. {{ (item.precio * item.cantidad) | number:'1.2-2' }}
+            </span>
           </div>
         </div>
+
         <ion-button fill="clear" class="remove-btn" (click)="eliminarProducto(item)">
           <ion-icon slot="icon-only" name="close-outline"></ion-icon>
         </ion-button>
       </div>
     </div>
 
-    <!-- Dirección de entrega -->
     <div class="checkout-section">
       <h3 class="checkout-section__title">
         <ion-icon name="location-outline"></ion-icon>
@@ -55,7 +69,6 @@
       </div>
     </div>
 
-    <!-- Totales -->
     <div class="checkout-section">
       <h3 class="checkout-section__title">
         <ion-icon name="receipt-outline"></ion-icon>
@@ -98,7 +111,7 @@
 
 <ion-footer class="ion-no-border checkout-footer">
   <div class="checkout-footer__inner" *ngIf="carrito.length > 0">
-    <ion-button expand="block" class="btn-buy" (click)="registrarPedido()">
+    <ion-button expand="block" class="btn-buy" (click)="registrarPedido()" [disabled]="registrando">
       Ir a pagar
       <ion-icon slot="end" name="lock-closed-outline"></ion-icon>
     </ion-button>

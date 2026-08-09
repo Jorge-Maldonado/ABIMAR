@@ -1,104 +1,321 @@
-/* ─── Page background ───────────────────────────────────── */
-.custom-categorias {
-  --background: var(--ds-bg-base);
+.cats-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 26px;
+  max-width: 420px;
 }
 
-/* ─── Container principal ──────────────────────────────── */
-.container {
-  border: 1px solid var(--ds-border-accent);
-  border-radius: var(--ds-r-lg);
-  padding: var(--ds-sp-lg);
+.cats-stat {
   background: var(--ds-bg-surface);
-  box-shadow: var(--ds-glow-cyan);
-}
-
-/* ─── Header ───────────────────────────────────────────── */
-.page-header {
+  border: 1px solid var(--ds-border);
+  border-radius: 16px;
+  padding: 14px 12px;
   text-align: center;
-  margin-bottom: var(--ds-sp-md);
-}
 
-.page-title {
-  font-family: var(--ds-font-heading);
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--ds-price);
-  margin: 0;
-}
+  &__value {
+    display: block;
+    font-family: var(--ds-font-heading);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ds-text-1);
+  }
 
-.page-subtitle {
-  font-size: 13px;
-  color: var(--ds-text-3);
-  margin-top: 4px;
-}
+  &__label {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ds-text-2);
+  }
 
-/* ─── Formulario ───────────────────────────────────────── */
-.form-container {
-  margin-top: var(--ds-sp-md);
-
-  ion-button {
-    margin-top: 10px;
+  &--ok .cats-stat__value {
+    color: var(--ds-success);
   }
 }
 
-/* ─── Lista título ─────────────────────────────────────── */
-.list-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ds-price);
-  margin-bottom: var(--ds-sp-sm);
-}
-
-/* ─── Item categoría ───────────────────────────────────── */
-.categoria-item {
-  --background: var(--ds-bg-elevated);
-  --border-radius: var(--ds-r-md);
-  margin: 6px 0;
-  border-radius: var(--ds-r-md);
-  transition: all 0.2s ease;
-  box-shadow: var(--ds-shadow-sm);
+.card-head {
+  margin-bottom: 20px;
 
   h2 {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--ds-text-1);
-    margin: 0 0 2px;
+    margin: 0;
+    color: var(--ds-price);
+    font-size: 22px;
+    font-weight: 700;
+    font-family: var(--ds-font-heading);
   }
 
   p {
-    font-size: 12px;
+    margin: 8px 0 0;
     color: var(--ds-text-2);
-    margin: 0;
+    font-size: 13px;
   }
+}
 
-  @media (hover: hover) {
-    &:hover {
-      transform: translateY(-2px);
-      border: 1px solid var(--ds-border-accent);
-      box-shadow: var(--ds-glow-cyan);
+.field {
+  display: block;
+  margin-bottom: 14px;
+
+  &__label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ds-text-2);
+
+    em {
+      font-style: normal;
+      font-weight: 500;
+      text-transform: none;
+      color: var(--ds-text-3);
     }
   }
 
-  &:active {
-    transform: scale(0.98);
+  &__input {
+    --background: var(--ds-bg-elevated);
+    --color: var(--ds-text-1);
+    --placeholder-color: var(--ds-text-3);
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--ds-border);
+    border-radius: 14px;
+    font-size: 14px;
+
+    &--area { min-height: 88px; }
+  }
+
+  &__error {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--ds-danger);
   }
 }
 
-/* ─── Botones acciones ─────────────────────────────────── */
-.btn-action-warning {
-  --color: var(--ds-price);
-  font-size: 12px;
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+
+  ion-button {
+    margin: 0;
+    height: 48px;
+    font-weight: 700;
+  }
+
+  ion-spinner {
+    width: 22px;
+    height: 22px;
+  }
 }
 
-.btn-action-danger {
-  --color: var(--ds-danger);
-  font-size: 12px;
+.search-card {
+  margin-bottom: 18px;
+
+  ion-searchbar {
+    --background: var(--ds-bg-surface);
+    --border-radius: 18px;
+    --box-shadow: none;
+    --icon-color: var(--ds-price);
+    --color: var(--ds-text-1);
+    --placeholder-color: var(--ds-text-2);
+    border: 1px solid var(--ds-border-accent);
+    border-radius: 18px;
+    padding: 0;
+  }
 }
 
-/* ─── Botón warning custom ─────────────────────────────── */
-.btn-warning {
-  --background: var(--ds-price);
-  --color: #000;
-  font-weight: 700;
-  border-radius: var(--ds-r-md);
+.ds-loading {
+  text-align: center;
+  padding: 48px 8px;
+  color: var(--ds-text-2);
+
+  ion-spinner {
+    --color: var(--ds-accent);
+    margin-bottom: 8px;
+  }
+
+  p { margin: 0; font-size: 13px; }
+}
+
+.cat-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-accent);
+  border-radius: 22px;
+  padding: 22px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--ds-price);
+    opacity: 0.75;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: var(--ds-price);
+    box-shadow: var(--ds-glow-cyan);
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  &__icon {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--ds-border-accent);
+
+    ion-icon {
+      font-size: 22px;
+      color: var(--ds-price);
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ds-price);
+      line-height: 1.3;
+    }
+  }
+
+  &__badge {
+    display: inline-flex;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    color: var(--ds-success);
+    background: var(--ds-success-tint);
+    border: 1px solid rgba(0, 230, 118, 0.25);
+
+    &--off {
+      color: var(--ds-text-2);
+      background: var(--ds-bg-overlay);
+      border-color: var(--ds-border);
+    }
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ds-text-2);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .muted {
+    color: var(--ds-text-3);
+    font-style: italic;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+
+    span {
+      font-size: 11px;
+      color: var(--ds-text-3);
+      background: var(--ds-bg-overlay);
+      border: 1px solid var(--ds-border);
+      border-radius: 999px;
+      padding: 3px 8px;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--ds-border);
+
+    ion-button {
+      flex: 1;
+      margin: 0;
+      --border-radius: 14px;
+      font-weight: 600;
+    }
+  }
+}
+
+.btn-warning { --color: var(--ds-price); }
+.btn-danger { --color: var(--ds-danger); }
+
+.empty-card {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--ds-bg-surface);
+  border: 2px dashed var(--ds-border-accent);
+  border-radius: 24px;
+  padding: 40px;
+
+  ion-icon {
+    font-size: 70px;
+    color: var(--ds-price);
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ds-price);
+  }
+
+  p {
+    margin-top: 12px;
+    max-width: 360px;
+    color: var(--ds-text-2);
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 480px) {
+  .cat-card__footer {
+    flex-direction: column;
+  }
 }

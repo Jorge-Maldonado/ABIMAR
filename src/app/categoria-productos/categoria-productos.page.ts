@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MenuController, ToastController } from '@ionic/angular';
 import { ApiService } from '../services/api.service';
-import { ToastController } from '@ionic/angular';
+import { CartService } from '../services/cart.service';
+import { FavoritesService } from '../services/favorites.service';
+import { UtilService } from '../util.service';
 
 @Component({
   selector: 'app-categoria-productos',
@@ -9,43 +12,100 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./categoria-productos.page.scss'],
 })
 export class CategoriaProductosPage implements OnInit {
-  categoriaId: number = 0;
-  categoriaNombre: string = '';
+  categoriaId = 0;
+  categoriaNombre = '';
   productos: any[] = [];
-  searchTerm: string = '';
+  searchTerm = '';
+  loading = false;
+  cartCount = 0;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private apiService: ApiService<any>,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private cartService: CartService,
+    private favoritesService: FavoritesService,
+    private util: UtilService,
+    private menu: MenuController
   ) {}
 
   ngOnInit() {
+    this.cartService.items$.subscribe(() => {
+      this.cartCount = this.cartService.totalItems;
+    });
+
     this.route.queryParams.subscribe(params => {
-      this.categoriaId = +params['id'] || 0;
-      this.categoriaNombre = params['nombre'] || '';
+      this.categoriaId = Number(params['id']) || 0;
+      this.categoriaNombre = params['nombre'] || 'Categoría';
+      this.searchTerm = '';
       this.loadProductos();
     });
   }
 
-  loadProductos() {
+  ionViewWillEnter() {
+    this.util.setMenuState(true);
+    this.menu.enable(true, 'mainMenu');
+  }
+
+  get isGuestUser(): boolean {
+    return localStorage.getItem('guestAccess') === 'true' || !localStorage.getItem('usuario');
+  }
+
+  get productosFiltrados() {
+    if (!this.searchTerm) {
+      return this.productos;
+    }
+    const term = this.searchTerm.toLowerCase().trim();
+    return this.productos.filter(
+      p =>
+        (p.nombre || '').toLowerCase().includes(term) ||
+        (p.descripcion || '').toLowerCase().includes(term)
+    );
+  }
+
+  loadProductos(event?: any) {
+    if (!event) {
+      this.loading = true;
+    }
+
+    if (!this.categoriaId) {
+      this.productos = [];
+      this.loading = false;
+      if (event) {
+        event.target.complete();
+      }
+      return;
+    }
+
     this.apiService
-      .post('https://backend-abimar.onrender.com/abimar/core/api/producto/list', {})
+      .post(this.apiService.url('producto/list'), {})
       .subscribe(
         (res: any) => {
-          if (Array.isArray(res)) {
-            // 🔹 Filtrar solo los productos de la categoría seleccionada
-            this.productos = res
-              .filter(p => p.categoriaId === this.categoriaId && p.status === 1)
-              .map(p => ({
-                ...p,
-                imagen: this.normalizeImagePath(p.imagen),
-              }));
-          } else {
-            this.productos = [];
+          const lista = Array.isArray(res) ? res : [];
+          this.productos = lista
+            .filter(p =>
+              Number(p.categoriaId) === Number(this.categoriaId) &&
+              Number(p.status) === 1
+            )
+            .map(p => ({
+              ...p,
+              imagen: this.normalizeImagePath(p.imagen),
+            }));
+          this.loading = false;
+          if (event) {
+            event.target.complete();
           }
         },
-        err => console.error('Error cargando productos:', err)
+        async (err) => {
+          console.error('Error cargando productos:', err);
+          this.productos = [];
+          this.loading = false;
+          if (event) {
+            event.target.complete();
+          }
+          await this.mostrarToast('No se pudieron cargar los productos', 'danger');
+        }
       );
   }
 
@@ -59,40 +119,54 @@ export class CategoriaProductosPage implements OnInit {
     return `assets/products/${onlyName}`;
   }
 
-  get productosFiltrados() {
-    if (!this.searchTerm) return this.productos;
-    const term = this.searchTerm.toLowerCase();
-    return this.productos.filter(
-      p =>
-        (p.nombre || '').toLowerCase().includes(term) ||
-        (p.descripcion || '').toLowerCase().includes(term)
-    );
+  verDetalle(producto: any) {
+    this.router.navigate(['/item-details'], {
+      queryParams: { producto: JSON.stringify(producto) },
+    });
   }
 
-  agregarCarrito(producto: any) {
-    console.log('Producto agregado al carrito:', producto);
-    this.mostrarToast(`"${producto.nombre}" agregado al carrito 🛒`);
+  async agregarCarrito(producto: any) {
+    if (this.isGuestUser) {
+      await this.mostrarToast('Inicia sesión para usar el carrito', 'warning');
+      return;
+    }
+    this.cartService.add(producto);
+    await this.mostrarToast(`"${producto.nombre}" agregado al carrito`, 'warning');
   }
 
-  agregarFavorito(producto: any) {
-    console.log('Producto agregado a favoritos:', producto);
-    this.mostrarToast(`"${producto.nombre}" agregado a favoritos ❤️`);
+  esFavorito(producto: any): boolean {
+    return this.favoritesService.isFavorite(producto);
+  }
+
+  async agregarFavorito(producto: any) {
+    if (this.isGuestUser) {
+      await this.mostrarToast('Inicia sesión para usar favoritos', 'warning');
+      return;
+    }
+    const activo = this.favoritesService.toggle(producto);
+    if (activo) {
+      await this.mostrarToast(`"${producto.nombre}" agregado a favoritos`, 'warning');
+    } else {
+      await this.mostrarToast(`"${producto.nombre}" quitado de favoritos`, 'medium');
+    }
   }
 
   comprarProducto(producto: any) {
-    console.log('Compra iniciada para:', producto);
-    this.mostrarToast(`Iniciando compra de "${producto.nombre}" 💳`);
+    this.verDetalle(producto);
   }
 
-  async mostrarToast(mensaje: string) {
+  irAHome() {
+    this.router.navigate(['/home']);
+  }
+
+  private async mostrarToast(mensaje: string, color: string = 'warning') {
     const toast = await this.toastController.create({
       message: mensaje,
       duration: 2000,
-      color: 'warning',
+      color,
       position: 'bottom',
       cssClass: 'custom-toast'
     });
     await toast.present();
   }
-  
 }

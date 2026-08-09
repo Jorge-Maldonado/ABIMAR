@@ -1,55 +1,132 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
+  <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button class="backbtn"></ion-menu-button>
+      <ion-menu-button menu="mainMenu" autoHide="false"></ion-menu-button>
     </ion-buttons>
-
-    <ion-title class="title">Contáctenos</ion-title>
-
-    <ion-buttons slot="end">
-      <ion-button class="notification" fill="clear">
-        <ion-icon slot="icon-only" name="mail-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-title>Contáctanos</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="contact-content">
-  <!-- ENVOLTORIO FLEX -->
-  <div class="contact-wrapper">
+  <div class="contact-body">
 
-    <div class="contact-container">
+    <header class="contact-hero">
+      <span class="contact-hero__eyebrow">Abimar Shop</span>
+      <h1>Estamos para ayudarte</h1>
+      <p>Consultas sobre pedidos, pagos o productos. Elige un canal o déjanos un mensaje.</p>
+    </header>
 
-      <h2 class="contact-title">Envíanos un mensaje</h2>
+    <div class="channel-grid">
+      <button
+        type="button"
+        class="channel-card"
+        *ngFor="let c of canales"
+        [class.channel-card--static]="!c.href"
+        (click)="openCanal(c.href)">
+        <span class="channel-card__icon">
+          <ion-icon [name]="c.icon"></ion-icon>
+        </span>
+        <span class="channel-card__text">
+          <strong>{{ c.title }}</strong>
+          <span>{{ c.value }}</span>
+          <small>{{ c.hint }}</small>
+        </span>
+        <ion-icon *ngIf="c.href" name="chevron-forward-outline" class="channel-card__arrow"></ion-icon>
+      </button>
+    </div>
 
-      <form (ngSubmit)="sendMessage()" #contactForm="ngForm">
-
-        <ion-item class="contact-item">
-          <ion-label position="floating">Nombre</ion-label>
-          <ion-input type="text" name="name" [(ngModel)]="contact.name" required></ion-input>
-        </ion-item>
-
-        <ion-item class="contact-item">
-          <ion-label position="floating">Correo</ion-label>
-          <ion-input type="email" name="email" [(ngModel)]="contact.email" required></ion-input>
-        </ion-item>
-
-        <ion-item class="contact-item">
-          <ion-label position="floating">Mensaje</ion-label>
-          <ion-textarea name="message" [(ngModel)]="contact.message" required></ion-textarea>
-        </ion-item>
-
-        <ion-button expand="block" type="submit" class="send-btn" [disabled]="!contactForm.form.valid">
-          Enviar
-        </ion-button>
-
-      </form>
-
-      <div *ngIf="success" class="success-message">
-        ¡Gracias! Tu mensaje ha sido enviado.
+    <section class="contact-form-card">
+      <div class="contact-form-card__head">
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+        <div>
+          <h2>Envíanos un mensaje</h2>
+          <p>Te respondemos a tu correo</p>
+        </div>
       </div>
 
-    </div>
+      <form (ngSubmit)="sendMessage()" #contactForm="ngForm" novalidate>
+
+        <label class="field">
+          <span class="field__label">Nombre</span>
+          <ion-input
+            class="field__input"
+            type="text"
+            name="name"
+            [(ngModel)]="contact.name"
+            placeholder="Tu nombre completo"
+            autocomplete="name"
+            required>
+          </ion-input>
+          <span class="field__error" *ngIf="submitted && !contact.name.trim()">
+            Ingresa tu nombre
+          </span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Correo</span>
+          <ion-input
+            class="field__input"
+            type="email"
+            name="email"
+            [(ngModel)]="contact.email"
+            placeholder="tu@correo.com"
+            autocomplete="email"
+            required>
+          </ion-input>
+          <span class="field__error" *ngIf="submitted && !isValidEmail(contact.email)">
+            Correo inválido
+          </span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Teléfono <em>(opcional)</em></span>
+          <ion-input
+            class="field__input"
+            type="tel"
+            name="phone"
+            [(ngModel)]="contact.phone"
+            placeholder="+591 ..."
+            autocomplete="tel">
+          </ion-input>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Mensaje</span>
+          <ion-textarea
+            class="field__input field__input--area"
+            name="message"
+            [(ngModel)]="contact.message"
+            placeholder="Cuéntanos en qué podemos ayudarte..."
+            rows="5"
+            autoGrow="true"
+            required>
+          </ion-textarea>
+          <span class="field__error" *ngIf="submitted && contact.message.trim().length < 10">
+            Escribe al menos 10 caracteres
+          </span>
+        </label>
+
+        <ion-button
+          expand="block"
+          type="submit"
+          class="btn-primary send-btn"
+          [disabled]="sending">
+          <ion-spinner *ngIf="sending" name="crescent"></ion-spinner>
+          <ng-container *ngIf="!sending">
+            Enviar mensaje
+            <ion-icon slot="end" name="send-outline"></ion-icon>
+          </ng-container>
+        </ion-button>
+      </form>
+
+      <div class="success-banner" *ngIf="success">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        <div>
+          <strong>Mensaje enviado</strong>
+          <p>Gracias por escribirnos. Revisaremos tu consulta pronto.</p>
+        </div>
+      </div>
+    </section>
 
   </div>
 </ion-content>

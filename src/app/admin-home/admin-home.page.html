@@ -1,80 +1,105 @@
-<ion-split-pane contentId="main-content">
+<ion-split-pane contentId="admin-main-content" when="false">
 
-  <!-- Menú lateral -->
-  <ion-menu contentId="main-content" side="start" menuId="adminMenu">
+  <ion-menu
+    menuId="adminMenu"
+    contentId="admin-main-content"
+    type="overlay"
+    side="start">
 
-    <ion-header>
-      <ion-toolbar>
+    <ion-header class="ion-no-border">
+      <ion-toolbar class="admin-menu-toolbar">
         <ion-title class="toolbar-brand">
           Admin<span class="toolbar-brand__dot">.</span>
         </ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            fill="clear"
+            class="menu-close-icon"
+            aria-label="Cerrar menú"
+            (click)="closeMenu($event)">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content class="admin-menu-content" forceOverscroll="false">
       <div class="side-menu">
 
-        <!-- Header usuario -->
         <div class="menu-header">
           <div class="menu-avatar">
             <ion-icon name="person"></ion-icon>
           </div>
           <div class="menu-user-info">
             <h3>Admin</h3>
-            <span>Panel control</span>
+            <span>Panel de control</span>
           </div>
         </div>
 
         <div class="menu-divider"></div>
 
-        <!-- MENÚ -->
-        <ion-list>
+        <ion-list lines="none" class="menu-list">
+          <ion-item
+            button
+            detail="false"
+            class="menu-item"
+            [class.menu-item--active]="selected === 'dashboard'"
+            (click)="go('dashboard', $event)">
+            <ion-icon name="speedometer-outline" slot="start"></ion-icon>
+            <ion-label>Dashboard</ion-label>
+          </ion-item>
 
-          <ion-menu-toggle autoHide="false">
-            <ion-item class="menu-item" (click)="go('dashboard')" lines="none">
-              <ion-icon name="speedometer-outline" slot="start"></ion-icon>
-              <ion-label>Dashboard</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
+          <ion-item
+            button
+            detail="false"
+            class="menu-item"
+            [class.menu-item--active]="selected === 'roles'"
+            (click)="go('roles', $event)">
+            <ion-icon name="people-circle" slot="start"></ion-icon>
+            <ion-label>Roles</ion-label>
+          </ion-item>
 
-          <ion-menu-toggle autoHide="false">
-            <ion-item class="menu-item" (click)="go('roles')" lines="none">
-              <ion-icon name="people-circle" slot="start"></ion-icon>
-              <ion-label>Roles</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
+          <ion-item
+            button
+            detail="false"
+            class="menu-item"
+            [class.menu-item--active]="selected === 'usuarios'"
+            (click)="go('usuarios', $event)">
+            <ion-icon name="person-circle" slot="start"></ion-icon>
+            <ion-label>Usuarios</ion-label>
+          </ion-item>
 
-          <ion-menu-toggle autoHide="false">
-            <ion-item class="menu-item" (click)="go('usuarios')" lines="none">
-              <ion-icon name="person-circle" slot="start"></ion-icon>
-              <ion-label>Usuarios</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
+          <ion-item
+            button
+            detail="false"
+            class="menu-item"
+            [class.menu-item--active]="selected === 'categorias'"
+            (click)="go('categorias', $event)">
+            <ion-icon name="albums" slot="start"></ion-icon>
+            <ion-label>Categorías</ion-label>
+          </ion-item>
 
-          <ion-menu-toggle autoHide="false">
-            <ion-item class="menu-item" (click)="go('categorias')" lines="none">
-              <ion-icon name="albums" slot="start"></ion-icon>
-              <ion-label>Categorías</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
+          <ion-item
+            button
+            detail="false"
+            class="menu-item"
+            [class.menu-item--active]="selected === 'productos'"
+            (click)="go('productos', $event)">
+            <ion-icon name="cube" slot="start"></ion-icon>
+            <ion-label>Productos</ion-label>
+          </ion-item>
 
-          <ion-menu-toggle autoHide="false">
-            <ion-item class="menu-item" (click)="go('productos')" lines="none">
-              <ion-icon name="cube" slot="start"></ion-icon>
-              <ion-label>Productos</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-
-          <ion-menu-toggle autoHide="false">
-            <ion-item class="menu-item" (click)="go('pedidos')" lines="none">
-              <ion-icon name="receipt-outline" slot="start"></ion-icon>
-              <ion-label>Pedidos</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-
+          <ion-item
+            button
+            detail="false"
+            class="menu-item"
+            [class.menu-item--active]="selected === 'pedidos'"
+            (click)="go('pedidos', $event)">
+            <ion-icon name="receipt-outline" slot="start"></ion-icon>
+            <ion-label>Pedidos</ion-label>
+          </ion-item>
         </ion-list>
 
-        <!-- 🔻 FOOTER LOGOUT -->
         <div class="menu-footer">
           <ion-button expand="block" fill="clear" class="menu-logout-btn" (click)="logout()">
             <ion-icon name="log-out-outline" slot="start"></ion-icon>
@@ -86,23 +111,20 @@
     </ion-content>
   </ion-menu>
 
-  <!-- Contenido principal -->
-  <div class="ion-page" id="main-content">
+  <div class="ion-page" id="admin-main-content">
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-menu-button menu="adminMenu"></ion-menu-button>
+          <ion-menu-button menu="adminMenu" autoHide="false"></ion-menu-button>
         </ion-buttons>
 
         <ion-title>Panel de Administración</ion-title>
 
-        <!-- 🔻 Logout rápido arriba (opcional PRO) -->
         <ion-buttons slot="end">
-          <ion-button class="logout-btn" (click)="logout()">
+          <ion-button class="logout-btn" (click)="logout()" aria-label="Cerrar sesión">
             <ion-icon name="log-out-outline"></ion-icon>
           </ion-button>
         </ion-buttons>
-
       </ion-toolbar>
     </ion-header>
 

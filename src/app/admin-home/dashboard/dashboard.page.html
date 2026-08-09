@@ -1,68 +1,193 @@
-<ion-content class="custom-dashboard">
+<div class="dash" *ngIf="!loading && data; else loadingTpl">
 
-  <ion-grid>
+  <header class="dash-hero">
+    <div>
+      <p class="dash-hero__eyebrow">Panel Abimar</p>
+      <h1>Dashboard</h1>
+      <p class="dash-hero__sub">Resumen operativo de la tienda</p>
+    </div>
+    <span class="dash-badge" *ngIf="usingMock">Datos de demo</span>
+  </header>
 
-    <ion-row>
-      <ion-col size="6">
-        <ion-card button [routerLink]="['/admin-home','roles']" class="dash-card ds-card roles">
+  <!-- Fase 1: KPIs -->
+  <section class="kpi-grid">
+    <article class="kpi">
+      <span class="kpi__label">Ingresos pagados</span>
+      <strong class="kpi__value kpi__value--price">
+        Bs {{ data.ingresos.ingresosPagadosBs | number:'1.2-2' }}
+      </strong>
+      <small>Ticket prom. Bs {{ data.ingresos.ticketPromedioBs | number:'1.2-2' }}</small>
+    </article>
 
-          <ion-card-content>
-            <ion-icon name="people-circle" class="dash-icon"></ion-icon>
-            <h2>Roles</h2>
-          </ion-card-content>
+    <article class="kpi">
+      <span class="kpi__label">Pedidos</span>
+      <strong class="kpi__value">{{ data.pedidos.total }}</strong>
+      <small>{{ data.pedidos.pagados }} pagados · {{ data.pedidos.pendientes }} pend.</small>
+    </article>
 
-        </ion-card>
-      </ion-col>
+    <article class="kpi">
+      <span class="kpi__label">Productos</span>
+      <strong class="kpi__value">{{ data.catalogo.productosActivos }}</strong>
+      <small>{{ data.catalogo.productosTotal }} total · {{ data.catalogo.stockBajo }} stock bajo</small>
+    </article>
 
-      <ion-col size="6">
-        <ion-card button [routerLink]="['/admin-home','usuarios']" class="dash-card ds-card users">
+    <article class="kpi">
+      <span class="kpi__label">Usuarios</span>
+      <strong class="kpi__value">{{ data.usuarios.usuariosTotal }}</strong>
+      <small>{{ data.catalogo.categoriasTotal }} categorías</small>
+    </article>
+  </section>
 
-          <ion-card-content>
-            <ion-icon name="person-circle" class="dash-icon"></ion-icon>
-            <h2>Usuarios</h2>
-          </ion-card-content>
+  <!-- Estados de pedido -->
+  <section class="panel">
+    <div class="panel__head">
+      <h2>Estados de pedidos</h2>
+    </div>
+    <div class="status-row">
+      <button type="button" class="status-chip" routerLink="/admin-home/pedidos">
+        <span class="status-chip__n">{{ data.pedidos.pendientes }}</span>
+        <span>Pendientes</span>
+      </button>
+      <button type="button" class="status-chip status-chip--ok" routerLink="/admin-home/pedidos">
+        <span class="status-chip__n">{{ data.pedidos.pagados }}</span>
+        <span>Pagados</span>
+      </button>
+      <button type="button" class="status-chip status-chip--bad" routerLink="/admin-home/pedidos">
+        <span class="status-chip__n">{{ data.pedidos.cancelados }}</span>
+        <span>Cancelados</span>
+      </button>
+    </div>
+  </section>
 
-        </ion-card>
-      </ion-col>
-    </ion-row>
+  <!-- Fase 2: ventas 7 días -->
+  <section class="panel">
+    <div class="panel__head">
+      <h2>Ventas (7 días)</h2>
+      <span class="panel__hint">Bs por día</span>
+    </div>
+    <div class="bars">
+      <div class="bars__col" *ngFor="let d of data.ventasPorDia">
+        <div class="bars__track">
+          <div
+            class="bars__fill"
+            [style.height.%]="barHeight(d.totalBs)"
+            [attr.title]="'Bs ' + (d.totalBs | number:'1.0-0') + ' · ' + d.cantidad + ' pedidos'">
+          </div>
+        </div>
+        <span class="bars__label">{{ d.label }}</span>
+        <span class="bars__val">{{ d.totalBs / 1000 | number:'1.1-1' }}k</span>
+      </div>
+    </div>
+  </section>
 
-    <ion-row>
-      <ion-col size="6">
-        <ion-card button [routerLink]="['/admin-home','categorias']" class="dash-card ds-card cats">
+  <!-- Fase 2: métodos de pago -->
+  <section class="panel">
+    <div class="panel__head">
+      <h2>Métodos de pago</h2>
+    </div>
+    <div class="pay-list">
+      <div class="pay-row">
+        <div class="pay-row__meta">
+          <ion-icon name="logo-paypal"></ion-icon>
+          <span>PayPal</span>
+          <strong>{{ data.pagos.paypal }}</strong>
+        </div>
+        <div class="pay-bar">
+          <i [style.width.%]="pct(data.pagos.paypal, totalPagosMetodo)"></i>
+        </div>
+      </div>
+      <div class="pay-row">
+        <div class="pay-row__meta">
+          <ion-icon name="qr-code-outline"></ion-icon>
+          <span>QR</span>
+          <strong>{{ data.pagos.qr }}</strong>
+        </div>
+        <div class="pay-bar">
+          <i class="pay-bar__qr" [style.width.%]="pct(data.pagos.qr, totalPagosMetodo)"></i>
+        </div>
+      </div>
+      <div class="pay-row">
+        <div class="pay-row__meta">
+          <ion-icon name="help-circle-outline"></ion-icon>
+          <span>Sin definir</span>
+          <strong>{{ data.pagos.sinDefinir }}</strong>
+        </div>
+        <div class="pay-bar">
+          <i class="pay-bar__nd" [style.width.%]="pct(data.pagos.sinDefinir, totalPagosMetodo)"></i>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <ion-card-content>
-            <ion-icon name="albums" class="dash-icon"></ion-icon>
-            <h2>Categorías</h2>
-          </ion-card-content>
+  <!-- Fase 2: top productos -->
+  <section class="panel">
+    <div class="panel__head">
+      <h2>Top productos</h2>
+      <ion-button fill="clear" size="small" routerLink="/admin-home/productos">Ver todos</ion-button>
+    </div>
+    <div class="top-list">
+      <div class="top-item" *ngFor="let p of data.topProductos; let i = index">
+        <span class="top-item__rank">{{ i + 1 }}</span>
+        <div class="top-item__info">
+          <strong>{{ p.nombre }}</strong>
+          <span>{{ p.unidades }} unidades</span>
+        </div>
+        <strong class="top-item__amount">Bs {{ p.montoBs | number:'1.0-0' }}</strong>
+      </div>
+    </div>
+  </section>
 
-        </ion-card>
-      </ion-col>
+  <!-- Fase 1: pedidos recientes -->
+  <section class="panel">
+    <div class="panel__head">
+      <h2>Pedidos recientes</h2>
+      <ion-button fill="clear" size="small" routerLink="/admin-home/pedidos">Ver todos</ion-button>
+    </div>
+    <div class="recent-list">
+      <a class="recent" *ngFor="let p of data.pedidosRecientes" routerLink="/admin-home/pedidos">
+        <div class="recent__left">
+          <strong>#{{ p.idpedido }}</strong>
+          <span>{{ p.clienteNombre }}</span>
+          <small>{{ p.fecha | date:'dd/MM HH:mm' }} · {{ getMetodoPago(p.tipoPagoId) }}</small>
+        </div>
+        <div class="recent__right">
+          <strong>Bs {{ p.monto | number:'1.2-2' }}</strong>
+          <span class="st" [ngClass]="getEstadoClase(p.status)">{{ p.status }}</span>
+        </div>
+      </a>
+    </div>
+  </section>
 
-      <ion-col size="6">
-        <ion-card button [routerLink]="['/admin-home','productos']" class="dash-card ds-card products">
+  <!-- Accesos rápidos -->
+  <section class="panel panel--links">
+    <div class="panel__head">
+      <h2>Accesos rápidos</h2>
+    </div>
+    <div class="quick-grid">
+      <a routerLink="/admin-home/pedidos" class="quick">
+        <ion-icon name="receipt-outline"></ion-icon>
+        Pedidos
+      </a>
+      <a routerLink="/admin-home/productos" class="quick">
+        <ion-icon name="cube-outline"></ion-icon>
+        Productos
+      </a>
+      <a routerLink="/admin-home/usuarios" class="quick">
+        <ion-icon name="people-outline"></ion-icon>
+        Usuarios
+      </a>
+      <a routerLink="/admin-home/categorias" class="quick">
+        <ion-icon name="albums-outline"></ion-icon>
+        Categorías
+      </a>
+    </div>
+  </section>
 
-          <ion-card-content>
-            <ion-icon name="cube" class="dash-icon"></ion-icon>
-            <h2>Productos</h2>
-          </ion-card-content>
+</div>
 
-        </ion-card>
-      </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <ion-col size="6">
-        <ion-card button [routerLink]="['/admin-home','pedidos']" class="dash-card ds-card pedidos">
-
-          <ion-card-content>
-            <ion-icon name="receipt" class="dash-icon"></ion-icon>
-            <h2>Pedidos</h2>
-          </ion-card-content>
-
-        </ion-card>
-      </ion-col>
-    </ion-row>
-
-  </ion-grid>
-
-</ion-content>
+<ng-template #loadingTpl>
+  <div class="dash-loading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando dashboard...</p>
+  </div>
+</ng-template>

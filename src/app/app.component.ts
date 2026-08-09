@@ -3,7 +3,8 @@ import { Platform, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { UtilService } from './util.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -11,10 +12,28 @@ import { Router } from '@angular/router';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit {
+
+  static readonly MENU_ID = 'mainMenu';
+
+  /** Rutas donde el menú no debe abrirse solo (compra, auth, admin). */
+  private static readonly MENU_FOCUS_ROUTES = [
+    '/admin-home',
+    '/checkout',
+    '/payment-methods',
+    '/qr-payment',
+    '/confirm',
+    '/item-details',
+    '/login',
+    '/signup',
+    '/welcome',
+  ];
+
   public isMenuEnabled = true;
   public showIcons = true;
   public selectedIndex = 0;
   public isGuest = false;
+  public userLabel = 'Abimar Shop';
+  public swipeEnabled = true;
 
   constructor(
     private platform: Platform,
@@ -35,34 +54,98 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Escucha el estado del menú
+    this.refreshUserLabel();
+
     this.util.getMenuState().subscribe(state => {
       this.isMenuEnabled = state;
-      this.menuCtrl.enable(state); // 🔹 fuerza el estado en el controlador real
+      this.menuCtrl.enable(state, AppComponent.MENU_ID);
     });
 
-    // Escucha el estado de los íconos
     this.util.getShowIcons().subscribe(state => {
       this.showIcons = state;
     });
-    // inicializa estado desde localStorage
+
     const guest = localStorage.getItem('guestAccess') === 'true';
     this.util.setGuest(guest);
-    // suscribirse para cambios en tiempo real
+
     this.util.isGuest$.subscribe(isGuest => {
       this.isGuest = isGuest;
-      this.showIcons = !isGuest;     // desactiva iconos si es invitado
-      this.menuCtrl.enable(true);     // siempre habilita menú lateral
+      this.showIcons = !isGuest;
+      this.refreshUserLabel();
     });
+
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe((e) => {
+        const url = e.urlAfterRedirects || e.url;
+        this.refreshUserLabel();
+        this.syncSelectedIndex(url);
+        this.syncMenuForUrl(url);
+      });
   }
 
-  navigate(path: string, selectedId: number) {
+  private isFocusRoute(url: string): boolean {
+    const path = (url || '').split('?')[0];
+    return AppComponent.MENU_FOCUS_ROUTES.some(
+      (r) => path === r || path.startsWith(r + '/')
+    );
+  }
+
+  private async syncMenuForUrl(url: string) {
+    // Admin: menú cliente off
+    if (url.includes('/admin-home')) {
+      this.swipeEnabled = false;
+      this.util.setMenuState(false);
+      await this.menuCtrl.enable(false, AppComponent.MENU_ID);
+      await this.menuCtrl.close(AppComponent.MENU_ID);
+      return;
+    }
+
+    // Flujo de compra / auth: nunca auto-abrir ni swipe
+    if (this.isFocusRoute(url)) {
+      this.swipeEnabled = false;
+      await this.menuCtrl.close(AppComponent.MENU_ID);
+      return;
+    }
+
+    // Rutas normales de tienda: menú disponible, cerrado
+    this.swipeEnabled = true;
+    await this.menuCtrl.close(AppComponent.MENU_ID);
+  }
+
+  private refreshUserLabel() {
+    const usuario = (localStorage.getItem('usuario') || '').trim();
+    if (this.isGuest || !usuario) {
+      this.userLabel = 'Navegación libre';
+    } else {
+      this.userLabel = usuario;
+    }
+  }
+
+  private syncSelectedIndex(url: string) {
+    if (url.startsWith('/home')) this.selectedIndex = 1;
+    else if (url.startsWith('/profile')) this.selectedIndex = 2;
+    else if (url.startsWith('/my-cart')) this.selectedIndex = 3;
+    else if (url.startsWith('/my-orders')) this.selectedIndex = 5;
+    else if (url.startsWith('/contactus')) this.selectedIndex = 7;
+  }
+
+  async navigate(path: string, selectedId: number, event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     this.selectedIndex = selectedId;
-    this.router.navigate([path]);
-    this.menuCtrl.close();
+    await this.router.navigateByUrl(path);
+    // Cerrar tras elegir sección (no mantener abierto en navegaciones posteriores)
+    await this.menuCtrl.close(AppComponent.MENU_ID);
   }
 
-  close() {
-    this.menuCtrl.close();
+  async closeMenu(event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    await this.menuCtrl.close(AppComponent.MENU_ID);
   }
 }

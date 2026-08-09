@@ -1,166 +1,295 @@
-<ion-content class="custom-pedidos">
+<ion-content class="admin-page pedidos-page">
 
-  <div class="container">
+  <ion-refresher slot="fixed" (ionRefresh)="cargarPedidos($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-    <!-- Header -->
-    <div class="page-header">
-      <h1 class="page-title">Gestión de Pedidos</h1>
-      <p class="page-subtitle">Administración de órdenes del sistema</p>
-    </div>
+  <div class="admin-container">
 
-    <!-- 🔍 Buscador -->
-    <div class="ds-searchbar">
-      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar por ID, cliente..."></ion-searchbar>
-    </div>
-
-    <!-- 🎯 Filtros -->
-    <div class="filters">
-      <ion-segment [(ngModel)]="filtroEstado">
-        <ion-segment-button value="ALL">Todos</ion-segment-button>
-        <ion-segment-button value="PENDIENTE">Pendientes</ion-segment-button>
-        <ion-segment-button value="PAGADO">Pagados</ion-segment-button>
-        <ion-segment-button value="CANCELADO">Cancelados</ion-segment-button>
-      </ion-segment>
-    </div>
-
-    <!-- Loading -->
-    <div class="ds-loading" *ngIf="loading">
-      <ion-spinner></ion-spinner>
-      <p>Cargando pedidos...</p>
-    </div>
-
-    <!-- Lista -->
-    <ion-list *ngIf="!loading && pedidosFiltrados().length > 0; else emptyState">
-
-      <ion-item *ngFor="let p of pedidosFiltrados(); trackBy: trackByPedido" class="pedido-item">
-
-        <ion-label>
-
-          <!-- Header -->
-          <div class="pedido-header">
-            <h2>#{{ p.idpedido }}</h2>
-
-            <ion-badge [color]="getColor(p.status)">
-              <ion-icon [name]="getStatusIcon(p.status)"></ion-icon>
-              {{ p.status }}
-            </ion-badge>
-          </div>
-
-          <!-- Cliente -->
-          <p class="cliente">
-            👤 {{ p.clienteNombre || 'Cliente no identificado' }}
-          </p>
-
-          <!-- Info -->
-          <div class="pedido-info">
-
-            <div class="info-row">
-              <span>Monto</span>
-              <span class="price">Bs {{ p.monto | number:'1.2-2' }}</span>
-            </div>
-
-            <div class="info-row">
-              <span>Pago</span>
-              <span>{{ getMetodoPago(p.tipoPagoId) }}</span>
-            </div>
-
-            <div class="info-row">
-              <span>Fecha</span>
-              <span>{{ p.fecha | date:'short' }}</span>
-            </div>
-
-          </div>
-
-        </ion-label>
-
-        <!-- Acciones -->
-        <ion-buttons slot="end">
-
-          <ion-button fill="clear" class="btn-action-primary" (click)="verDetalle(p)">
-            Ver
-          </ion-button>
-
-          <ion-button fill="clear" class="btn-action-warning" (click)="cambiarEstado(p)">
-            Estado
-          </ion-button>
-
-        </ion-buttons>
-
-      </ion-item>
-
-    </ion-list>
-
-    <!-- Empty -->
-    <ng-template #emptyState>
-      <div class="ds-empty">
-        <ion-icon name="receipt-outline"></ion-icon>
-        <h3>No hay pedidos</h3>
-        <p>No existen órdenes registradas</p>
+    <header class="admin-header">
+      <div>
+        <div class="admin-chip">Administración</div>
+        <h1>Pedidos</h1>
+        <p>Administra órdenes, pagos y estados de la tienda.</p>
       </div>
-    </ng-template>
+      <div class="admin-resume">
+        <div class="resume-number">{{ countAll }}</div>
+        <div class="resume-label">Pedidos</div>
+      </div>
+    </header>
 
-  </div>
-
-  <!-- 🔥 DETALLE DEL PEDIDO -->
-  <div *ngIf="pedidoSeleccionado" class="container" style="margin-top:20px">
-
-    <div class="page-header">
-      <h2 class="page-title">Detalle Pedido #{{ pedidoSeleccionado.idpedido }}</h2>
+    <div class="pedidos-stats" *ngIf="!loading">
+      <button
+        type="button"
+        class="pedidos-stat"
+        [class.pedidos-stat--active]="filtroEstado === 'ALL'"
+        (click)="setFiltroEstado('ALL')">
+        <span class="pedidos-stat__value">{{ countAll }}</span>
+        <span class="pedidos-stat__label">Todos</span>
+      </button>
+      <button
+        type="button"
+        class="pedidos-stat pedidos-stat--warn"
+        [class.pedidos-stat--active]="filtroEstado === 'PENDIENTE'"
+        (click)="setFiltroEstado('PENDIENTE')">
+        <span class="pedidos-stat__value">{{ countPendiente }}</span>
+        <span class="pedidos-stat__label">Pendientes</span>
+      </button>
+      <button
+        type="button"
+        class="pedidos-stat pedidos-stat--ok"
+        [class.pedidos-stat--active]="filtroEstado === 'PAGADO'"
+        (click)="setFiltroEstado('PAGADO')">
+        <span class="pedidos-stat__value">{{ countPagado }}</span>
+        <span class="pedidos-stat__label">Pagados</span>
+      </button>
+      <button
+        type="button"
+        class="pedidos-stat pedidos-stat--bad"
+        [class.pedidos-stat--active]="filtroEstado === 'CANCELADO'"
+        (click)="setFiltroEstado('CANCELADO')">
+        <span class="pedidos-stat__value">{{ countCancelado }}</span>
+        <span class="pedidos-stat__label">Cancelados</span>
+      </button>
+      <div class="pedidos-stat pedidos-stat--money">
+        <span class="pedidos-stat__value">Bs {{ ingresosPagados | number:'1.0-0' }}</span>
+        <span class="pedidos-stat__label">Ingresos pagados</span>
+      </div>
     </div>
 
-    <!-- Loading -->
-    <div *ngIf="loadingDetalle" class="ds-loading">
-      <ion-spinner></ion-spinner>
-      <p>Cargando detalle...</p>
-    </div>
+    <div class="pedidos-layout pedidos-layout--split">
 
-    <!-- Lista -->
-    <ion-list *ngIf="!loadingDetalle && detalleSeleccionado.length > 0">
+      <!-- Listado -->
+      <div class="pedidos-list-pane">
 
-      <ion-item *ngFor="let d of detalleSeleccionado">
+        <div class="search-card">
+          <ion-searchbar
+            mode="md"
+            [(ngModel)]="searchTerm"
+            (ionInput)="onSearchChange()"
+            placeholder="Buscar por ID, cliente o dirección..."
+            [showClearButton]="searchTerm ? 'always' : 'never'"
+            animated="true"
+            debounce="150">
+          </ion-searchbar>
+        </div>
 
-        <ion-label>
+        <div class="chips">
+          <button type="button" class="chip" [class.chip--active]="filtroPago === 'ALL'" (click)="setFiltroPago('ALL')">
+            Todo pago
+          </button>
+          <button type="button" class="chip" [class.chip--active]="filtroPago === 1" (click)="setFiltroPago(1)">
+            <ion-icon name="logo-paypal"></ion-icon>
+            PayPal
+          </button>
+          <button type="button" class="chip" [class.chip--active]="filtroPago === 2" (click)="setFiltroPago(2)">
+            <ion-icon name="qr-code-outline"></ion-icon>
+            QR
+          </button>
+          <button type="button" class="chip" [class.chip--active]="filtroPago === 0" (click)="setFiltroPago(0)">
+            Sin definir
+          </button>
+        </div>
 
-          <h3>Producto #{{ d.productoId }}</h3>
+        <div class="list-toolbar" *ngIf="!loading && pedidosFiltrados().length > 0">
+          <span>{{ pedidosFiltrados().length }} pedido{{ pedidosFiltrados().length === 1 ? '' : 's' }}</span>
+          <ion-button fill="clear" size="small" class="refresh-btn" (click)="cargarPedidos()" [disabled]="loading">
+            <ion-icon slot="start" name="refresh-outline"></ion-icon>
+            Actualizar
+          </ion-button>
+        </div>
 
-          <div class="pedido-info">
+        <div class="ds-loading" *ngIf="loading">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Cargando pedidos...</p>
+        </div>
 
-            <div class="info-row">
-              <span>Cantidad</span>
-              <span>{{ d.cantidad }}</span>
+        <ng-container *ngIf="!loading">
+          <div class="pedido-list" *ngIf="pedidosFiltrados().length > 0; else emptyTpl">
+            <article
+              class="pedido-card"
+              *ngFor="let p of pedidosFiltrados(); trackBy: trackByPedido"
+              [class.pedido-card--active]="isSelected(p)"
+              (click)="verDetalle(p)">
+
+              <div class="pedido-card__top">
+                <div class="pedido-card__id">
+                  <ion-icon name="receipt-outline"></ion-icon>
+                  <strong>#{{ p.idpedido }}</strong>
+                </div>
+                <span class="badge" [attr.data-status]="p.status">
+                  <ion-icon [name]="getStatusIcon(p.status)"></ion-icon>
+                  {{ p.status }}
+                </span>
+              </div>
+
+              <div class="pedido-card__client">
+                <ion-icon name="person-outline"></ion-icon>
+                <span>{{ p.clienteNombre || 'Cliente no identificado' }}</span>
+              </div>
+
+              <div class="pedido-card__row">
+                <span class="pedido-card__price">Bs {{ p.monto | number:'1.2-2' }}</span>
+                <span class="meta-chip">
+                  <ion-icon [name]="getMetodoIcon(p.tipoPagoId)"></ion-icon>
+                  {{ getMetodoPago(p.tipoPagoId) }}
+                </span>
+                <span class="meta-chip">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  {{ p.fecha | date:'dd/MM/yyyy HH:mm' }}
+                </span>
+              </div>
+
+              <p class="pedido-card__address" *ngIf="p.direccionEnvio">
+                <ion-icon name="location-outline"></ion-icon>
+                {{ p.direccionEnvio }}
+              </p>
+
+              <div class="pedido-card__actions" (click)="$event.stopPropagation()">
+                <ion-button
+                  expand="block"
+                  fill="outline"
+                  class="btn-detalle"
+                  (click)="verDetalle(p)">
+                  <ion-icon
+                    slot="start"
+                    [name]="isSelected(p) ? 'eye-off-outline' : 'eye-outline'">
+                  </ion-icon>
+                  {{ isSelected(p) ? 'Ocultar detalle' : 'Ver detalle' }}
+                </ion-button>
+
+                <ion-button
+                  expand="block"
+                  class="btn-estado"
+                  [disabled]="savingEstado"
+                  (click)="cambiarEstado(p, $event)">
+                  <ion-icon slot="start" name="swap-horizontal-outline"></ion-icon>
+                  Cambiar estado
+                </ion-button>
+              </div>
+            </article>
+          </div>
+        </ng-container>
+
+        <ng-template #emptyTpl>
+          <div class="empty-card">
+            <ion-icon name="receipt-outline"></ion-icon>
+            <h2>{{ searchTerm || filtroEstado !== 'ALL' || filtroPago !== 'ALL' ? 'Sin resultados' : 'Sin pedidos' }}</h2>
+            <p>
+              {{ searchTerm || filtroEstado !== 'ALL' || filtroPago !== 'ALL'
+                ? 'Prueba otro filtro o término de búsqueda.'
+                : 'Las órdenes registradas aparecerán en esta sección.' }}
+            </p>
+          </div>
+        </ng-template>
+
+      </div>
+
+      <!-- Panel detalle (siempre visible en desktop) -->
+      <aside class="detail-panel">
+        <ng-container *ngIf="pedidoSeleccionado; else detailEmpty">
+          <div class="detail-panel__head">
+            <div>
+              <p class="detail-panel__eyebrow">Detalle</p>
+              <h2>Pedido #{{ pedidoSeleccionado.idpedido }}</h2>
             </div>
-
-            <div class="info-row">
-              <span>Precio</span>
-              <span>Bs {{ d.precio | number:'1.2-2' }}</span>
-            </div>
-
-            <div class="info-row">
-              <span>Subtotal</span>
-              <span>Bs {{ d.subtotal | number:'1.2-2' }}</span>
-            </div>
-
+            <ion-button fill="clear" class="detail-close" (click)="cerrarDetalle()">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
           </div>
 
-        </ion-label>
+          <div class="detail-panel__status">
+            <span class="badge" [attr.data-status]="pedidoSeleccionado.status">
+              <ion-icon [name]="getStatusIcon(pedidoSeleccionado.status)"></ion-icon>
+              {{ pedidoSeleccionado.status }}
+            </span>
+          </div>
 
-      </ion-item>
+          <ion-button
+            expand="block"
+            class="btn-estado-panel"
+            [disabled]="savingEstado"
+            (click)="cambiarEstado(pedidoSeleccionado, $event)">
+            <ion-icon slot="start" name="swap-horizontal-outline"></ion-icon>
+            Cambiar estado
+          </ion-button>
 
-    </ion-list>
+          <div class="detail-info">
+            <div class="detail-info__row">
+              <span>Cliente</span>
+              <strong>{{ pedidoSeleccionado.clienteNombre || '—' }}</strong>
+            </div>
+            <div class="detail-info__row">
+              <span>Monto</span>
+              <strong class="price">Bs {{ pedidoSeleccionado.monto | number:'1.2-2' }}</strong>
+            </div>
+            <div class="detail-info__row">
+              <span>Pago</span>
+              <strong>
+                <ion-icon [name]="getMetodoIcon(pedidoSeleccionado.tipoPagoId)"></ion-icon>
+                {{ getMetodoPago(pedidoSeleccionado.tipoPagoId) }}
+              </strong>
+            </div>
+            <div class="detail-info__row">
+              <span>Fecha</span>
+              <strong>{{ pedidoSeleccionado.fecha | date:'dd/MM/yyyy HH:mm' }}</strong>
+            </div>
+            <div class="detail-info__row" *ngIf="pedidoSeleccionado.direccionEnvio">
+              <span>Envío</span>
+              <strong class="wrap">{{ pedidoSeleccionado.direccionEnvio }}</strong>
+            </div>
+          </div>
 
-    <!-- Total -->
-    <div *ngIf="!loadingDetalle && detalleSeleccionado.length > 0" class="total-box">
-      <span>Total</span>
-      <strong>
-        Bs {{ totalDetalle | number:'1.2-2' }}
-      </strong>
+          <div class="detail-lines">
+            <h3>Líneas del pedido</h3>
+
+            <div class="ds-loading ds-loading--sm" *ngIf="loadingDetalle">
+              <ion-spinner name="crescent"></ion-spinner>
+              <p>Cargando detalle...</p>
+            </div>
+
+            <ng-container *ngIf="!loadingDetalle">
+              <div class="line" *ngFor="let d of detalleSeleccionado">
+                <div class="line__main">
+                  <strong>{{ d.productoNombre || ('Producto #' + d.productoId) }}</strong>
+                  <div class="line__meta">
+                    <span class="qty-badge" aria-label="Cantidad">
+                      <span class="qty-badge__label">Cant.</span>
+                      <span class="qty-badge__num">{{ d.cantidad }}</span>
+                    </span>
+                    <span class="line__unit">Bs {{ d.precio | number:'1.2-2' }} c/u</span>
+                  </div>
+                </div>
+                <strong class="line__sub">Bs {{ d.subtotal | number:'1.2-2' }}</strong>
+              </div>
+
+              <div class="empty-inline" *ngIf="detalleSeleccionado.length === 0">
+                Sin líneas de detalle
+              </div>
+
+              <div class="detail-totals" *ngIf="detalleSeleccionado.length > 0">
+                <div class="detail-totals__row">
+                  <span>Total líneas</span>
+                  <strong>Bs {{ totalDetalle | number:'1.2-2' }}</strong>
+                </div>
+                <div class="detail-totals__row detail-totals__row--muted">
+                  <span>Monto del pedido</span>
+                  <strong>Bs {{ pedidoSeleccionado.monto | number:'1.2-2' }}</strong>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <ng-template #detailEmpty>
+          <div class="detail-empty">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <h3>Selecciona un pedido</h3>
+            <p>Toca <strong>Ver detalle</strong> en una orden para ver líneas y cambiar su estado.</p>
+          </div>
+        </ng-template>
+      </aside>
+
     </div>
-
-    <!-- Empty -->
-    <div *ngIf="!loadingDetalle && detalleSeleccionado.length === 0" class="ds-empty">
-      <p>No hay detalles</p>
-    </div>
-
   </div>
-
 </ion-content>

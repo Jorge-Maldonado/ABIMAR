@@ -1,10 +1,7 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <!-- Botón hamburguesa -->
     <ion-buttons slot="start">
-      <ion-button fill="clear" (click)="openMenu()">
-        <ion-icon slot="icon-only" name="menu-outline"></ion-icon>
-      </ion-button>
+      <ion-menu-button menu="mainMenu" autoHide="false"></ion-menu-button>
     </ion-buttons>
 
     <ion-title>
@@ -12,18 +9,12 @@
     </ion-title>
 
     <ion-buttons slot="end">
-      <!-- Search icon -->
-      <ion-button fill="clear" class="notification" *ngIf="showIcons">
-        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
-      </ion-button>
-
-      <!-- Cart with badge -->
-      <ion-button fill="clear" *ngIf="usuarioEmail !== 'Invitado'" routerLink="/my-cart">
+      <ion-button fill="clear" class="home-cart-btn" *ngIf="!isGuestUser" routerLink="/my-cart">
         <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+        <ion-badge class="cart-qty-badge" *ngIf="cartCount > 0">{{ cartCount }}</ion-badge>
       </ion-button>
 
-      <!-- Logout -->
-      <ion-button fill="clear" *ngIf="usuarioEmail !== 'Invitado'" (click)="logout()" class="logout-btn">
+      <ion-button fill="clear" *ngIf="!isGuestUser" (click)="logout()" class="logout-btn">
         <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -32,138 +23,279 @@
 
 <ion-content class="home-content">
 
-  <!-- Saludo personalizado -->
-  <div class="home-greeting" *ngIf="usuarioEmail !== 'Invitado'">
-    <span>Hola 👋</span>
-    <strong>{{ usuarioEmail }}</strong>
+  <div class="home-shell">
+
+    <!-- Intro -->
+    <section class="home-intro" *ngIf="!searchTerm">
+      <p class="home-intro__hello" *ngIf="!isGuestUser">Hola, {{ displayName }}</p>
+      <p class="home-intro__hello" *ngIf="isGuestUser">Explora la tienda</p>
+      <h1 class="home-intro__brand">Abimar<span>.</span></h1>
+      <p class="home-intro__tag">Tecnología y accesorios con envío en Santa Cruz</p>
+      <button type="button" class="home-intro__cta" (click)="scrollToSection('sec-destacados')" *ngIf="destacados.length > 0">
+        Ver destacados
+        <ion-icon name="arrow-down-outline"></ion-icon>
+      </button>
+    </section>
+
+    <!-- Buscador -->
+    <div class="home-search ds-searchbar" *ngIf="productos.length > 0">
+      <ion-searchbar
+        [(ngModel)]="searchTerm"
+        placeholder="Buscar productos..."
+        [showClearButton]="searchTerm ? 'always' : 'never'"
+        animated="true"
+        debounce="200">
+      </ion-searchbar>
+    </div>
+
+    <!-- Resultados de búsqueda -->
+    <ng-container *ngIf="searchTerm">
+      <div class="section-header">
+        <div class="section-header__left">
+          <span class="section-header__mark"></span>
+          <h2>Resultados</h2>
+        </div>
+        <span class="see-all" *ngIf="productosFiltrados.length > 0">{{ productosFiltrados.length }} encontrados</span>
+      </div>
+
+      <ion-grid *ngIf="productosFiltrados.length > 0" class="product-grid">
+        <ion-row>
+          <ion-col size="6" size-md="4" size-lg="3" *ngFor="let p of productosFiltrados">
+            <div class="product-card" (click)="comprarProducto(p)">
+              <div class="product-card__img-wrap">
+                <img class="product-card__image" [src]="p.imagen" [alt]="p.nombre" loading="lazy" (error)="$event.target.src='assets/products/prod-1.png'">
+                <div class="product-card__actions-float" *ngIf="!isGuestUser">
+                  <button type="button" class="pc-action pc-action--cart" aria-label="Agregar al carrito"
+                    (click)="$event.stopPropagation(); agregarCarrito(p)">
+                    <ion-icon name="cart-outline"></ion-icon>
+                  </button>
+                  <button type="button" class="pc-action pc-action--fav" aria-label="Agregar a favoritos"
+                    [class.pc-action--active]="esFavorito(p)"
+                    (click)="$event.stopPropagation(); agregarFavorito(p)">
+                    <ion-icon [name]="esFavorito(p) ? 'heart' : 'heart-outline'"></ion-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="product-card__body">
+                <p class="product-card__name">{{ p.nombre }}</p>
+                <p class="product-card__price"><span>Bs</span> {{ p.precio | number:'1.2-2' }}</p>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <div class="ds-empty" *ngIf="productosFiltrados.length === 0">
+        <ion-icon name="search-outline"></ion-icon>
+        <h3>Sin resultados</h3>
+        <p>Intenta con otro término</p>
+      </div>
+    </ng-container>
+
+    <!-- Contenido principal -->
+    <ng-container *ngIf="!searchTerm">
+
+      <!-- Categorías (scroll horizontal) -->
+      <div class="section-header">
+        <div class="section-header__left">
+          <span class="section-header__mark"></span>
+          <h2>Categorías</h2>
+        </div>
+        <span class="see-all" *ngIf="categorias.length > 6" (click)="toggleVerTodos('categorias')">
+          {{ showAllCategorias ? 'Ver menos' : 'Ver todas' }}
+        </span>
+      </div>
+
+      <div class="cat-rail" *ngIf="!showAllCategorias; else catGrid">
+        <button type="button" class="cat-chip" *ngFor="let c of categorias" (click)="abrirCategoria(c)">
+          <span class="cat-chip__img">
+            <img [src]="c.imagen" [alt]="c.nombre" loading="lazy" (error)="$event.target.src='assets/categories/cat-1.png'">
+          </span>
+          <span class="cat-chip__name">{{ c.nombre }}</span>
+        </button>
+      </div>
+
+      <ng-template #catGrid>
+        <ion-grid class="product-grid">
+          <ion-row>
+            <ion-col size="4" size-md="3" size-lg="2" *ngFor="let c of categorias">
+              <div class="category-card" (click)="abrirCategoria(c)">
+                <div class="category-card__img-wrap">
+                  <img [src]="c.imagen" [alt]="c.nombre" class="category-card__img" loading="lazy" (error)="$event.target.src='assets/categories/cat-1.png'">
+                </div>
+                <span class="category-card__name">{{ c.nombre }}</span>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+
+      <!-- Destacados -->
+      <div class="section-header" id="sec-destacados">
+        <div class="section-header__left">
+          <span class="section-header__mark"></span>
+          <h2>Destacados</h2>
+        </div>
+        <span class="see-all" *ngIf="destacados.length > 4" (click)="toggleVerTodos('destacados')">
+          {{ showAllDestacados ? 'Ver menos' : 'Ver todos' }}
+        </span>
+      </div>
+      <ion-grid class="product-grid">
+        <ion-row>
+          <ion-col size="6" size-md="4" size-lg="3" *ngFor="let p of (showAllDestacados ? destacados : destacados.slice(0,4))">
+            <div class="product-card" (click)="comprarProducto(p)">
+              <div class="product-card__img-wrap">
+                <img class="product-card__image" [src]="p.imagen" [alt]="p.nombre" loading="lazy" (error)="$event.target.src='assets/products/prod-1.png'">
+                <div class="product-card__actions-float" *ngIf="!isGuestUser">
+                  <button type="button" class="pc-action pc-action--cart" aria-label="Agregar al carrito"
+                    (click)="$event.stopPropagation(); agregarCarrito(p)">
+                    <ion-icon name="cart-outline"></ion-icon>
+                  </button>
+                  <button type="button" class="pc-action pc-action--fav"
+                    [class.pc-action--active]="esFavorito(p)"
+                    (click)="$event.stopPropagation(); agregarFavorito(p)">
+                    <ion-icon [name]="esFavorito(p) ? 'heart' : 'heart-outline'"></ion-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="product-card__body">
+                <p class="product-card__name">{{ p.nombre }}</p>
+                <p class="product-card__price"><span>Bs</span> {{ p.precio | number:'1.2-2' }}</p>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <!-- Más vendidos -->
+      <div class="section-header" id="sec-vendidos">
+        <div class="section-header__left">
+          <span class="section-header__mark section-header__mark--amber"></span>
+          <h2>Más vendidos</h2>
+        </div>
+        <span class="see-all" *ngIf="masVendidos.length > 4" (click)="toggleVerTodos('masVendidos')">
+          {{ showAllMasVendidos ? 'Ver menos' : 'Ver todos' }}
+        </span>
+      </div>
+      <ion-grid class="product-grid">
+        <ion-row>
+          <ion-col size="6" size-md="4" size-lg="3" *ngFor="let p of (showAllMasVendidos ? masVendidos : masVendidos.slice(0,4))">
+            <div class="product-card" (click)="comprarProducto(p)">
+              <div class="product-card__img-wrap">
+                <img class="product-card__image" [src]="p.imagen" [alt]="p.nombre" loading="lazy" (error)="$event.target.src='assets/products/prod-1.png'">
+                <div class="product-card__actions-float" *ngIf="!isGuestUser">
+                  <button type="button" class="pc-action pc-action--cart"
+                    (click)="$event.stopPropagation(); agregarCarrito(p)">
+                    <ion-icon name="cart-outline"></ion-icon>
+                  </button>
+                  <button type="button" class="pc-action pc-action--fav"
+                    [class.pc-action--active]="esFavorito(p)"
+                    (click)="$event.stopPropagation(); agregarFavorito(p)">
+                    <ion-icon [name]="esFavorito(p) ? 'heart' : 'heart-outline'"></ion-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="product-card__body">
+                <p class="product-card__name">{{ p.nombre }}</p>
+                <p class="product-card__price"><span>Bs</span> {{ p.precio | number:'1.2-2' }}</p>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <!-- Favoritos -->
+      <ng-container *ngIf="favoritos.length > 0">
+        <div class="section-header" id="sec-favoritos">
+          <div class="section-header__left">
+            <span class="section-header__mark section-header__mark--fav"></span>
+            <h2>Favoritos</h2>
+          </div>
+          <span class="see-all" *ngIf="favoritos.length > 4" (click)="toggleVerTodos('favoritos')">
+            {{ showAllFavoritos ? 'Ver menos' : 'Ver todos' }}
+          </span>
+        </div>
+        <ion-grid class="product-grid">
+          <ion-row>
+            <ion-col size="6" size-md="4" size-lg="3" *ngFor="let p of (showAllFavoritos ? favoritos : favoritos.slice(0,4))">
+              <div class="product-card" (click)="comprarProducto(p)">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__image" [src]="p.imagen" [alt]="p.nombre" loading="lazy" (error)="$event.target.src='assets/products/prod-1.png'">
+                  <div class="product-card__actions-float" *ngIf="!isGuestUser">
+                    <button type="button" class="pc-action pc-action--cart"
+                      (click)="$event.stopPropagation(); agregarCarrito(p)">
+                      <ion-icon name="cart-outline"></ion-icon>
+                    </button>
+                    <button type="button" class="pc-action pc-action--fav pc-action--active"
+                      (click)="$event.stopPropagation(); agregarFavorito(p)">
+                      <ion-icon name="heart"></ion-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="product-card__body">
+                  <p class="product-card__name">{{ p.nombre }}</p>
+                  <p class="product-card__price"><span>Bs</span> {{ p.precio | number:'1.2-2' }}</p>
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+
+      <!-- Todos los productos -->
+      <ng-container *ngIf="productos.length > 0">
+        <div class="section-header" id="sec-productos">
+          <div class="section-header__left">
+            <span class="section-header__mark"></span>
+            <h2>Productos</h2>
+          </div>
+          <span class="see-all" *ngIf="productos.length > 8" (click)="toggleVerTodos('productos')">
+            {{ showAllProductos ? 'Ver menos' : 'Ver todos (' + productos.length + ')' }}
+          </span>
+        </div>
+        <ion-grid class="product-grid product-grid--last">
+          <ion-row>
+            <ion-col
+              size="6"
+              size-md="4"
+              size-lg="3"
+              *ngFor="let p of (showAllProductos ? productos : productos.slice(0, 8))">
+              <div class="product-card" (click)="comprarProducto(p)">
+                <div class="product-card__img-wrap">
+                  <img
+                    class="product-card__image"
+                    [src]="p.imagen"
+                    [alt]="p.nombre"
+                    loading="lazy"
+                    (error)="$event.target.src='assets/products/prod-1.png'">
+                  <div class="product-card__actions-float" *ngIf="!isGuestUser">
+                    <button
+                      type="button"
+                      class="pc-action pc-action--cart"
+                      aria-label="Agregar al carrito"
+                      (click)="$event.stopPropagation(); agregarCarrito(p)">
+                      <ion-icon name="cart-outline"></ion-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="pc-action pc-action--fav"
+                      [class.pc-action--active]="esFavorito(p)"
+                      (click)="$event.stopPropagation(); agregarFavorito(p)">
+                      <ion-icon [name]="esFavorito(p) ? 'heart' : 'heart-outline'"></ion-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="product-card__body">
+                  <p class="product-card__name">{{ p.nombre }}</p>
+                  <p class="product-card__price"><span>Bs</span> {{ p.precio | number:'1.2-2' }}</p>
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+
+    </ng-container>
   </div>
-
-  <!-- Buscador -->
-  <div class="home-search ds-searchbar" *ngIf="productos.length > 0">
-    <ion-searchbar
-      [(ngModel)]="searchTerm"
-      placeholder="Buscar productos..."
-      [showClearButton]="searchTerm ? 'always' : 'never'"
-      animated="true">
-    </ion-searchbar>
-  </div>
-
-  <!-- Resultados de búsqueda -->
-  <ng-container *ngIf="searchTerm">
-    <div class="section-header">
-      <h2>Resultados</h2>
-      <span class="see-all" *ngIf="productosFiltrados.length > 0">{{ productosFiltrados.length }} encontrados</span>
-    </div>
-
-    <ion-grid *ngIf="productosFiltrados.length > 0" class="product-grid">
-      <ion-row>
-        <ion-col size="4" size-md="3" size-lg="2" *ngFor="let p of productosFiltrados">
-          <div class="product-card" (click)="comprarProducto(p)">
-            <img class="product-card__image" [src]="p.imagen" [alt]="p.nombre" loading="lazy"  (error)="$event.target.src='assets/products/prod-1.png'">
-            <div class="product-card__body">
-              <p class="product-card__name">{{ p.nombre }}</p>
-              <p class="product-card__price">Bs {{ p.precio | number:'1.2-2' }}</p>
-              <div class="product-card__actions" *ngIf="usuarioEmail !== 'Invitado'">
-                <ion-button class="btn-cart" size="small" (click)="$event.stopPropagation(); agregarCarrito(p)">
-                  <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
-                </ion-button>
-              </div>
-            </div>
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-    <div class="ds-empty" *ngIf="productosFiltrados.length === 0">
-      <ion-icon name="search-outline"></ion-icon>
-      <h3>Sin resultados</h3>
-      <p>Intenta con otro término</p>
-    </div>
-  </ng-container>
-
-  <!-- Contenido principal (sin búsqueda activa) -->
-  <ng-container *ngIf="!searchTerm">
-
-    <!-- Categorías -->
-    <div class="section-header">
-      <h2>Categorías</h2>
-      <span class="see-all" *ngIf="categorias.length > 3" (click)="toggleVerTodos('categorias')">
-        {{ showAllCategorias ? 'Ver menos' : 'Ver todas' }}
-      </span>
-    </div>
-    <ion-grid class="product-grid">
-      <ion-row>
-        <ion-col size="4" size-md="3" size-lg="2" *ngFor="let c of (showAllCategorias ? categorias : categorias.slice(0,6))">
-          <div class="category-card" (click)="abrirCategoria(c)">
-            <img [src]="c.imagen" [alt]="c.nombre" class="category-card__img" loading="lazy" (error)="$event.target.src='assets/categories/cat-1.png'">
-            <span class="category-card__name">{{ c.nombre }}</span>
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-    <!-- Destacados -->
-    <div class="section-header">
-      <h2>Destacados</h2>
-      <span class="see-all" *ngIf="destacados.length > 3" (click)="toggleVerTodos('destacados')">
-        {{ showAllDestacados ? 'Ver menos' : 'Ver todos' }}
-      </span>
-    </div>
-    <ion-grid class="product-grid">
-      <ion-row>
-        <ion-col size="4" size-md="3" size-lg="2" *ngFor="let p of (showAllDestacados ? destacados : destacados.slice(0,6))">
-          <div class="product-card" (click)="comprarProducto(p)">
-            <div class="product-card__img-wrap">
-              <img class="product-card__image" [src]="p.imagen" [alt]="p.nombre" loading="lazy"  (error)="$event.target.src='assets/products/prod-1.png'">
-              <div class="product-card__overlay" *ngIf="usuarioEmail !== 'Invitado'">
-                <ion-button fill="clear" class="overlay-btn" (click)="$event.stopPropagation(); agregarCarrito(p)">
-                  <ion-icon name="cart-outline"></ion-icon>
-                </ion-button>
-                <ion-button fill="clear" class="overlay-btn" (click)="$event.stopPropagation(); agregarFavorito(p)">
-                  <ion-icon name="heart-outline"></ion-icon>
-                </ion-button>
-              </div>
-            </div>
-            <div class="product-card__body">
-              <p class="product-card__price">Bs {{ p.precio | number:'1.2-2' }}</p>
-              <p class="product-card__name">{{ p.nombre }}</p>
-            </div>
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-    <!-- Más vendidos -->
-    <div class="section-header">
-      <h2>Más vendidos</h2>
-      <span class="see-all" *ngIf="masVendidos.length > 3" (click)="toggleVerTodos('masVendidos')">
-        {{ showAllMasVendidos ? 'Ver menos' : 'Ver todos' }}
-      </span>
-    </div>
-    <ion-grid class="product-grid" style="margin-bottom: 32px;">
-      <ion-row>
-        <ion-col size="4" size-md="3" size-lg="2" *ngFor="let p of (showAllMasVendidos ? masVendidos : masVendidos.slice(0,6))">
-          <div class="product-card" (click)="comprarProducto(p)">
-            <div class="product-card__img-wrap">
-              <img class="product-card__image" [src]="p.imagen" [alt]="p.nombre" loading="lazy"  (error)="$event.target.src='assets/products/prod-1.png'">
-              <div class="product-card__overlay" *ngIf="usuarioEmail !== 'Invitado'">
-                <ion-button fill="clear" class="overlay-btn" (click)="$event.stopPropagation(); agregarCarrito(p)">
-                  <ion-icon name="cart-outline"></ion-icon>
-                </ion-button>
-                <ion-button fill="clear" class="overlay-btn" (click)="$event.stopPropagation(); agregarFavorito(p)">
-                  <ion-icon name="heart-outline"></ion-icon>
-                </ion-button>
-              </div>
-            </div>
-            <div class="product-card__body">
-              <p class="product-card__price">Bs {{ p.precio | number:'1.2-2' }}</p>
-              <p class="product-card__name">{{ p.nombre }}</p>
-            </div>
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-  </ng-container>
 
 </ion-content>

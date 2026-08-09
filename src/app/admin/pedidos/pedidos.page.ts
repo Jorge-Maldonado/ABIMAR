@@ -1,11 +1,11 @@
 import {
   Component,
   OnInit,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from '@angular/core';
+import { AlertController, ToastController } from '@ionic/angular';
 import { PedidoService } from 'src/app/services/pedido.service';
-import { ChangeDetectorRef } from '@angular/core';
-import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-pedidos',
@@ -19,50 +19,111 @@ export class PedidosPage implements OnInit {
   loading = true;
 
   searchTerm = '';
-  filtroEstado = 'ALL';
+  filtroEstado: 'ALL' | 'PENDIENTE' | 'PAGADO' | 'CANCELADO' = 'ALL';
+  filtroPago: 'ALL' | 1 | 2 | 0 = 'ALL';
 
-  // detalle variables
   detalleSeleccionado: any[] = [];
   pedidoSeleccionado: any = null;
   loadingDetalle = false;
   totalDetalle = 0;
+  savingEstado = false;
 
-  constructor(private pedidoService: PedidoService,
+  constructor(
+    private pedidoService: PedidoService,
     private cd: ChangeDetectorRef,
-    private alertCtrl: AlertController) { }
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController
+  ) { }
 
   ngOnInit() {
     this.cargarPedidos();
   }
 
-  cargarPedidos() {
-    this.loading = true;
-    this.cd.markForCheck(); // 👈 importante
+  get countAll(): number {
+    return this.pedidos.length;
+  }
+
+  get countPendiente(): number {
+    return this.pedidos.filter(p => p.status === 'PENDIENTE').length;
+  }
+
+  get countPagado(): number {
+    return this.pedidos.filter(p => p.status === 'PAGADO').length;
+  }
+
+  get countCancelado(): number {
+    return this.pedidos.filter(p => p.status === 'CANCELADO').length;
+  }
+
+  get ingresosPagados(): number {
+    return this.pedidos
+      .filter(p => p.status === 'PAGADO')
+      .reduce((acc, p) => acc + (Number(p.monto) || 0), 0);
+  }
+
+  cargarPedidos(event?: any) {
+    if (!event) {
+      this.loading = true;
+      this.cd.markForCheck();
+    }
 
     this.pedidoService.listarPedidos().subscribe({
       next: (data) => {
-        console.log('DATA:', data);
-
-        this.pedidos = data || [];
+        const lista = Array.isArray(data) ? data : [];
+        this.pedidos = lista.sort((a, b) => {
+          const fa = new Date(a.fecha || 0).getTime();
+          const fb = new Date(b.fecha || 0).getTime();
+          return fb - fa;
+        });
         this.loading = false;
+        if (event) {
+          event.target.complete();
+        }
 
-        this.cd.markForCheck(); // 🔥 CLAVE
+        if (this.pedidoSeleccionado) {
+          const updated = this.pedidos.find(
+            p => p.idpedido === this.pedidoSeleccionado.idpedido
+          );
+          if (updated) {
+            this.pedidoSeleccionado = { ...updated };
+          } else {
+            this.cerrarDetalle();
+          }
+        }
+
+        this.cd.markForCheck();
       },
-      error: (err) => {
+      error: async (err) => {
         console.error('Error cargando pedidos', err);
-
+        this.pedidos = [];
         this.loading = false;
-        this.cd.markForCheck(); // 🔥 también aquí
+        if (event) {
+          event.target.complete();
+        }
+        this.cd.markForCheck();
+        await this.showToast('No se pudieron cargar los pedidos', 'danger');
       }
     });
   }
 
-  // 🔥 PERFORMANCE
-  trackByPedido(index: number, item: any) {
+  trackByPedido(_index: number, item: any) {
     return item.idpedido;
   }
 
-  // 🎯 FILTROS + SEARCH
+  setFiltroEstado(estado: 'ALL' | 'PENDIENTE' | 'PAGADO' | 'CANCELADO') {
+    this.filtroEstado = estado;
+    this.cd.markForCheck();
+  }
+
+  setFiltroPago(pago: 'ALL' | 1 | 2 | 0) {
+    this.filtroPago = pago;
+    this.cd.markForCheck();
+  }
+
+  onSearchChange() {
+    this.cd.markForCheck();
+  }
+
   pedidosFiltrados() {
     let lista = [...this.pedidos];
 
@@ -70,44 +131,60 @@ export class PedidosPage implements OnInit {
       lista = lista.filter(p => p.status === this.filtroEstado);
     }
 
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      lista = lista.filter(p =>
-        String(p.idpedido).includes(term) ||
-        (p.clienteNombre || '').toLowerCase().includes(term)
-      );
+    if (this.filtroPago !== 'ALL') {
+      if (this.filtroPago === 0) {
+        lista = lista.filter(p => {
+          const t = Number(p.tipoPagoId);
+          return !p.tipoPagoId || t === 0 || (t !== 1 && t !== 2);
+        });
+      } else {
+        lista = lista.filter(p => Number(p.tipoPagoId) === Number(this.filtroPago));
+      }
     }
 
-    // 🔥 si el seleccionado ya no está → cerrar
-    if (
-      this.pedidoSeleccionado &&
-      !lista.find(p => p.idpedido === this.pedidoSeleccionado.idpedido)
-    ) {
-      this.cerrarDetalle();
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase().trim();
+      lista = lista.filter(p =>
+        String(p.idpedido).includes(term) ||
+        (p.clienteNombre || '').toLowerCase().includes(term) ||
+        (p.direccionEnvio || '').toLowerCase().includes(term) ||
+        this.getMetodoPago(p.tipoPagoId).toLowerCase().includes(term)
+      );
     }
 
     return lista;
   }
 
-  getColor(status: string) {
-    switch (status) {
-      case 'PAGADO': return 'success';
-      case 'PENDIENTE': return 'warning';
-      case 'CANCELADO': return 'danger';
-      default: return 'medium';
-    }
-  }
-
   getMetodoPago(tipo: number): string {
-    switch (tipo) {
+    switch (Number(tipo)) {
       case 1: return 'PayPal';
       case 2: return 'QR';
-      default: return 'Otro';
+      default: return 'Sin definir';
     }
   }
-  verDetalle(pedido: any) {
 
-    // 🔥 si ya está abierto el mismo → cerrar
+  getMetodoIcon(tipo: number): string {
+    switch (Number(tipo)) {
+      case 1: return 'logo-paypal';
+      case 2: return 'qr-code-outline';
+      default: return 'card-outline';
+    }
+  }
+
+  getStatusIcon(status: string) {
+    switch (status) {
+      case 'PAGADO': return 'checkmark-circle';
+      case 'PENDIENTE': return 'time';
+      case 'CANCELADO': return 'close-circle';
+      default: return 'help-circle';
+    }
+  }
+
+  isSelected(pedido: any): boolean {
+    return this.pedidoSeleccionado?.idpedido === pedido?.idpedido;
+  }
+
+  verDetalle(pedido: any) {
     if (this.pedidoSeleccionado?.idpedido === pedido.idpedido) {
       this.cerrarDetalle();
       return;
@@ -117,35 +194,35 @@ export class PedidosPage implements OnInit {
     this.loadingDetalle = true;
     this.detalleSeleccionado = [];
     this.totalDetalle = 0;
-
-    this.cd.detectChanges();
+    this.cd.markForCheck();
 
     this.pedidoService.getDetallePedido(pedido.idpedido).subscribe({
       next: (data) => {
         this.detalleSeleccionado = data || [];
-
         this.totalDetalle = this.detalleSeleccionado.reduce(
-          (acc, item) => acc + (item.subtotal || 0),
+          (acc, item) => acc + (Number(item.subtotal) || 0),
           0
         );
-
         this.loadingDetalle = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       },
-      error: (err) => {
+      error: async (err) => {
         console.error(err);
         this.loadingDetalle = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
+        await this.showToast('No se pudo cargar el detalle', 'danger');
       }
     });
   }
 
-  async cambiarEstado(pedido: any) {
+  async cambiarEstado(pedido: any, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
 
     const alert = await this.alertCtrl.create({
       header: 'Cambiar estado',
       subHeader: `Pedido #${pedido.idpedido}`,
-
       inputs: [
         {
           type: 'radio',
@@ -166,16 +243,14 @@ export class PedidosPage implements OnInit {
           checked: pedido.status === 'CANCELADO'
         }
       ],
-
       buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        },
+        { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Guardar',
           handler: (nuevoEstado) => {
-            this.actualizarEstado(pedido, nuevoEstado);
+            if (nuevoEstado && nuevoEstado !== pedido.status) {
+              this.actualizarEstado(pedido, nuevoEstado);
+            }
           }
         }
       ]
@@ -189,39 +264,50 @@ export class PedidosPage implements OnInit {
     this.detalleSeleccionado = [];
     this.totalDetalle = 0;
     this.loadingDetalle = false;
-
-    this.cd.detectChanges();
+    this.cd.markForCheck();
   }
+
   actualizarEstado(pedido: any, nuevoEstado: string) {
+    if (this.savingEstado) {
+      return;
+    }
+
+    this.savingEstado = true;
+    this.cd.markForCheck();
 
     const payload = {
       ...pedido,
       status: nuevoEstado
     };
 
-    console.log('UPDATE PAYLOAD:', payload);
-
     this.pedidoService.updatePedido(payload).subscribe({
-      next: () => {
-        console.log('Estado actualizado');
-
-        // 🔥 actualiza UI sin recargar backend
+      next: async () => {
         pedido.status = nuevoEstado;
+        if (this.pedidoSeleccionado?.idpedido === pedido.idpedido) {
+          this.pedidoSeleccionado = { ...pedido };
+        }
+        this.savingEstado = false;
+        this.cd.markForCheck();
+        await this.showToast(`Pedido #${pedido.idpedido} → ${nuevoEstado}`, 'success');
         this.cargarPedidos();
-
       },
-      error: (err) => {
+      error: async (err) => {
         console.error('Error actualizando estado', err);
+        this.savingEstado = false;
+        this.cd.markForCheck();
+        await this.showToast('No se pudo actualizar el estado', 'danger');
       }
     });
   }
 
-  getStatusIcon(status: string) {
-    switch (status) {
-      case 'PAGADO': return 'checkmark-circle';
-      case 'PENDIENTE': return 'time';
-      case 'CANCELADO': return 'close-circle';
-      default: return 'help-circle';
-    }
+  private async showToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2200,
+      color,
+      position: 'bottom',
+      cssClass: 'custom-toast'
+    });
+    await toast.present();
   }
 }

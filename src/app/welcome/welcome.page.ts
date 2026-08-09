@@ -19,7 +19,7 @@ export class WelcomePage implements OnInit {
   ngOnInit() { }
 
   ionViewWillEnter() {
-    this.menu.enable(false);
+    this.menu.enable(false, 'mainMenu');
     this.util.setMenuState(false);
     this.util.setShowIcons(false);
   }
@@ -31,10 +31,9 @@ export class WelcomePage implements OnInit {
   goHomeWithoutLogin() {
     localStorage.setItem('guestAccess', 'true');
     this.util.setMenuState(true);
-    localStorage.setItem('guestAccess', 'true'); // persistente
-    this.isGuest = true;                         // control de UI
-    this.menu.enable(true);            // 🔹 también habilita el físico
-    this.util.setShowIcons(false); // ❌ sin notificaciones ni filtro
+    this.isGuest = true;
+    this.menu.enable(true, 'mainMenu');
+    this.util.setShowIcons(false);
     this.util.setGuest(true);
     this.router.navigate(['/home']);
   }

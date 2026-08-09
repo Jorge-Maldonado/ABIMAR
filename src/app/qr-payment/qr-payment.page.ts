@@ -22,14 +22,23 @@ export class QrPaymentPage implements OnInit {
 
   async ngOnInit() {
     await this.mostrarLoader();
-    this.pedidoId = Number(this.route.snapshot.queryParamMap.get('pedidoId'));
+    this.pedidoId = Number(this.route.snapshot.queryParamMap.get('pedidoId'))
+      || Number(localStorage.getItem('pedidoId'))
+      || 0;
     if (this.pedidoId) {
       localStorage.setItem('pedidoId', this.pedidoId.toString());
     }
-    this.total = Number(this.route.snapshot.queryParamMap.get('total'));
-    if (!this.pedidoId || !this.total) {
+
+    const totalParam = Number(this.route.snapshot.queryParamMap.get('total'));
+    const stored = Number(localStorage.getItem('totalPedido'));
+    if (!isNaN(totalParam) && totalParam > 0) {
+      this.total = totalParam;
+    } else if (!isNaN(stored) && stored > 0) {
+      this.total = stored;
+    } else {
       this.calcularTotal();
     }
+    localStorage.setItem('totalPedido', this.total.toFixed(2));
     this.generarQR();
   }
 
@@ -92,13 +101,14 @@ async confirmarPago() {
       console.log('PEDIDO:', resp);
 
       if (resp.status === 'PAGADO') {
-        localStorage.removeItem('carrito');    
-        // ✅ pago confirmado
+        localStorage.removeItem('carrito');
         this.router.navigate(['/confirm'], {
           queryParams: {
             metodo: 'QR',
-            total: this.total
-          }
+            total: this.total.toFixed(2),
+            pedidoId: pedidoId
+          },
+          replaceUrl: true
         });
 
       } else {

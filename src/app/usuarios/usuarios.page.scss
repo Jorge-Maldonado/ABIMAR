@@ -9,8 +9,9 @@
 
 .users-container {
   max-width: 1600px;
-  margin: auto;
+  margin: 0 auto;
   padding: 24px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 32px);
 }
 
 /* ==========================================================

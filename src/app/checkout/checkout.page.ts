@@ -13,14 +13,16 @@ import { AlertController } from '@ionic/angular';
 export class CheckoutPage implements OnInit {
 
   carrito: any[] = [];
-
   descuento: number = 0;
   envio: number = 0;
+  registrando = false;
 
-  constructor(private cartService: CartService,
+  constructor(
+    private cartService: CartService,
     private pedidoService: PedidoService,
     private router: Router,
-    private alertCtrl: AlertController) { }
+    private alertCtrl: AlertController
+  ) { }
 
   ngOnInit() {
     this.cartService.items$.subscribe(data => {
@@ -28,17 +30,20 @@ export class CheckoutPage implements OnInit {
     });
   }
 
-  // ✅ MANTENIDOS para el HTML
+  private productId(item: any): number {
+    return Number(item.idproducto ?? item.id);
+  }
+
   incrementarCantidad(item: any) {
-    this.cartService.incrementar(item.id);
+    this.cartService.incrementar(this.productId(item));
   }
 
   decrementarCantidad(item: any) {
-    this.cartService.decrementar(item.id);
+    this.cartService.decrementar(this.productId(item));
   }
 
   eliminarProducto(item: any) {
-    this.cartService.eliminar(item.id);
+    this.cartService.eliminar(this.productId(item));
   }
 
   get subtotal() {
@@ -49,158 +54,117 @@ export class CheckoutPage implements OnInit {
     return this.subtotal - this.descuento + this.envio;
   }
 
-  confirmarCompra() {
-
-    if (this.carrito.length === 0) return;
-
-    const pedidoPayload = {
-      referenciaCobro: 'Compra App',
-      idTransaccionPaypal: '',
-      datosPaypal: '',
-      personal: 1,
-      fecha: new Date().toISOString(),
-      costoEnvio: this.envio,
-      monto: this.total,
-      tipoPagoId: 2, // 1 PayPal | 2 QR (ajústalo luego)
-      direccionEnvio: 'Santa Cruz, Bolivia',
-      status: 'PENDIENTE'
-    };
-
-    console.log('CREANDO PEDIDO:', pedidoPayload);
-
-    this.pedidoService.createPedido(pedidoPayload).subscribe({
-      next: (pedidoResp) => {
-
-        console.log('PEDIDO CREADO:', pedidoResp);
-
-        const pedidoId = pedidoResp.idpedido || pedidoResp.id;
-
-        if (!pedidoId) {
-          console.error('No vino idpedido');
-          return;
-        }
-
-        // 🔥 crear detalles en paralelo
-        const detalles$ = this.carrito.map(item => {
-
-          const detalle = {
-            pedidoId: pedidoId,
-            productoId: item.id,
-            cantidad: item.cantidad,
-            precio: item.precio,
-            subtotal: item.precio * item.cantidad
-          };
-
-          return this.pedidoService.createDetalle(detalle);
-        });
-
-        // 🔥 ejecutar todos los detalles
-        forkJoin(detalles$).subscribe({
-          next: () => {
-            console.log('DETALLES CREADOS');
-
-            alert('Compra realizada correctamente ✅');
-
-            this.cartService.limpiar();
-          },
-          error: (err) => {
-            console.error('Error creando detalles', err);
-          }
-        });
-
-      },
-      error: (err) => {
-        console.error('Error creando pedido', err);
-      }
-    });
+  get totalItems() {
+    return this.cartService.totalItems;
   }
-  async registrarPedido() {
 
-    if (this.carrito.length === 0) return;
+  async registrarPedido() {
+    if (this.carrito.length === 0 || this.registrando) return;
+
+    const personal = Number(localStorage.getItem('personal')) || 0;
+    if (!personal) {
+      const alert = await this.alertCtrl.create({
+        header: 'Sesión requerida',
+        message: 'Debes iniciar sesión para registrar el pedido.',
+        buttons: ['Aceptar']
+      });
+      await alert.present();
+      return;
+    }
+
+    const monto = Number(this.total);
+    if (!monto || monto <= 0) {
+      const alert = await this.alertCtrl.create({
+        header: 'Monto inválido',
+        message: 'El total del pedido debe ser mayor a cero.',
+        buttons: ['Aceptar']
+      });
+      await alert.present();
+      return;
+    }
+
+    this.registrando = true;
 
     const payload = {
       referenciaCobro: 'Compra App',
       idTransaccionPaypal: '',
       datosPaypal: '',
-      personal: 1,
+      personal,
       fecha: new Date().toISOString(),
       costoEnvio: this.envio,
-      monto: this.total,
+      monto,
       tipoPagoId: 0,
       direccionEnvio: 'Santa Cruz, Bolivia',
       status: 'PENDIENTE'
     };
 
-    console.log('CREANDO PEDIDO:', payload);
-
     this.pedidoService.createPedido(payload).subscribe({
-      next: async (resp) => {
-
-        console.log('RESP:', resp);
-
+      next: (resp) => {
         const pedidoId = resp?.idpedido || resp?.id;
-
         if (!pedidoId) {
+          this.registrando = false;
           console.error('No vino idpedido');
           return;
         }
 
-        // 🔥 crear detalles en paralelo
         const detalles$ = this.carrito.map(item => {
-
-          const detalle = {
-            pedidoId: pedidoId,
-            productoId: item.id,
-            cantidad: item.cantidad,
-            precio: item.precio,
-            subtotal: item.precio * item.cantidad
-          };
-
-          return this.pedidoService.createDetalle(detalle);
+          const precio = Number(item.precio) || 0;
+          const cantidad = Number(item.cantidad) || 0;
+          return this.pedidoService.createDetalle({
+            pedidoId,
+            productoId: this.productId(item),
+            cantidad,
+            precio,
+            subtotal: precio * cantidad
+          });
         });
 
-        // 🔥 ejecutar todos los detalles
         forkJoin(detalles$).subscribe({
-          next: () => {
-            console.log('DETALLES CREADOS');
+          next: async () => {
+            localStorage.setItem('pedidoId', String(pedidoId));
+            localStorage.setItem('totalPedido', monto.toFixed(2));
+
+            this.registrando = false;
+
+            const alert = await this.alertCtrl.create({
+              header: 'Pedido registrado',
+              message: `Tu pedido #${pedidoId} por Bs. ${monto.toFixed(2)} fue creado correctamente.`,
+              backdropDismiss: false,
+              buttons: [{
+                text: 'Continuar al pago',
+                handler: () => {
+                  this.router.navigate(['/payment-methods'], {
+                    queryParams: {
+                      pedidoId,
+                      total: monto.toFixed(2)
+                    }
+                  });
+                }
+              }]
+            });
+            await alert.present();
           },
-          error: (err) => {
+          error: async (err) => {
+            this.registrando = false;
             console.error('Error creando detalles', err);
+            const alert = await this.alertCtrl.create({
+              header: 'Error',
+              message: 'El pedido se creó pero falló el detalle. Intenta de nuevo.',
+              buttons: ['Aceptar']
+            });
+            await alert.present();
           }
         });
-
-        // 🔥 guardar para siguientes pantallas
-        localStorage.setItem('pedidoId', pedidoId);
-        localStorage.setItem('totalPedido', this.envio.toString());
-        // 🔥 LIMPIAR carrito (mejor UX)
-        //this.cartService.limpiar();
-
-        // 🔥 ALERT BIEN CONTROLADO
-        const alert = await this.alertCtrl.create({
-          header: 'Pedido registrado',
-          message: `Tu pedido #${pedidoId} fue creado correctamente.`,
-          backdropDismiss: false,
-          buttons: [
-            {
-              text: 'Continuar al pago',
-              handler: () => {
-
-                console.log('NAVEGANDO...');
-
-                this.router.navigate(['/payment-methods'], {
-                  queryParams: { pedidoId }
-                });
-
-              }
-            }
-          ]
-        });
-
-        await alert.present();
       },
-
-      error: (err) => {
+      error: async (err) => {
+        this.registrando = false;
         console.error('Error creando pedido', err);
+        const alert = await this.alertCtrl.create({
+          header: 'Error',
+          message: 'No se pudo registrar el pedido. Intenta de nuevo.',
+          buttons: ['Aceptar']
+        });
+        await alert.present();
       }
     });
   }

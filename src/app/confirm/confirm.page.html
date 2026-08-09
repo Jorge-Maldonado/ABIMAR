@@ -13,9 +13,14 @@
 
     <!-- Detalle del pedido -->
     <div class="confirm-card">
+      <div class="confirm-card__row" *ngIf="pedidoId">
+        <span>Nº de pedido</span>
+        <strong>#{{ pedidoId }}</strong>
+      </div>
+      <div class="confirm-card__divider" *ngIf="pedidoId"></div>
       <div class="confirm-card__row">
         <span>Método de pago</span>
-        <strong>{{ metodo }}</strong>
+        <strong>{{ metodo || '—' }}</strong>
       </div>
       <div class="confirm-card__divider"></div>
       <div class="confirm-card__row">

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 import { CartService } from '../services/cart.service';
+import { UtilService } from '../util.service';
 
 @Component({
   selector: 'app-my-cart',
@@ -10,10 +12,16 @@ export class MyCartPage {
 
   carrito: any[] = [];
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private menu: MenuController,
+    private util: UtilService
+  ) {}
 
   // 🔥 Ionic lifecycle (clave)
   ionViewWillEnter() {
+    this.util.setMenuState(true);
+    this.menu.enable(true, 'mainMenu');
     this.cartService.items$.subscribe(data => {
       this.carrito = data;
     });
@@ -33,5 +41,9 @@ export class MyCartPage {
 
   get total() {
     return this.cartService.total;
+  }
+
+  get totalItems() {
+    return this.cartService.totalItems;
   }
 }

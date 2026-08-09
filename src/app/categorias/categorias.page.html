@@ -1,80 +1,165 @@
-<ion-content class="custom-categorias">
+<ion-content class="admin-page cats-page">
 
-  <div class="container">
+  <ion-refresher slot="fixed" (ionRefresh)="loadCategorias($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-    <!-- Header -->
-    <div class="page-header">
-      <h1 class="page-title">Categorías</h1>
-      <p class="page-subtitle">Gestión de categorías disponibles</p>
-    </div>
+  <div class="admin-container">
 
-    <!-- Formulario -->
-    <div class="form-container">
-      <ion-item lines="none" class="ds-form-item">
-        <ion-label position="floating">Nombre</ion-label>
-        <ion-input [(ngModel)]="nombre"></ion-input>
-      </ion-item>
-
-      <ion-item lines="none" class="ds-form-item">
-        <ion-label position="floating">Descripción</ion-label>
-        <ion-input [(ngModel)]="descripcion"></ion-input>
-      </ion-item>
-
-      <ion-button expand="block" class="btn-primary" *ngIf="!editId" (click)="createCategoria()">
-        Crear Categoría
-      </ion-button>
-
-      <ion-button expand="block" class="btn-warning" *ngIf="editId" (click)="updateCategoria()">
-        Guardar Cambios
-      </ion-button>
-
-      <ion-button expand="block" class="btn-ghost" *ngIf="editId" (click)="resetForm()">
-        Cancelar
-      </ion-button>
-    </div>
-
-    <!-- Divider -->
-    <div class="ds-divider"></div>
-
-    <h3 class="list-title">Lista de Categorías</h3>
-
-    <!-- Buscador -->
-    <div class="ds-searchbar">
-      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar categoría..."></ion-searchbar>
-    </div>
-
-    <!-- Lista -->
-    <ion-list *ngIf="categoriasFiltradas().length > 0; else noCategorias">
-
-      <ion-item *ngFor="let c of categoriasFiltradas()" class="categoria-item">
-
-        <ion-label>
-          <h2>{{ c.nombre }}</h2>
-          <p>{{ c.descripcion }}</p>
-        </ion-label>
-
-        <ion-buttons slot="end">
-          <ion-button fill="clear" class="btn-action-warning" (click)="editCategoria(c)">
-            Editar
-          </ion-button>
-
-          <ion-button fill="clear" class="btn-action-danger" (click)="deleteCategoria(c.idcategoria)">
-            Eliminar
-          </ion-button>
-        </ion-buttons>
-
-      </ion-item>
-
-    </ion-list>
-
-    <ng-template #noCategorias>
-      <div class="ds-empty">
-        <ion-icon name="albums-outline"></ion-icon>
-        <h3>No hay categorías</h3>
-        <p>Crea tu primera categoría para comenzar</p>
+    <header class="admin-header">
+      <div>
+        <div class="admin-chip">Administración</div>
+        <h1>Categorías</h1>
+        <p>Crea y organiza el catálogo de la tienda.</p>
       </div>
-    </ng-template>
+      <div class="admin-resume">
+        <div class="resume-number">{{ countAll }}</div>
+        <div class="resume-label">Categorías</div>
+      </div>
+    </header>
 
+    <div class="cats-stats" *ngIf="!loading">
+      <div class="cats-stat cats-stat--ok">
+        <span class="cats-stat__value">{{ countActivas }}</span>
+        <span class="cats-stat__label">Activas</span>
+      </div>
+      <div class="cats-stat">
+        <span class="cats-stat__value">{{ categoriasFiltradas().length }}</span>
+        <span class="cats-stat__label">Visibles</span>
+      </div>
+    </div>
+
+    <div class="admin-layout">
+
+      <section class="admin-form-card" id="cat-form">
+        <div class="card-head">
+          <h2>{{ editId ? 'Editar categoría' : 'Nueva categoría' }}</h2>
+          <p>{{ editId ? ('ID #' + editId) : 'Completa los datos y guarda.' }}</p>
+        </div>
+
+        <label class="field">
+          <span class="field__label">Nombre</span>
+          <ion-input
+            class="field__input"
+            type="text"
+            [(ngModel)]="nombre"
+            placeholder="Ej. Accesorios"
+            maxlength="80">
+          </ion-input>
+          <span class="field__error" *ngIf="submitted && nombre.trim().length < 2">
+            Mínimo 2 caracteres
+          </span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Descripción <em>(opcional)</em></span>
+          <ion-textarea
+            class="field__input field__input--area"
+            [(ngModel)]="descripcion"
+            placeholder="Breve descripción de la categoría"
+            rows="3"
+            autoGrow="true">
+          </ion-textarea>
+        </label>
+
+        <div class="form-actions">
+          <ion-button
+            *ngIf="!editId"
+            expand="block"
+            class="btn-primary"
+            [disabled]="saving"
+            (click)="createCategoria()">
+            <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+            <ng-container *ngIf="!saving">Crear categoría</ng-container>
+          </ion-button>
+
+          <ion-button
+            *ngIf="editId"
+            expand="block"
+            class="btn-buy"
+            [disabled]="saving"
+            (click)="updateCategoria()">
+            <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
+            <ng-container *ngIf="!saving">Guardar cambios</ng-container>
+          </ion-button>
+
+          <ion-button
+            *ngIf="editId"
+            expand="block"
+            fill="clear"
+            class="btn-ghost"
+            [disabled]="saving"
+            (click)="resetForm()">
+            Cancelar
+          </ion-button>
+        </div>
+      </section>
+
+      <div class="admin-list-pane">
+
+        <div class="search-card">
+          <ion-searchbar
+            mode="md"
+            [(ngModel)]="searchTerm"
+            placeholder="Buscar por nombre o descripción..."
+            [showClearButton]="searchTerm ? 'always' : 'never'"
+            animated="true"
+            debounce="150">
+          </ion-searchbar>
+        </div>
+
+        <div class="ds-loading" *ngIf="loading">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Cargando categorías...</p>
+        </div>
+
+        <ng-container *ngIf="!loading">
+          <div class="admin-cards-grid" *ngIf="categoriasFiltradas().length > 0; else emptyTpl">
+            <article class="cat-card" *ngFor="let c of categoriasFiltradas(); trackBy: trackByCategoria">
+              <div class="cat-card__top">
+                <div class="cat-card__icon">
+                  <ion-icon name="pricetag-outline"></ion-icon>
+                </div>
+                <div class="cat-card__info">
+                  <h2>{{ c.nombre }}</h2>
+                  <span class="cat-card__badge" [class.cat-card__badge--off]="!isActiva(c)">
+                    {{ statusLabel(c.status) }}
+                  </span>
+                </div>
+              </div>
+
+              <p *ngIf="c.descripcion">{{ c.descripcion }}</p>
+              <p *ngIf="!c.descripcion" class="muted">Sin descripción</p>
+
+              <div class="cat-card__meta">
+                <span>#{{ c.idcategoria }}</span>
+                <span *ngIf="c.ruta">/{{ c.ruta }}</span>
+                <span *ngIf="c.dateCreated">{{ c.dateCreated | date:'dd/MM/yyyy' }}</span>
+              </div>
+
+              <div class="cat-card__footer">
+                <ion-button fill="clear" class="btn-warning" (click)="editCategoria(c)">
+                  <ion-icon slot="start" name="create-outline"></ion-icon>
+                  Editar
+                </ion-button>
+                <ion-button fill="clear" class="btn-danger" (click)="confirmDelete(c, $event)">
+                  <ion-icon slot="start" name="trash-outline"></ion-icon>
+                  Eliminar
+                </ion-button>
+              </div>
+            </article>
+          </div>
+        </ng-container>
+
+        <ng-template #emptyTpl>
+          <div class="empty-card">
+            <ion-icon name="albums-outline"></ion-icon>
+            <h2>{{ searchTerm ? 'Sin resultados' : 'Sin categorías' }}</h2>
+            <p>{{ searchTerm ? 'Prueba otro término de búsqueda.' : 'Las categorías creadas aparecerán en esta sección.' }}</p>
+          </div>
+        </ng-template>
+
+      </div>
+    </div>
   </div>
-
 </ion-content>

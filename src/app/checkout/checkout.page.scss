@@ -54,6 +54,21 @@
     flex-shrink:   0;
   }
 
+  &__thumb {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  &__qty-float {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    min-width: 24px;
+    justify-content: center;
+    padding: 3px 7px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+
   &__info { flex: 1; min-width: 0; }
 
   &__name {
@@ -70,20 +85,34 @@
   &__brand {
     font-size:  12px;
     color:      var(--ds-text-3);
-    margin:     0 0 8px;
+    margin:     0 0 4px;
+  }
+
+  &__unit-price {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--ds-text-2);
+
+    span {
+      color: var(--ds-text-3);
+      font-size: 11px;
+    }
   }
 
   &__row {
     display:     flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
   &__price {
     font-family: var(--ds-font-heading);
-    font-size:   14px;
-    font-weight: 700;
+    font-size:   15px;
+    font-weight: 800;
     color:       var(--ds-price);
+    font-variant-numeric: tabular-nums;
   }
 }
 
@@ -95,40 +124,6 @@
   right:          8px;
   ion-icon { font-size: 16px; }
   &:hover { --color: var(--ds-danger); }
-}
-
-// ─── Qty control (reused from cart) ──────────────────────────
-.qty-control {
-  display:       flex;
-  align-items:   center;
-  background:    var(--ds-bg-elevated);
-  border:        1px solid var(--ds-border);
-  border-radius: var(--ds-r-pill);
-  overflow:      hidden;
-}
-
-.qty-btn {
-  background:  transparent;
-  border:      none;
-  color:       var(--ds-accent);
-  font-size:   16px;
-  font-weight: 700;
-  width:       30px;
-  height:      30px;
-  cursor:      pointer;
-  display:     flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  &:active { background: var(--ds-accent-tint); }
-}
-
-.qty-value {
-  font-size:  13px;
-  font-weight: 600;
-  color:       var(--ds-text-1);
-  min-width:   24px;
-  text-align:  center;
 }
 
 // ─── Address ─────────────────────────────────────────────────

@@ -3,7 +3,8 @@ import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
 import { ToastController, AlertController, MenuController } from '@ionic/angular';
 import { UtilService } from '../util.service';
-import { CartService } from '../services/cart.service'; // ✅ IMPORTANTE
+import { CartService } from '../services/cart.service';
+import { FavoritesService } from '../services/favorites.service';
 
 @Component({
   selector: 'app-home',
@@ -17,12 +18,16 @@ export class HomePage implements OnInit {
   productos: any[] = [];
   destacados: any[] = [];
   masVendidos: any[] = [];
+  favoritos: any[] = [];
 
   showAllCategorias = false;
   showAllDestacados = false;
   showAllMasVendidos = false;
+  showAllFavoritos = false;
+  showAllProductos = false;
   showIcons: boolean = true;
   searchTerm: string = '';
+  cartCount = 0;
 
   constructor(
     private apiService: ApiService<any>,
@@ -31,7 +36,8 @@ export class HomePage implements OnInit {
     private alertCtrl: AlertController,
     private util: UtilService,
     private menu: MenuController,
-    private cartService: CartService // ✅ CLAVE
+    private cartService: CartService,
+    private favoritesService: FavoritesService
   ) { }
 
   ngOnInit() {
@@ -41,12 +47,44 @@ export class HomePage implements OnInit {
       this.showIcons = s;
     });
 
+    this.cartService.items$.subscribe(() => {
+      this.cartCount = this.cartService.totalItems;
+    });
+
+    this.favoritesService.items$.subscribe(items => {
+      this.favoritos = items || [];
+    });
+
     this.loadCategorias();
     this.loadProductos();
   }
 
+  get displayName(): string {
+    const email = (this.usuarioEmail || '').trim();
+    if (!email || email === 'Invitado') return 'Invitado';
+    const local = email.split('@')[0] || email;
+    return local.charAt(0).toUpperCase() + local.slice(1);
+  }
+
+  get isGuestUser(): boolean {
+    return this.usuarioEmail === 'Invitado' || localStorage.getItem('guestAccess') === 'true';
+  }
+
+  scrollToSection(id: string) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   openMenu() {
-    this.menu.open();
+    this.menu.enable(true, 'mainMenu').then(() => this.menu.open('mainMenu'));
+  }
+
+  ionViewWillEnter() {
+    this.usuarioEmail = localStorage.getItem('usuario') || 'Invitado';
+    this.util.setMenuState(true);
+    this.menu.enable(true, 'mainMenu');
   }
 
   async logout() {
@@ -70,7 +108,7 @@ export class HomePage implements OnInit {
 
   loadCategorias() {
     this.apiService
-      .post('https://backend-abimar.onrender.com/abimar/core/api/categoria/list', {})
+      .post(this.apiService.url('categoria/list'), {})
       .subscribe(
         (res: any) => {
           if (Array.isArray(res)) {
@@ -90,14 +128,16 @@ export class HomePage implements OnInit {
 
   loadProductos() {
     this.apiService
-      .post('https://backend-abimar.onrender.com/abimar/core/api/producto/list', {})
+      .post(this.apiService.url('producto/list'), {})
       .subscribe(
         (res: any) => {
           if (Array.isArray(res)) {
-            this.productos = res.map((p) => ({
-              ...p,
-              imagen: this.normalizeImagePath(p.imagen),
-            }));
+            this.productos = res
+              .filter(p => Number(p.status) === 1)
+              .map((p) => ({
+                ...p,
+                imagen: this.normalizeImagePath(p.imagen),
+              }));
             this.destacados = this.productos.slice(0, 5);
             this.masVendidos = this.productos.slice(5, 10);
           } else {
@@ -114,6 +154,21 @@ export class HomePage implements OnInit {
     if (tipo === 'categorias') this.showAllCategorias = !this.showAllCategorias;
     if (tipo === 'destacados') this.showAllDestacados = !this.showAllDestacados;
     if (tipo === 'masVendidos') this.showAllMasVendidos = !this.showAllMasVendidos;
+    if (tipo === 'favoritos') this.showAllFavoritos = !this.showAllFavoritos;
+    if (tipo === 'productos') this.showAllProductos = !this.showAllProductos;
+  }
+
+  esFavorito(producto: any): boolean {
+    return this.favoritesService.isFavorite(producto);
+  }
+
+  async agregarFavorito(producto: any) {
+    const activo = this.favoritesService.toggle(producto);
+    if (activo) {
+      await this.mostrarToast(`"${producto.nombre}" agregado a favoritos`, 'warning');
+    } else {
+      await this.mostrarToast(`"${producto.nombre}" quitado de favoritos`, 'medium');
+    }
   }
 
   private normalizeImagePath(val: any): string {
@@ -150,10 +205,6 @@ export class HomePage implements OnInit {
     this.cartService.add(producto); // 🔥 YA NO USAR localStorage
 
     await this.mostrarToast(`"${producto.nombre}" agregado al carrito 🛒`, 'warning');
-  }
-
-  async agregarFavorito(producto: any) {
-    await this.mostrarToast(`"${producto.nombre}" agregado a favoritos ❤️`, 'warning');
   }
 
   comprarProducto(producto: any) {

@@ -13,6 +13,12 @@
 
     <p class="payment-subtitle">Elige cómo quieres pagar tu pedido</p>
 
+    <div class="payment-total" *ngIf="totalBs > 0">
+      <span>Total a pagar</span>
+      <strong>Bs. {{ totalBs | number:'1.2-2' }}</strong>
+      <small *ngIf="mostrarPayPal">PayPal cobrará ≈ USD {{ totalUsd | number:'1.2-2' }}</small>
+    </div>
+
     <!-- Spinner mientras carga PayPal -->
     <div class="payment-loading" *ngIf="mostrarPayPal && !paypalCargado">
       <ion-spinner name="crescent"></ion-spinner>

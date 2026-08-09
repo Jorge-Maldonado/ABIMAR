@@ -2,13 +2,12 @@
 
 .cart-count {
   --background: var(--ds-price);
-  --color:      #000;
+  --color:      #111;
   margin-right: 12px;
   font-size:    11px;
-  font-weight:  700;
+  font-weight:  800;
 }
 
-// ─── Cart list ───────────────────────────────────────────────
 .cart-list {
   padding: var(--ds-sp-md);
   display: flex;
@@ -17,7 +16,6 @@
   padding-bottom: 120px;
 }
 
-// ─── Cart item ───────────────────────────────────────────────
 .cart-item {
   display:       flex;
   gap:           14px;
@@ -26,7 +24,6 @@
   border-radius: var(--ds-r-lg);
   padding:       14px;
   align-items:   flex-start;
-  transition:    border-color 0.2s;
 
   &:active { border-color: var(--ds-border-md); }
 
@@ -66,60 +63,64 @@
     font-size:   16px;
     font-weight: 700;
     color:       var(--ds-price);
-    margin:      0 0 10px;
+    margin:      0 0 12px;
+  }
+
+  &__unit {
+    margin-left: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ds-text-3);
+    font-family: var(--ds-font-body, inherit);
   }
 
   &__row {
     display:     flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
   }
-}
 
-// ─── Qty control ─────────────────────────────────────────────
-.qty-control {
-  display:       flex;
-  align-items:   center;
-  gap:           0;
-  background:    var(--ds-bg-elevated);
-  border:        1px solid var(--ds-border);
-  border-radius: var(--ds-r-pill);
-  overflow:      hidden;
-}
+  &__line-total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    margin-left: auto;
 
-.qty-btn {
-  background:  transparent;
-  border:      none;
-  color:       var(--ds-accent);
-  font-size:   18px;
-  font-weight: 700;
-  width:       34px;
-  height:      34px;
-  cursor:      pointer;
-  display:     flex;
-  align-items: center;
-  justify-content: center;
-  transition:  background 0.15s;
-  line-height: 1;
+    span {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ds-text-3);
+      font-weight: 700;
+    }
 
-  &:active { background: var(--ds-accent-tint); }
-}
+    strong {
+      font-family: var(--ds-font-heading);
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ds-text-1);
+      font-variant-numeric: tabular-nums;
+    }
+  }
 
-.qty-value {
-  font-size:   14px;
-  font-weight: 600;
-  color:       var(--ds-text-1);
-  min-width:   28px;
-  text-align:  center;
+  &__actions {
+    margin-top: 4px;
+  }
 }
 
 .remove-btn {
   --color:        var(--ds-danger);
   --ripple-color: transparent;
-  ion-icon { font-size: 18px; }
+  margin: 0;
+  height: 32px;
+  font-size: 12px;
+  font-weight: 600;
+  ion-icon { font-size: 16px; }
 }
 
-// ─── Summary ─────────────────────────────────────────────────
 .cart-summary {
   background:    var(--ds-bg-surface);
   border:        1px solid var(--ds-border);
@@ -153,7 +154,6 @@
   }
 }
 
-// ─── Footer ──────────────────────────────────────────────────
 .cart-footer {
   background: var(--ds-bg-surface);
   border-top: 1px solid var(--ds-border);
@@ -161,6 +161,5 @@
 
 .cart-footer__inner {
   padding: 12px var(--ds-sp-md) calc(env(safe-area-inset-bottom, 0) + 12px);
-
   ion-button { margin: 0; }
 }

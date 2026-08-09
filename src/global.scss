@@ -151,14 +151,33 @@ ion-content { --background: var(--ds-bg-base); }
   flex-direction:  column;
   padding:         0;
   cursor:          pointer;
+  height:          100%;
+
+  // Caja cuadrada fija (padding-bottom trick: funciona en WebViews viejos)
+  .product-card__img-wrap {
+    position:   relative;
+    width:      100%;
+    height:     0;
+    padding-bottom: 100%;
+    overflow:   hidden;
+    background: var(--ds-bg-elevated);
+    flex-shrink: 0;
+  }
 
   .product-card__image {
-    width:        100%;
-    aspect-ratio: 1 / 1;
-    object-fit:   contain;
-    background:   var(--ds-bg-elevated);
-    display:      block;
-    padding:      8px;
+    position:   absolute !important;
+    top:        0 !important;
+    left:       0 !important;
+    width:      100% !important;
+    height:     100% !important;
+    max-width:  none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    display:    block !important;
+    padding:    0 !important;
+    margin:     0 !important;
+    background: var(--ds-bg-elevated);
   }
 
   .product-card__body {
@@ -311,6 +330,114 @@ ion-badge {
   border-radius: var(--ds-r-pill);
 }
 
+// ─── Quantity (shared) ───────────────────────────────────────
+.qty-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-md);
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 40px;
+}
+
+.qty-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--ds-accent);
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+  padding: 0;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 18px;
+    pointer-events: none;
+  }
+
+  &:hover { background: var(--ds-accent-tint); }
+  &:active {
+    background: var(--ds-accent-tint);
+    color: var(--ds-text-1);
+  }
+}
+
+.qty-value {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ds-font-heading);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ds-text-1);
+  background: var(--ds-bg-overlay);
+  border-left: 1px solid var(--ds-border);
+  border-right: 1px solid var(--ds-border);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.qty-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--ds-accent-tint);
+  border: 1px solid var(--ds-border-accent);
+  color: var(--ds-accent);
+  font-family: var(--ds-font-heading);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+
+  ion-icon {
+    font-size: 14px;
+    color: var(--ds-accent);
+  }
+
+  &__label {
+    font-family: var(--ds-font-body, inherit);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ds-text-2);
+  }
+
+  &__num {
+    color: var(--ds-text-1);
+    font-size: 14px;
+  }
+}
+
+.cart-qty-badge {
+  --background: var(--ds-price);
+  --color: #111;
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 18px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: 800;
+  border: 2px solid var(--ds-bg-surface);
+}
+
 // ─── Notification dot ────────────────────────────────────────
 .notification {
   position: relative;
@@ -417,4 +544,152 @@ ion-item {
     border-radius: 16px;
     padding: 20px;
   }
+}
+
+// ─── Admin panel shared layout (Usuarios pattern) ────────────
+.admin-page {
+  --background: var(--ds-bg-base);
+}
+
+.admin-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 32px);
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+
+  h1 {
+    margin: 0;
+    font-family: var(--ds-font-heading);
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--ds-price);
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 10px 0 0;
+    color: var(--ds-text-2);
+    font-size: 14px;
+    max-width: 600px;
+    line-height: 1.5;
+  }
+}
+
+.admin-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 30px;
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-accent);
+  color: var(--ds-price);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.admin-resume {
+  width: 140px;
+  height: 140px;
+  border-radius: 24px;
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-accent);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--ds-glow-cyan);
+  flex-shrink: 0;
+
+  .resume-number {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--ds-price);
+    font-family: var(--ds-font-heading);
+    line-height: 1;
+  }
+
+  .resume-label {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--ds-text-2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+.admin-form-card {
+  position: sticky;
+  top: 20px;
+  background: var(--ds-bg-surface);
+  border-radius: 24px;
+  border: 1px solid var(--ds-border-accent);
+  padding: 24px;
+  box-shadow: var(--ds-glow-cyan);
+}
+
+.admin-list-pane {
+  min-width: 0;
+}
+
+.admin-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+  align-items: stretch;
+}
+
+@media (max-width: 1200px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-card {
+    position: relative;
+    top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 18px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    h1 { font-size: 28px; }
+  }
+
+  .admin-resume {
+    width: 100%;
+    height: 100px;
+    flex-direction: row;
+    gap: 14px;
+  }
+
+  .admin-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-header h1 { font-size: 24px; }
 }
