@@ -1,11 +1,11 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
+  <ion-toolbar class="orders-toolbar">
     <ion-buttons slot="start">
       <ion-menu-button menu="mainMenu" autoHide="false"></ion-menu-button>
     </ion-buttons>
     <ion-title>Mis pedidos</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="cargarPedidos()" [disabled]="loading">
+      <ion-button fill="clear" (click)="cargarPedidos()" [disabled]="loading" aria-label="Actualizar">
         <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -22,24 +22,23 @@
 
     <header class="orders-hero" *ngIf="!loading && personalId">
       <h1>Tus compras</h1>
-      <p>Consulta el estado y completa pagos pendientes</p>
+      <p>Consulta el detalle, imágenes y completa pagos pendientes</p>
     </header>
 
-    <!-- Stats / filtros -->
     <div class="stats" *ngIf="!loading && pedidos.length > 0">
-      <button type="button" class="stat" [class.stat--active]="filtroEstado === 'ALL'" (click)="filtroEstado = 'ALL'">
+      <button type="button" class="stat" [class.stat--active]="filtroEstado === 'ALL'" (click)="setFiltro('ALL')">
         <span class="stat__value">{{ countAll }}</span>
         <span class="stat__label">Todos</span>
       </button>
-      <button type="button" class="stat stat--warn" [class.stat--active]="filtroEstado === 'PENDIENTE'" (click)="filtroEstado = 'PENDIENTE'">
+      <button type="button" class="stat stat--warn" [class.stat--active]="filtroEstado === 'PENDIENTE'" (click)="setFiltro('PENDIENTE')">
         <span class="stat__value">{{ countPendiente }}</span>
         <span class="stat__label">Pendientes</span>
       </button>
-      <button type="button" class="stat stat--ok" [class.stat--active]="filtroEstado === 'PAGADO'" (click)="filtroEstado = 'PAGADO'">
+      <button type="button" class="stat stat--ok" [class.stat--active]="filtroEstado === 'PAGADO'" (click)="setFiltro('PAGADO')">
         <span class="stat__value">{{ countPagado }}</span>
         <span class="stat__label">Pagados</span>
       </button>
-      <button type="button" class="stat stat--bad" [class.stat--active]="filtroEstado === 'CANCELADO'" (click)="filtroEstado = 'CANCELADO'">
+      <button type="button" class="stat stat--bad" [class.stat--active]="filtroEstado === 'CANCELADO'" (click)="setFiltro('CANCELADO')">
         <span class="stat__value">{{ countCancelado }}</span>
         <span class="stat__label">Cancelados</span>
       </button>
@@ -52,7 +51,6 @@
 
     <ng-container *ngIf="!loading">
 
-      <!-- Sin sesión -->
       <div class="ds-empty" *ngIf="!personalId">
         <ion-icon name="log-in-outline"></ion-icon>
         <h3>Inicia sesión</h3>
@@ -62,7 +60,6 @@
         </ion-button>
       </div>
 
-      <!-- Lista -->
       <div class="order-list" *ngIf="personalId && pedidosFiltrados().length > 0">
 
         <article
@@ -74,7 +71,7 @@
           <div class="order-card__top">
             <div class="order-card__id">
               <ion-icon name="receipt-outline"></ion-icon>
-              <strong>#{{ order.idpedido }}</strong>
+              <strong>{{ codigoPedido(order) }}</strong>
             </div>
             <span class="order-card__badge" [ngClass]="getEstadoClase(order.status)">
               <ion-icon [name]="getStatusIcon(order.status)"></ion-icon>
@@ -116,12 +113,20 @@
               <ion-icon slot="start" name="card-outline"></ion-icon>
               Pagar ahora
             </ion-button>
+
+            <ion-button
+              *ngIf="order.status === 'PAGADO'"
+              size="small"
+              class="btn-wa-sm"
+              (click)="abrirWhatsAppEntrega(order, $event)">
+              <ion-icon slot="start" name="logo-whatsapp"></ion-icon>
+              Entrega
+            </ion-button>
           </div>
 
-          <!-- Detalle -->
           <div class="order-detail" *ngIf="isOpen(order)" (click)="$event.stopPropagation()">
             <div class="order-detail__head">
-              <h3>Productos</h3>
+              <h3>Productos del pedido</h3>
             </div>
 
             <div class="ds-loading ds-loading--sm" *ngIf="loadingDetalle">
@@ -130,9 +135,15 @@
             </div>
 
             <ng-container *ngIf="!loadingDetalle">
-              <div class="line" *ngFor="let d of detalle">
+              <div class="line" *ngFor="let d of detalle; trackBy: trackByDetalle">
+                <img
+                  class="line__img"
+                  [src]="d.imagen"
+                  [alt]="d.productoNombre"
+                  (error)="onImgError($event)" />
+
                 <div class="line__main">
-                  <strong>{{ d.productoNombre || ('Producto #' + d.productoId) }}</strong>
+                  <strong>{{ d.productoNombre }}</strong>
                   <div class="line__meta">
                     <span class="qty-badge" aria-label="Cantidad">
                       <span class="qty-badge__label">Cant.</span>
@@ -141,6 +152,7 @@
                     <span class="line__unit">Bs {{ d.precio | number:'1.2-2' }} c/u</span>
                   </div>
                 </div>
+
                 <strong class="line__sub">Bs {{ d.subtotal | number:'1.2-2' }}</strong>
               </div>
 
@@ -149,8 +161,19 @@
               </div>
 
               <div class="order-detail__total" *ngIf="detalle.length > 0">
-                <span>Total</span>
+                <span>Total productos</span>
                 <strong>Bs. {{ (totalDetalle || order.monto) | number:'1.2-2' }}</strong>
+              </div>
+
+              <div class="order-detail__wa" *ngIf="order.status === 'PAGADO'">
+                <ion-icon name="logo-whatsapp"></ion-icon>
+                <p>
+                  Coordinamos la entrega por WhatsApp
+                  (<strong>{{ whatsappDisplay }}</strong>.
+                </p>
+                <ion-button size="small" class="btn-wa-sm" (click)="abrirWhatsAppEntrega(order, $event)">
+                  Escribir
+                </ion-button>
               </div>
             </ng-container>
           </div>
@@ -158,7 +181,6 @@
         </article>
       </div>
 
-      <!-- Vacío con sesión -->
       <div class="ds-empty" *ngIf="personalId && pedidos.length === 0">
         <ion-icon name="bag-handle-outline"></ion-icon>
         <h3>Sin pedidos aún</h3>
@@ -168,12 +190,11 @@
         </ion-button>
       </div>
 
-      <!-- Filtro sin resultados -->
       <div class="ds-empty" *ngIf="personalId && pedidos.length > 0 && pedidosFiltrados().length === 0">
         <ion-icon name="filter-outline"></ion-icon>
         <h3>Sin resultados</h3>
         <p>No hay pedidos con ese estado</p>
-        <ion-button fill="outline" class="btn-ghost-sm empty-cta" (click)="filtroEstado = 'ALL'">
+        <ion-button fill="outline" class="btn-ghost-sm empty-cta" (click)="setFiltro('ALL')">
           Ver todos
         </ion-button>
       </div>

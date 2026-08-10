@@ -45,6 +45,14 @@
       </button>
       <button
         type="button"
+        class="pedidos-stat pedidos-stat--deliver"
+        [class.pedidos-stat--active]="filtroEstado === 'ENTREGADO'"
+        (click)="setFiltroEstado('ENTREGADO')">
+        <span class="pedidos-stat__value">{{ countEntregado }}</span>
+        <span class="pedidos-stat__label">Entregados</span>
+      </button>
+      <button
+        type="button"
         class="pedidos-stat pedidos-stat--bad"
         [class.pedidos-stat--active]="filtroEstado === 'CANCELADO'"
         (click)="setFiltroEstado('CANCELADO')">
@@ -115,7 +123,7 @@
               <div class="pedido-card__top">
                 <div class="pedido-card__id">
                   <ion-icon name="receipt-outline"></ion-icon>
-                  <strong>#{{ p.idpedido }}</strong>
+                  <strong>{{ codigoPedido(p) }}</strong>
                 </div>
                 <span class="badge" [attr.data-status]="p.status">
                   <ion-icon [name]="getStatusIcon(p.status)"></ion-icon>
@@ -125,7 +133,7 @@
 
               <div class="pedido-card__client">
                 <ion-icon name="person-outline"></ion-icon>
-                <span>{{ p.clienteNombre || 'Cliente no identificado' }}</span>
+                <span>{{ nombreCliente(p) }}</span>
               </div>
 
               <div class="pedido-card__row">
@@ -143,6 +151,11 @@
               <p class="pedido-card__address" *ngIf="p.direccionEnvio">
                 <ion-icon name="location-outline"></ion-icon>
                 {{ p.direccionEnvio }}
+              </p>
+
+              <p class="pedido-card__entrega" *ngIf="responsableEntrega(p)">
+                <ion-icon name="bicycle-outline"></ion-icon>
+                Entregó: <strong>{{ responsableEntrega(p) }}</strong>
               </p>
 
               <div class="pedido-card__actions" (click)="$event.stopPropagation()">
@@ -191,7 +204,10 @@
           <div class="detail-panel__head">
             <div>
               <p class="detail-panel__eyebrow">Detalle</p>
-              <h2>Pedido #{{ pedidoSeleccionado.idpedido }}</h2>
+              <h2>{{ codigoPedido(pedidoSeleccionado) }}</h2>
+              <p class="detail-panel__id-soft" *ngIf="pedidoSeleccionado.idpedido">
+                Interno #{{ pedidoSeleccionado.idpedido }}
+              </p>
             </div>
             <ion-button fill="clear" class="detail-close" (click)="cerrarDetalle()">
               <ion-icon slot="icon-only" name="close-outline"></ion-icon>
@@ -217,7 +233,15 @@
           <div class="detail-info">
             <div class="detail-info__row">
               <span>Cliente</span>
-              <strong>{{ pedidoSeleccionado.clienteNombre || '—' }}</strong>
+              <strong>{{ nombreCliente(pedidoSeleccionado) }}</strong>
+            </div>
+            <div class="detail-info__row" *ngIf="pedidoSeleccionado.personal">
+              <span>ID personal</span>
+              <strong>#{{ pedidoSeleccionado.personal }}</strong>
+            </div>
+            <div class="detail-info__row" *ngIf="pedidoSeleccionado.clienteTelefono">
+              <span>Teléfono</span>
+              <strong>{{ pedidoSeleccionado.clienteTelefono }}</strong>
             </div>
             <div class="detail-info__row">
               <span>Monto</span>
@@ -238,6 +262,14 @@
               <span>Envío</span>
               <strong class="wrap">{{ pedidoSeleccionado.direccionEnvio }}</strong>
             </div>
+            <div class="detail-info__row" *ngIf="responsableEntrega(pedidoSeleccionado)">
+              <span>Entregó</span>
+              <strong>{{ responsableEntrega(pedidoSeleccionado) }}</strong>
+            </div>
+            <div class="detail-info__row" *ngIf="notaEntrega(pedidoSeleccionado)">
+              <span>Nota entrega</span>
+              <strong class="wrap">{{ notaEntrega(pedidoSeleccionado) }}</strong>
+            </div>
           </div>
 
           <div class="detail-lines">
@@ -249,9 +281,14 @@
             </div>
 
             <ng-container *ngIf="!loadingDetalle">
-              <div class="line" *ngFor="let d of detalleSeleccionado">
+              <div class="line" *ngFor="let d of detalleSeleccionado; trackBy: trackByDetalle">
+                <img
+                  class="line__img"
+                  [src]="d.imagen"
+                  [alt]="d.productoNombre"
+                  (error)="onImgError($event)" />
                 <div class="line__main">
-                  <strong>{{ d.productoNombre || ('Producto #' + d.productoId) }}</strong>
+                  <strong>{{ d.productoNombre }}</strong>
                   <div class="line__meta">
                     <span class="qty-badge" aria-label="Cantidad">
                       <span class="qty-badge__label">Cant.</span>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { CartService } from '../services/cart.service';
+import { FavoritesService } from '../services/favorites.service';
 
 @Component({
   selector: 'app-item-details',
@@ -10,92 +11,165 @@ import { CartService } from '../services/cart.service';
 })
 export class ItemDetailsPage implements OnInit {
 
-  producto: any;
-  selectedOptions: { [key: string]: any } = {};
+  producto: any = null;
+  cantidad = 1;
+  cartCount = 0;
+  adding = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private toastController: ToastController,
-    private cartService: CartService
+    private cartService: CartService,
+    private favoritesService: FavoritesService
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      if (params && params['producto']) {
-        this.producto = JSON.parse(params['producto']);
+    this.cartService.items$.subscribe(() => {
+      this.cartCount = this.cartService.totalItems;
+    });
 
-        // 🔥 DEBUG (opcional)
-        console.log('Producto recibido:', this.producto);
+    this.route.queryParams.subscribe((params) => {
+      this.cantidad = 1;
+      if (params && params['producto']) {
+        try {
+          const raw = JSON.parse(params['producto']);
+          this.producto = {
+            ...raw,
+            imagen: this.normalizeImagePath(raw?.imagen),
+          };
+        } catch {
+          this.producto = null;
+        }
+      } else {
+        this.producto = null;
       }
     });
   }
 
-  // ===============================
-  // 🛒 AGREGAR AL CARRITO (FIX REAL)
-  // ===============================
+  get isGuestUser(): boolean {
+    return localStorage.getItem('guestAccess') === 'true' || !localStorage.getItem('usuario');
+  }
+
+  get esFavorito(): boolean {
+    return !!this.producto && this.favoritesService.isFavorite(this.producto);
+  }
+
+  get stockDisponible(): number {
+    return Math.max(0, Number(this.producto?.stock) || 0);
+  }
+
+  get hayStock(): boolean {
+    return this.stockDisponible > 0;
+  }
+
+  get stockLabel(): string {
+    if (!this.hayStock) return 'Agotado';
+    if (this.stockDisponible <= 5) return `Quedan ${this.stockDisponible}`;
+    return `${this.stockDisponible} en stock`;
+  }
+
+  get stockClass(): string {
+    if (!this.hayStock) return 'stock-badge--out';
+    if (this.stockDisponible <= 5) return 'stock-badge--low';
+    return 'stock-badge--ok';
+  }
+
+  incrementar() {
+    if (this.cantidad < this.stockDisponible) {
+      this.cantidad += 1;
+    }
+  }
+
+  decrementar() {
+    if (this.cantidad > 1) {
+      this.cantidad -= 1;
+    }
+  }
+
+  async toggleFavorito() {
+    if (!this.producto) return;
+
+    if (this.isGuestUser) {
+      await this.mostrarToast('Inicia sesión para usar favoritos', 'warning');
+      return;
+    }
+
+    const activo = this.favoritesService.toggle(this.producto);
+    if (activo) {
+      await this.mostrarToast(`"${this.producto.nombre}" agregado a favoritos`, 'warning');
+    } else {
+      await this.mostrarToast(`"${this.producto.nombre}" quitado de favoritos`, 'medium');
+    }
+  }
+
   async agregarAlCarrito(): Promise<boolean> {
-
-    if (!this.producto) {
-      console.error('Producto no definido');
+    if (!this.producto || this.adding) {
       return false;
     }
 
-    // 🔥 NORMALIZAR ID (CLAVE DEL ÉXITO)
+    if (this.isGuestUser) {
+      await this.mostrarToast('Inicia sesión para comprar', 'warning');
+      this.router.navigate(['/login']);
+      return false;
+    }
+
+    if (!this.hayStock) {
+      await this.mostrarToast('Producto sin stock', 'danger');
+      return false;
+    }
+
     const productId = this.producto.idproducto || this.producto.id;
-
     if (!productId) {
-      console.error('Producto sin ID válido');
+      await this.mostrarToast('Producto inválido', 'danger');
       return false;
     }
+
+    const qty = Math.min(this.cantidad, this.stockDisponible);
+    this.adding = true;
 
     this.cartService.add({
       ...this.producto,
-      idproducto: productId, // 🔥 aseguramos consistencia
-      options: this.selectedOptions
-    });
+      idproducto: productId,
+    }, qty);
 
-    await this.mostrarToast(`"${this.producto.nombre}" agregado al carrito 🛒`, 'warning');
-
+    this.adding = false;
+    await this.mostrarToast(`"${this.producto.nombre}" ×${qty} al carrito`, 'warning');
     return true;
   }
 
-  // ===============================
-  // 💳 COMPRAR AHORA
-  // ===============================
   async comprarAhora() {
-
-    const agregado = await this.agregarAlCarrito();
-    if (!agregado) return;
-
-    // 🔥 navegación directa (ya no necesitas setTimeout)
+    const ok = await this.agregarAlCarrito();
+    if (!ok) return;
     this.router.navigate(['/my-cart']);
   }
 
-  // ===============================
-  // ❤️ FAVORITOS
-  // ===============================
-  async agregarFavorito(producto: any) {
-    await this.mostrarToast(`"${producto.nombre}" agregado a favoritos ❤️`, 'warning');
+  irAHome() {
+    this.router.navigate(['/home']);
   }
 
-  // ===============================
-  // 🔔 TOAST
-  // ===============================
-  async mostrarToast(mensaje: string, color: string) {
+  irACarrito() {
+    this.router.navigate(['/my-cart']);
+  }
+
+  private normalizeImagePath(val: any): string {
+    if (!val) return 'assets/no-image.png';
+    const s = String(val).trim();
+    if (/^https?:\/\//i.test(s)) return s;
+    if (s.startsWith('assets/')) return s;
+    if (s.startsWith('/assets/')) return s.substring(1);
+    const onlyName = s.replace(/^.*[\\/]/, '');
+    return `assets/products/${onlyName}`;
+  }
+
+  private async mostrarToast(mensaje: string, color: string) {
     const toast = await this.toastController.create({
       message: mensaje,
       duration: 2000,
       color,
-      position: 'bottom'
+      position: 'bottom',
+      cssClass: 'custom-toast'
     });
     await toast.present();
-  }
-
-  // ===============================
-  // 🔥 VARIANTES
-  // ===============================
-  selectOption(tipo: string, valor: any) {
-    this.selectedOptions[tipo] = valor;
   }
 }

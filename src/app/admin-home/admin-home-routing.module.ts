@@ -31,6 +31,10 @@ const routes: Routes = [
         path: 'pedidos',
         loadChildren: () => import('../admin/pedidos/pedidos.module').then(m => m.PedidosPageModule)
       },
+      {
+        path: 'contactos',
+        loadChildren: () => import('../admin/contactos/contactos.module').then(m => m.ContactosPageModule)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

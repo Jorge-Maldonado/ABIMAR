@@ -1,3 +1,16 @@
+.orders-toolbar {
+  --background: var(--ds-bg-surface);
+  --border-width: 0 0 1px 0;
+  --border-color: var(--ds-border);
+  border-bottom: 1px solid var(--ds-border);
+
+  ion-title {
+    font-family: var(--ds-font-heading);
+    font-size: 15px;
+    font-weight: 700;
+  }
+}
+
 .orders-content { --background: var(--ds-bg-base); }
 
 .orders-body {
@@ -37,7 +50,7 @@
   appearance: none;
   border: 1px solid var(--ds-border);
   background: var(--ds-bg-surface);
-  border-radius: var(--ds-r-md);
+  border-radius: 12px;
   padding: 10px 6px;
   text-align: center;
   cursor: pointer;
@@ -91,7 +104,7 @@
   ion-icon {
     font-size: 44px;
     margin-bottom: 10px;
-    color: var(--ds-text-2);
+    color: var(--ds-price);
   }
 
   h3 {
@@ -124,7 +137,7 @@
 .order-card {
   background: var(--ds-bg-surface);
   border: 1px solid var(--ds-border);
-  border-radius: var(--ds-r-lg);
+  border-radius: 16px;
   padding: 14px;
   cursor: pointer;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -237,6 +250,12 @@
   border: 1px solid rgba(0, 230, 118, 0.28);
 }
 
+.badge-accent {
+  background: rgba(var(--ds-accent-rgb), 0.12);
+  color: var(--ds-accent);
+  border: 1px solid rgba(var(--ds-accent-rgb), 0.3);
+}
+
 .badge-warning {
   background: var(--ds-price-tint);
   color: var(--ds-warning);
@@ -275,6 +294,17 @@
   font-weight: 700;
 }
 
+.btn-wa-sm {
+  --background: #25d366;
+  --background-activated: #1ebe57;
+  --color: #fff;
+  --border-radius: 10px;
+  margin: 0;
+  height: 34px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 // ─── Detail ───────────────────────────────────────────────────
 .order-detail {
   margin-top: 14px;
@@ -282,21 +312,22 @@
   border-top: 1px solid var(--ds-border);
 
   &__head h3 {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
+    font-family: var(--ds-font-heading);
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--ds-text-2);
+    letter-spacing: 0.06em;
+    color: var(--ds-accent);
   }
 
   &__total {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 8px;
-    padding: 10px 12px;
-    border-radius: 10px;
+    margin-top: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
     background: var(--ds-bg-elevated);
     border: 1px solid var(--ds-border);
 
@@ -311,18 +342,62 @@
       color: var(--ds-price);
     }
   }
+
+  &__wa {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(37, 211, 102, 0.08);
+    border: 1px solid rgba(37, 211, 102, 0.28);
+
+    ion-icon {
+      flex-shrink: 0;
+      font-size: 22px;
+      color: #25d366;
+    }
+
+    p {
+      flex: 1;
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--ds-text-2);
+
+      strong {
+        color: var(--ds-text-1);
+      }
+    }
+
+    ion-button {
+      flex-shrink: 0;
+    }
+  }
 }
 
 .line {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   gap: 12px;
   padding: 10px 0;
   border-bottom: 1px solid var(--ds-border);
 
   &:last-of-type { border-bottom: none; }
 
+  &__img {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: var(--ds-bg-elevated);
+    border: 1px solid var(--ds-border);
+    flex-shrink: 0;
+  }
+
   &__main {
+    flex: 1;
     min-width: 0;
 
     strong {
@@ -330,6 +405,9 @@
       font-size: 13px;
       color: var(--ds-text-1);
       margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
@@ -356,5 +434,13 @@
 @media (max-width: 420px) {
   .stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .order-detail__wa {
+    flex-wrap: wrap;
+
+    ion-button {
+      width: 100%;
+    }
   }
 }

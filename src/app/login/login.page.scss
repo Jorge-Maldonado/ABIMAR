@@ -1,151 +1,213 @@
+.login-toolbar {
+  --background: transparent;
+  --border-width: 0;
+  --color: var(--ds-text-1, #fff);
+
+  ion-button {
+    --color: var(--ds-text-1, #fff);
+  }
+}
+
 .login-content {
-  --background: #0B0F14;
+  --background: var(--ds-bg-base, #0B0B0D);
   position: relative;
   overflow: hidden;
 }
 
-/* 🔥 FONDO (FUNCIONA EN IONIC) */
 .bg-overlay {
   position: absolute;
   inset: 0;
-
-  background-image: url('/assets/FondoAbimar.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 300px;
-
-  opacity: 0.22;
   pointer-events: none;
-
   z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(var(--ds-accent-rgb, 0, 229, 255), 0.18), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(var(--ds-accent-rgb, 0, 229, 255), 0.06), transparent 40%);
 }
 
-/* ⚡ Glow encima */
-.bg-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-
-  background: radial-gradient(circle at 50% 30%, rgba(0,229,255,0.15), transparent 60%);
-}
-
-/* Contenedor */
 .auth-container {
   position: relative;
   z-index: 1;
-
-  padding: 24px;
+  padding: 8px 24px calc(env(safe-area-inset-bottom, 0) + 32px);
   max-width: 420px;
   margin: 0 auto;
   min-height: 100%;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-/* Header */
-.auth-header {
-  margin-bottom: 32px;
+.auth-brand {
+  text-align: center;
+  margin-bottom: 28px;
 
-  h1 {
-    font-size: 30px;
-    font-weight: 800;
-    color: #ffffff;
-    margin-bottom: 8px;
+  .brand-mark {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 18px rgba(var(--ds-accent-rgb, 0, 229, 255), 0.35));
   }
 
-  p {
-    font-size: 15px;
-    color: #9CA3AF;
+  .brand-name {
+    margin: 0 0 8px;
+    font-family: var(--ds-font-heading, 'Sora', sans-serif);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ds-text-1, #fff);
+  }
+
+  .brand-tagline {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ds-text-2, #9CA3AF);
   }
 }
 
-/* Form */
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
+  padding: 20px 16px;
+  background: var(--ds-bg-surface, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--ds-border, rgba(255, 255, 255, 0.08));
+  border-radius: 18px;
 }
 
-/* Inputs (glass effect) */
 .ds-form-item {
-  --background: rgba(255, 255, 255, 0.04);
-
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
+  --background: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --highlight-color-focused: var(--ds-accent, #00E5FF);
+  margin-bottom: 4px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.08);
-}
+  border: 1px solid var(--ds-border, rgba(255, 255, 255, 0.1));
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.2s, box-shadow 0.2s;
 
-/* Focus */
-.ds-form-item:focus-within {
-  border: 1px solid rgba(0,229,255,0.6);
-  box-shadow: 0 0 0 2px rgba(0,229,255,0.15);
-}
+  ion-label {
+    color: var(--ds-text-2, #9CA3AF);
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
 
-/* Iconos */
-.field-icon {
-  color: #6B7280;
-  font-size: 18px;
+  ion-input {
+    --color: var(--ds-text-1, #fff);
+    --placeholder-color: var(--ds-text-3, #6B7280);
+    font-size: 15px;
+  }
 
-  &--toggle {
-    cursor: pointer;
+  &.is-invalid {
+    border-color: rgba(255, 82, 82, 0.55);
+  }
 
-    &:hover {
-      color: #00E5FF;
-    }
+  &:focus-within {
+    border-color: rgba(var(--ds-accent-rgb, 0, 229, 255), 0.55);
+    box-shadow: 0 0 0 2px rgba(var(--ds-accent-rgb, 0, 229, 255), 0.12);
   }
 }
 
-/* Error */
+.field-icon {
+  color: var(--ds-text-3, #6B7280);
+  font-size: 18px;
+  margin-inline-end: 6px;
+  align-self: center;
+}
+
+.toggle-btn {
+  --padding-start: 4px;
+  --padding-end: 4px;
+  margin: 0;
+  height: 36px;
+  color: var(--ds-text-3, #6B7280);
+}
+
+.field-hint {
+  margin: 0 4px 8px;
+  font-size: 12px;
+  color: #ff6b6b;
+}
+
 .auth-error {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
-
-  color: #ff5252;
+  margin: 8px 0 4px;
+  padding: 10px 12px;
+  color: #ff8a80;
   font-size: 13px;
-
+  line-height: 1.35;
   background: rgba(255, 82, 82, 0.1);
-  border: 1px solid rgba(255, 82, 82, 0.3);
+  border: 1px solid rgba(255, 82, 82, 0.28);
   border-radius: 10px;
 
-  padding: 10px 14px;
+  ion-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 18px;
+  }
 }
 
-/* Botón */
 .auth-submit {
   margin-top: 12px;
-
-  --background: #00E5FF;
+  --background: var(--ds-accent, #00E5FF);
+  --background-activated: var(--ds-accent-shade, #00B8CC);
   --color: #000;
-
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 15px;
+  height: 48px;
   border-radius: 12px;
 
-  transition: 0.2s;
+  ion-spinner {
+    width: 22px;
+    height: 22px;
+    --color: #000;
+  }
 }
 
-.auth-submit:hover {
-  box-shadow: 0 0 15px rgba(0,229,255,0.5);
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 14px;
+  color: var(--ds-text-3, #6B7280);
+  font-size: 12px;
+  text-transform: lowercase;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ds-border, rgba(255, 255, 255, 0.1));
+  }
 }
 
-/* Footer */
+.auth-guest {
+  --border-color: var(--ds-border, rgba(255, 255, 255, 0.16));
+  --border-width: 1px;
+  --color: var(--ds-text-1, #fff);
+  --background: transparent;
+  font-weight: 600;
+  height: 46px;
+  border-radius: 12px;
+}
+
 .auth-footer {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  margin-top: 24px;
-  gap: 6px;
-
+  margin-top: 20px;
+  gap: 4px;
   font-size: 14px;
-  color: #9CA3AF;
+  color: var(--ds-text-2, #9CA3AF);
 
   .auth-link {
-    --color: #00E5FF;
+    --color: var(--ds-accent, #00E5FF);
     font-weight: 600;
+    margin: 0;
+    height: auto;
+    min-height: 0;
   }
 }

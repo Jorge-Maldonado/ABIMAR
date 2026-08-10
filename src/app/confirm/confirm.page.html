@@ -1,26 +1,23 @@
 <ion-content class="confirm-content">
   <div class="confirm-body">
 
-    <!-- Icono de éxito animado -->
     <div class="confirm-icon">
       <div class="confirm-icon__ring"></div>
       <ion-icon name="checkmark-outline"></ion-icon>
     </div>
 
-    <!-- Texto -->
     <h1 class="confirm-title">¡Pedido confirmado!</h1>
     <p class="confirm-subtitle">Tu compra fue procesada exitosamente</p>
 
-    <!-- Detalle del pedido -->
     <div class="confirm-card">
-      <div class="confirm-card__row" *ngIf="pedidoId">
-        <span>Nº de pedido</span>
-        <strong>#{{ pedidoId }}</strong>
+      <div class="confirm-card__row" *ngIf="codigoVisible && codigoVisible !== '—'">
+        <span>Código de pedido</span>
+        <strong>{{ codigoVisible }}</strong>
       </div>
-      <div class="confirm-card__divider" *ngIf="pedidoId"></div>
+      <div class="confirm-card__divider" *ngIf="codigoVisible && codigoVisible !== '—'"></div>
       <div class="confirm-card__row">
         <span>Método de pago</span>
-        <strong>{{ metodo || '—' }}</strong>
+        <strong>{{ metodoLabel }}</strong>
       </div>
       <div class="confirm-card__divider"></div>
       <div class="confirm-card__row">
@@ -37,7 +34,29 @@
       </div>
     </div>
 
-    <!-- Acciones -->
+    <div class="confirm-whatsapp">
+      <div class="confirm-whatsapp__icon">
+        <ion-icon name="logo-whatsapp"></ion-icon>
+      </div>
+      <div class="confirm-whatsapp__text">
+        <h2>Entrega por WhatsApp</h2>
+        <p>
+          Nos comunicaremos contigo por WhatsApp
+          (<strong>{{ whatsappDisplay }}</strong>)
+          para coordinar la entrega de tu producto.
+        </p>
+      </div>
+      <ion-button expand="block" class="confirm-whatsapp__btn" (click)="abrirWhatsApp()">
+        <ion-icon slot="start" name="logo-whatsapp"></ion-icon>
+        Escribir por WhatsApp
+      </ion-button>
+    </div>
+
+    <div class="confirm-note">
+      <ion-icon name="time-outline"></ion-icon>
+      <p>Guarda el código de pedido. Nuestro equipo te contactará en horario hábil para confirmar dirección y horario de entrega.</p>
+    </div>
+
     <div class="confirm-actions">
       <ion-button expand="block" class="btn-primary" routerLink="/my-orders" routerDirection="root">
         <ion-icon slot="start" name="receipt-outline"></ion-icon>

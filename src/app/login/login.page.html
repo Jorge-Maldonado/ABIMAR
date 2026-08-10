@@ -1,7 +1,7 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
+  <ion-toolbar class="login-toolbar">
     <ion-buttons slot="start">
-      <ion-button routerLink="/welcome" routerDirection="back" fill="clear">
+      <ion-button routerLink="/welcome" routerDirection="back" fill="clear" aria-label="Volver">
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -9,49 +9,84 @@
 </ion-header>
 
 <ion-content class="login-content">
+  <div class="bg-overlay" aria-hidden="true"></div>
 
-  <!-- 🔥 FONDO REAL -->
-  <div class="bg-overlay"></div>
-
-  <!-- CONTENIDO -->
   <div class="auth-container">
 
-    <div class="auth-header">
-      <h1>Iniciar sesión</h1>
-      <p>Accede a tu cuenta Abimar</p>
+    <div class="auth-brand">
+      <img src="/assets/logoAbimarFondoOscuro.svg" alt="Abimar Shop" class="brand-mark" />
+      <h1 class="brand-name">Abimar Shop</h1>
+      <p class="brand-tagline">Inicia sesión para comprar y seguir tus pedidos</p>
     </div>
 
-    <div class="auth-form">
+    <form class="auth-form" (ngSubmit)="login()" autocomplete="on">
 
-      <ion-item class="ds-form-item" lines="none">
-        <ion-label position="floating">Correo electrónico</ion-label>
-        <ion-input [(ngModel)]="email" name="email" type="email" inputmode="email" autocomplete="email">
+      <ion-item class="ds-form-item" [class.is-invalid]="emailInvalid" lines="none">
+        <ion-icon name="mail-outline" slot="start" class="field-icon"></ion-icon>
+        <ion-label position="stacked">Correo electrónico</ion-label>
+        <ion-input
+          [(ngModel)]="email"
+          name="email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          enterkeyhint="next"
+          required>
         </ion-input>
-        <ion-icon name="mail-outline" slot="end" class="field-icon"></ion-icon>
       </ion-item>
+      <p *ngIf="emailInvalid" class="field-hint">Ingresa un correo válido.</p>
 
-      <ion-item class="ds-form-item" lines="none">
-        <ion-label position="floating">Contraseña</ion-label>
-        <ion-input [(ngModel)]="password" name="password" [type]="showPassword ? 'text' : 'password'"
-          autocomplete="current-password">
+      <ion-item class="ds-form-item" [class.is-invalid]="passwordInvalid" lines="none">
+        <ion-icon name="lock-closed-outline" slot="start" class="field-icon"></ion-icon>
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input
+          [(ngModel)]="password"
+          name="password"
+          [type]="showPassword ? 'text' : 'password'"
+          autocomplete="current-password"
+          enterkeyhint="go"
+          required>
         </ion-input>
-        <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end"
-          class="field-icon field-icon--toggle" (click)="togglePassword()">
-        </ion-icon>
+        <ion-button
+          fill="clear"
+          slot="end"
+          type="button"
+          class="toggle-btn"
+          (click)="togglePassword()"
+          [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+          <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+        </ion-button>
       </ion-item>
+      <p *ngIf="passwordInvalid" class="field-hint">La contraseña es obligatoria.</p>
 
-      <div *ngIf="errorMessage" class="auth-error">
+      <div *ngIf="errorMessage" class="auth-error" role="alert">
         <ion-icon name="alert-circle-outline"></ion-icon>
-        {{ errorMessage }}
+        <span>{{ errorMessage }}</span>
       </div>
 
-      <!-- 🔥 FIX LOGIN -->
-      <ion-button expand="block" class="auth-submit" type="button" [disabled]="loading" (click)="login()">
+      <ion-button
+        expand="block"
+        class="auth-submit"
+        type="submit"
+        [disabled]="loading">
         <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
         <span *ngIf="!loading">Ingresar</span>
       </ion-button>
+    </form>
 
+    <div class="auth-divider">
+      <span>o</span>
     </div>
+
+    <ion-button
+      expand="block"
+      fill="outline"
+      class="auth-guest"
+      type="button"
+      [disabled]="loading"
+      (click)="continueAsGuest()">
+      Continuar como invitado
+    </ion-button>
 
     <div class="auth-footer">
       <span>¿No tienes cuenta?</span>

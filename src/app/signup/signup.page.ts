@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
-import { MenuController, AlertController } from '@ionic/angular';
+import { MenuController, AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { UtilService } from '../util.service';
+import { LoaderService } from '../services/ui/loader.service';
 
 @Component({
   selector: 'app-signup',
@@ -10,93 +12,172 @@ import { Router } from '@angular/router';
 })
 export class SignupPage implements OnInit {
 
-  nombres: string = '';
-  apellidos: string = '';
-  documento: string = '';
-  telefono: number | null = null;
-  email: string = '';
-  password: string = '';
-  showPassword: boolean = false;
+  nombres = '';
+  apellidos = '';
+  documento = '';
+  telefono = '';
+  email = '';
+  password = '';
+  confirmPassword = '';
+  showPassword = false;
+  showConfirmPassword = false;
+  submitted = false;
+  loading = false;
+  errorMessage = '';
 
   constructor(
     private apiService: ApiService<any>,
     private menu: MenuController,
     private alertCtrl: AlertController,
-    private router: Router
+    private toastCtrl: ToastController,
+    private router: Router,
+    private util: UtilService,
+    private loader: LoaderService
   ) {}
 
-  ngOnInit() {
-    this.menu.enable(false, 'mainMenu');
+  ngOnInit() {}
+
+  async ionViewWillEnter() {
+    this.util.setMenuState(false);
+    this.util.setShowIcons(false);
+    await this.menu.enable(false, 'mainMenu');
+    await this.menu.close('mainMenu');
   }
 
-  ionViewWillEnter() { this.menu.enable(false, 'mainMenu'); }
-  ionViewWillLeave() { this.menu.enable(true, 'mainMenu'); }
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
 
-  togglePassword() { this.showPassword = !this.showPassword; }
+  toggleConfirmPassword() {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  get nombresInvalid(): boolean {
+    return this.submitted && !this.nombres.trim();
+  }
+
+  get apellidosInvalid(): boolean {
+    return this.submitted && !this.apellidos.trim();
+  }
+
+  get documentoInvalid(): boolean {
+    return this.submitted && !this.documento.trim();
+  }
+
+  get telefonoInvalid(): boolean {
+    if (!this.submitted) return false;
+    const value = this.telefono.trim();
+    if (!value) return true;
+    return !/^[0-9+\-\s]{7,20}$/.test(value);
+  }
+
+  get emailInvalid(): boolean {
+    if (!this.submitted) return false;
+    const value = this.email.trim();
+    if (!value) return true;
+    return !this.isValidEmail(value);
+  }
+
+  get passwordInvalid(): boolean {
+    if (!this.submitted) return false;
+    const value = this.password;
+    if (!value.trim()) return true;
+    return value.length < 6;
+  }
+
+  get confirmPasswordInvalid(): boolean {
+    if (!this.submitted) return false;
+    if (!this.confirmPassword.trim()) return true;
+    return this.password !== this.confirmPassword;
+  }
+
+  get formInvalid(): boolean {
+    return (
+      !this.nombres.trim() ||
+      !this.apellidos.trim() ||
+      !this.documento.trim() ||
+      !this.telefono.trim() ||
+      !this.email.trim() ||
+      !this.isValidEmail(this.email.trim()) ||
+      !this.password.trim() ||
+      this.password.length < 6 ||
+      !this.confirmPassword.trim() ||
+      this.password !== this.confirmPassword
+    );
+  }
 
   async signup() {
-    // Validaciones
-    if (!this.nombres.trim() || !this.apellidos.trim()) {
-      return this.showAlert('Error', 'Por favor ingresa nombres y apellidos.');
-    }
-    if (!this.email.trim() || !this.isValidEmail(this.email)) {
-      return this.showAlert('Error', 'Correo electrónico inválido.');
-    }
-    if (!this.password.trim()) {
-      return this.showAlert('Error', 'Ingresa tu contraseña.');
+    if (this.loading) return;
+
+    this.submitted = true;
+    this.errorMessage = '';
+
+    if (this.formInvalid) {
+      this.errorMessage = 'Completa todos los campos correctamente.';
+      return;
     }
 
     const persona = {
-      nombres: this.nombres,
-      apellidos: this.apellidos,
-      documento: this.documento || '',
-      telefono: this.telefono || null,
+      nombres: this.nombres.trim(),
+      apellidos: this.apellidos.trim(),
+      documento: this.documento.trim(),
+      telefono: this.telefono.trim(),
       estado: 1,
       fechaCreacion: new Date().toISOString(),
-      identificacion: this.documento || '',
-      razonSocial: `${this.nombres} ${this.apellidos}`,
+      identificacion: this.documento.trim(),
+      razonSocial: `${this.nombres.trim()} ${this.apellidos.trim()}`,
       rolId: 1,
       tipoDocumentoId: 1
     };
 
+    this.loading = true;
+    await this.loader.show('Creando cuenta...');
+
     try {
-      // Crear persona
       const personaResp: any = await this.apiService
-        .post('https://backend-abimar.onrender.com/abimar/core/api/persona/create', persona)
+        .post(this.apiService.url('persona/create'), persona)
         .toPromise();
 
-      // Crear login
+      const personalId = personaResp?.idpersona;
+      if (!personalId) {
+        throw new Error('Respuesta de persona inválida');
+      }
+
       const loginData = {
-        emailUser: this.email,
+        emailUser: this.email.trim(),
         password: this.password,
         token: this.generateToken(32),
-        personal: personaResp.idpersona
+        personal: personalId
       };
 
       await this.apiService
-        .post('https://backend-abimar.onrender.com/abimar/core/api/usuario/create', loginData)
+        .post(this.apiService.url('usuario/create'), loginData)
         .toPromise();
 
-      // Éxito
-      const alert = await this.alertCtrl.create({
-        header: '¡Registro exitoso!',
-        message: 'Serás redirigido al login.',
-        backdropDismiss: false,
-        buttons: [{ text: 'Aceptar', handler: () => this.router.navigate(['/login']) }]
-      });
-      await alert.present();
-
-      // Limpiar formulario
+      await this.loader.hide();
+      this.loading = false;
       this.resetForm();
 
+      const toast = await this.toastCtrl.create({
+        message: 'Cuenta creada. Inicia sesión.',
+        duration: 2200,
+        color: 'dark',
+        position: 'bottom'
+      });
+      await toast.present();
+      this.router.navigateByUrl('/login', { replaceUrl: true });
     } catch (error) {
       console.error('Error creando usuario:', error);
-      this.showAlert('Error', 'No se pudo crear la cuenta. Intenta de nuevo.');
+      await this.loader.hide();
+      this.loading = false;
+      this.errorMessage = 'No se pudo crear la cuenta. Intenta de nuevo.';
+      await this.showAlert('Error', this.errorMessage);
     }
   }
 
   private showAlert(header: string, message: string) {
-    return this.alertCtrl.create({ header, message, backdropDismiss: true, buttons: ['Aceptar'] })
+    return this.alertCtrl
+      .create({ header, message, backdropDismiss: true, buttons: ['Aceptar'] })
       .then(alert => alert.present());
   }
 
@@ -113,8 +194,13 @@ export class SignupPage implements OnInit {
     this.nombres = '';
     this.apellidos = '';
     this.documento = '';
-    this.telefono = null;
+    this.telefono = '';
     this.email = '';
     this.password = '';
+    this.confirmPassword = '';
+    this.submitted = false;
+    this.errorMessage = '';
+    this.showPassword = false;
+    this.showConfirmPassword = false;
   }
 }

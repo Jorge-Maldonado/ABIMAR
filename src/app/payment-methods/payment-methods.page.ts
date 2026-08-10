@@ -1,13 +1,15 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { CartService } from '../services/cart.service';
 import { PedidoService } from '../services/pedido.service';
-import { AlertController } from '@ionic/angular';
 
 declare var paypal: any;
 
 /** Tasa Bs → USD usada en PayPal sandbox (catálogo en Bs). */
 const BS_PER_USD = 9;
+
+type MetodoPago = 'paypal' | 'qr' | null;
 
 @Component({
   selector: 'app-payment-methods',
@@ -23,8 +25,13 @@ export class PaymentMethodsPage implements OnInit {
   mostrarPayPal = false;
   paypalCargado = false;
   paypalRenderizado = false;
+  paypalError = false;
   pedidoId: string | null = null;
+  codigoPedido = '';
   actualizando = false;
+  metodoSeleccionado: MetodoPago = null;
+
+  readonly tasaCambio = BS_PER_USD;
 
   constructor(
     private router: Router,
@@ -32,12 +39,40 @@ export class PaymentMethodsPage implements OnInit {
     private cartService: CartService,
     private route: ActivatedRoute,
     private pedidoService: PedidoService,
-    private alertCtrl: AlertController
-  ) { }
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
+    private loadingCtrl: LoadingController
+  ) {}
 
   ngOnInit() {
-    this.pedidoId = this.route.snapshot.queryParamMap.get('pedidoId')
-      || localStorage.getItem('pedidoId');
+    this.pedidoId =
+      this.route.snapshot.queryParamMap.get('pedidoId') ||
+      localStorage.getItem('pedidoId');
+
+    if (this.pedidoId) {
+      localStorage.setItem('pedidoId', this.pedidoId);
+    }
+
+    this.codigoPedido =
+      this.route.snapshot.queryParamMap.get('codigo') ||
+      localStorage.getItem('codigoPedido') ||
+      this.pedidoService.codigoPublico(this.pedidoId);
+
+    if (this.codigoPedido) {
+      localStorage.setItem('codigoPedido', this.codigoPedido);
+    }
+
+    if (this.pedidoId && (!this.codigoPedido || /^\d+$/.test(this.codigoPedido))) {
+      this.pedidoService.getPedidoById(+this.pedidoId).subscribe({
+        next: (pedido) => {
+          this.codigoPedido = this.pedidoService.codigoPublico(pedido);
+          if (this.codigoPedido) {
+            localStorage.setItem('codigoPedido', this.codigoPedido);
+          }
+          this.cdr.detectChanges();
+        },
+      });
+    }
 
     const totalParam = this.route.snapshot.queryParamMap.get('total');
     if (totalParam && !isNaN(Number(totalParam)) && Number(totalParam) > 0) {
@@ -47,13 +82,19 @@ export class PaymentMethodsPage implements OnInit {
       if (stored > 0) {
         this.totalBs = stored;
       } else {
-        this.calcularTotalDesdeCarrito();
+        this.totalBs = this.cartService.total;
       }
     }
 
     this.totalUsd = this.toUsd(this.totalBs);
-    localStorage.setItem('totalPedido', this.totalBs.toFixed(2));
+    if (this.totalBs > 0) {
+      localStorage.setItem('totalPedido', this.totalBs.toFixed(2));
+    }
     this.cargarPayPalScript();
+  }
+
+  get hasPedido(): boolean {
+    return !!this.pedidoId && this.totalBs > 0;
   }
 
   /** Alias para plantillas que usaban `total`. */
@@ -61,26 +102,14 @@ export class PaymentMethodsPage implements OnInit {
     return this.totalBs;
   }
 
-  get getTotal(): number {
-    return this.totalBs > 0 ? this.totalBs : this.cartService.total;
-  }
-
   private toUsd(bs: number): number {
     return Math.round((bs / BS_PER_USD) * 100) / 100;
-  }
-
-  private calcularTotalDesdeCarrito() {
-    const data = localStorage.getItem('carrito');
-    const carrito = data ? JSON.parse(data) : [];
-    this.totalBs = carrito.reduce(
-      (sum: number, p: any) => sum + (Number(p.precio) || 0) * (Number(p.cantidad) || 0),
-      0
-    );
   }
 
   cargarPayPalScript() {
     if (document.getElementById('paypal-sdk')) {
       this.paypalCargado = typeof paypal !== 'undefined';
+      this.paypalError = !this.paypalCargado;
       return;
     }
 
@@ -89,89 +118,111 @@ export class PaymentMethodsPage implements OnInit {
     script.src = `https://www.paypal.com/sdk/js?client-id=sb&currency=USD`;
     script.onload = () => {
       this.paypalCargado = true;
+      this.paypalError = false;
       this.cdr.detectChanges();
+      if (this.mostrarPayPal && this.metodoSeleccionado === 'paypal') {
+        setTimeout(() => this.renderPayPalButtons(), 80);
+      }
     };
-    script.onerror = () => {
+    script.onerror = async () => {
       this.paypalCargado = false;
-      alert('No se pudo cargar PayPal. Revisa tu conexión.');
+      this.paypalError = true;
+      this.cdr.detectChanges();
+      await this.mostrarToast('No se pudo cargar PayPal. Revisa tu conexión.', 'warning');
     };
     document.body.appendChild(script);
   }
 
-  async pagarConPayPal() {
-    if (!this.paypalCargado || typeof paypal === 'undefined') {
-      alert('Espera a que el SDK de PayPal cargue...');
-      return;
-    }
+  async seleccionarPayPal() {
+    this.metodoSeleccionado = 'paypal';
+    this.mostrarPayPal = true;
+    this.cdr.detectChanges();
 
     if (!this.pedidoId) {
-      alert('No hay pedido asociado. Vuelve al checkout.');
+      await this.mostrarToast('No hay pedido asociado. Vuelve al checkout.', 'warning');
       return;
     }
 
     if (this.totalBs <= 0 || this.totalUsd <= 0) {
-      alert('El monto a pagar no es válido.');
+      await this.mostrarToast('El monto a pagar no es válido.', 'danger');
       return;
     }
 
-    this.mostrarPayPal = true;
-    this.cdr.detectChanges();
-
-    if (this.paypalRenderizado) return;
-
-    setTimeout(() => {
-      const container = document.getElementById('paypal-button-container');
-      if (!container) {
-        console.error('Contenedor PayPal no encontrado');
-        return;
+    if (!this.paypalCargado || typeof paypal === 'undefined') {
+      if (this.paypalError) {
+        await this.mostrarToast('PayPal no está disponible. Prueba con QR.', 'warning');
       }
-      if (container.childElementCount > 0) {
-        this.paypalRenderizado = true;
-        return;
-      }
+      return;
+    }
 
-      const usd = this.totalUsd;
-      const bs = this.totalBs;
-      const pedidoId = this.pedidoId;
-
-      paypal.Buttons({
-        style: {
-          color: 'gold',
-          shape: 'rect',
-          label: 'paypal',
-          layout: 'vertical'
-        },
-        createOrder: (_data: any, actions: any) => {
-          return actions.order.create({
-            purchase_units: [{
-              description: `Pedido #${pedidoId} - Abimar Shop`,
-              amount: {
-                value: usd.toFixed(2),
-                currency_code: 'USD'
-              }
-            }]
-          });
-        },
-        onApprove: (_data: any, actions: any) => {
-          return actions.order.capture().then((details: any) => {
-            this.marcarPedidoPagadoPayPal(details, bs, usd);
-          });
-        },
-        onError: (err: any) => {
-          console.error('Error PayPal:', err);
-          alert('Error al procesar el pago con PayPal.');
-        }
-      }).render('#paypal-button-container').then(() => {
-        this.paypalRenderizado = true;
-      });
-    }, 100);
+    setTimeout(() => this.renderPayPalButtons(), 80);
   }
 
-  private marcarPedidoPagadoPayPal(details: any, totalBs: number, totalUsd: number) {
-    if (this.actualizando || !this.pedidoId) return;
+  private renderPayPalButtons() {
+    const container = document.getElementById('paypal-button-container');
+    if (!container) {
+      return;
+    }
+    if (container.childElementCount > 0) {
+      this.paypalRenderizado = true;
+      return;
+    }
+
+    const usd = this.totalUsd;
+    const bs = this.totalBs;
+    const pedidoId = this.pedidoId;
+    const codigo = this.codigoPedido || this.pedidoService.codigoPublico(pedidoId);
+
+    paypal.Buttons({
+      style: {
+        color: 'gold',
+        shape: 'rect',
+        label: 'paypal',
+        layout: 'vertical',
+      },
+      createOrder: (_data: any, actions: any) => {
+        return actions.order.create({
+          purchase_units: [{
+            description: `Pedido ${codigo || pedidoId} - Abimar Shop`,
+            amount: {
+              value: usd.toFixed(2),
+              currency_code: 'USD',
+            },
+          }],
+        });
+      },
+      onApprove: (_data: any, actions: any) => {
+        return actions.order.capture().then((details: any) => {
+          this.marcarPedidoPagadoPayPal(details, bs, usd);
+        });
+      },
+      onError: async (err: any) => {
+        console.error('Error PayPal:', err);
+        await this.mostrarToast('Error al procesar el pago con PayPal.', 'danger');
+      },
+    }).render('#paypal-button-container').then(() => {
+      this.paypalRenderizado = true;
+      this.cdr.detectChanges();
+    });
+  }
+
+  private async marcarPedidoPagadoPayPal(details: any, totalBs: number, totalUsd: number) {
+    if (this.actualizando || !this.pedidoId) {
+      return;
+    }
     this.actualizando = true;
 
-    const txId = details?.id || details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || '';
+    const loader = await this.loadingCtrl.create({
+      message: 'Confirmando pago…',
+      spinner: 'crescent',
+      cssClass: 'custom-loader',
+    });
+    await loader.present();
+
+    const txId =
+      details?.id ||
+      details?.purchase_units?.[0]?.payments?.captures?.[0]?.id ||
+      '';
 
     this.pedidoService.getPedidoById(+this.pedidoId).subscribe({
       next: (pedido: any) => {
@@ -186,54 +237,94 @@ export class PaymentMethodsPage implements OnInit {
             status: details?.status,
             payer: details?.payer?.email_address,
             amountUsd: totalUsd,
-            amountBs: totalBs
-          })
+            amountBs: totalBs,
+          }),
         };
 
         this.pedidoService.updatePedido(payload).subscribe({
-          next: () => {
+          next: async () => {
+            await loader.dismiss();
             this.cartService.limpiar();
             localStorage.setItem('totalPedido', totalBs.toFixed(2));
+            const codigo =
+              this.codigoPedido ||
+              this.pedidoService.codigoPublico(pedido) ||
+              localStorage.getItem('codigoPedido') ||
+              '';
+            if (codigo) {
+              localStorage.setItem('codigoPedido', codigo);
+            }
             this.actualizando = false;
             this.router.navigate(['/confirm'], {
               queryParams: {
                 metodo: 'PayPal',
                 total: totalBs.toFixed(2),
-                pedidoId: this.pedidoId
+                pedidoId: this.pedidoId,
+                codigo: codigo || undefined,
               },
-              replaceUrl: true
+              replaceUrl: true,
             });
           },
-          error: async (err) => {
+          error: async () => {
+            await loader.dismiss();
             this.actualizando = false;
-            console.error('Error actualizando pedido', err);
             const alert = await this.alertCtrl.create({
               header: 'Pago recibido',
-              message: 'PayPal confirmó el pago, pero no se pudo actualizar el pedido. Guarda el número de pedido y contacta soporte.',
-              buttons: ['Aceptar']
+              message:
+                'PayPal confirmó el pago, pero no se pudo actualizar el pedido. Guarda el código de pedido y contacta soporte.',
+              buttons: ['Aceptar'],
             });
             await alert.present();
-          }
+          },
         });
       },
-      error: async (err) => {
+      error: async () => {
+        await loader.dismiss();
         this.actualizando = false;
-        console.error('Error obteniendo pedido', err);
-        alert('No se pudo verificar el pedido tras el pago.');
-      }
+        await this.mostrarToast('No se pudo verificar el pedido tras el pago.', 'danger');
+      },
     });
   }
 
-  pagarConQR() {
+  async pagarConQR() {
+    this.metodoSeleccionado = 'qr';
+    this.mostrarPayPal = false;
+
     if (!this.pedidoId) {
-      alert('No hay pedido asociado. Vuelve al checkout.');
+      await this.mostrarToast('No hay pedido asociado. Vuelve al checkout.', 'warning');
       return;
     }
+
+    if (this.totalBs <= 0) {
+      await this.mostrarToast('El monto a pagar no es válido.', 'danger');
+      return;
+    }
+
     this.router.navigate(['/qr-payment'], {
       queryParams: {
         pedidoId: this.pedidoId,
-        total: this.totalBs.toFixed(2)
-      }
+        codigo: this.codigoPedido || undefined,
+        total: this.totalBs.toFixed(2),
+      },
     });
+  }
+
+  irACheckout() {
+    this.router.navigate(['/checkout']);
+  }
+
+  irAHome() {
+    this.router.navigate(['/home']);
+  }
+
+  private async mostrarToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2200,
+      color,
+      position: 'bottom',
+      cssClass: 'custom-toast',
+    });
+    await toast.present();
   }
 }

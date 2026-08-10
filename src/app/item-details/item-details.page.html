@@ -3,85 +3,102 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home" text=""></ion-back-button>
     </ion-buttons>
+    <ion-title>Detalle</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="agregarFavorito(producto)">
-        <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
+      <ion-button
+        fill="clear"
+        class="fav-btn"
+        [class.fav-btn--on]="esFavorito"
+        (click)="toggleFavorito()"
+        aria-label="Favorito">
+        <ion-icon slot="icon-only" [name]="esFavorito ? 'heart' : 'heart-outline'"></ion-icon>
       </ion-button>
+      <button
+        type="button"
+        class="cart-pay-chip"
+        *ngIf="!isGuestUser"
+        [class.cart-pay-chip--active]="cartCount > 0"
+        (click)="irACarrito()"
+        [attr.aria-label]="cartCount > 0 ? 'Ir a pagar, ' + cartCount + ' productos' : 'Carrito vacío'">
+        <ion-icon [name]="cartCount > 0 ? 'cart' : 'cart-outline'"></ion-icon>
+        <span class="cart-pay-chip__count" *ngIf="cartCount > 0">{{ cartCount }}</span>
+        <span class="cart-pay-chip__label" *ngIf="cartCount > 0">Pagar</span>
+      </button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="item-content">
+<ion-content class="item-content" *ngIf="producto; else emptyTpl">
 
-  <!-- Imagen hero -->
   <div class="item-hero">
-    <ion-slides pager="true" class="item-slider">
-      <ion-slide>
-        <img [src]="producto?.imagen || 'assets/no-image.png'" [alt]="producto?.nombre" class="item-hero__img" />
-      </ion-slide>
-    </ion-slides>
+    <img
+      class="item-hero__img"
+      [src]="producto.imagen"
+      [alt]="producto.nombre"
+      (error)="$event.target.src='assets/no-image.png'" />
   </div>
 
-  <!-- Info principal -->
   <div class="item-body">
-    <div class="item-header">
-      <h1 class="item-name">{{ producto?.nombre }}</h1>
-      <div class="item-price-row">
-        <span class="item-price">Bs. {{ producto?.precio }}</span>
-        <span *ngIf="producto?.precioAnterior" class="item-price-old">Bs. {{ producto?.precioAnterior }}</span>
-      </div>
+    <div class="item-meta">
+      <span class="stock-badge" [ngClass]="stockClass">{{ stockLabel }}</span>
+      <span class="meta-chip" *ngIf="producto.codigo">{{ producto.codigo }}</span>
     </div>
 
-    <div class="item-divider"></div>
+    <h1 class="item-name">{{ producto.nombre }}</h1>
 
-    <!-- Descripción -->
-    <div class="item-section">
-      <h3 class="item-section__title">Descripción</h3>
-      <p class="item-section__text">{{ producto?.descripcion || 'Sin descripción disponible.' }}</p>
+    <div class="item-price-row">
+      <span class="item-price"><span class="item-price__currency">Bs</span> {{ producto.precio | number:'1.2-2' }}</span>
     </div>
 
-    <div class="item-divider"></div>
+    <section class="item-section">
+      <h2>Descripción</h2>
+      <p>{{ producto.descripcion || 'Sin descripción disponible.' }}</p>
+    </section>
 
-    <!-- Variaciones -->
-    <!-- <div class="item-section">
-      <ion-segment (ionChange)="segmentChanged($event)" value="size" class="item-segment">
-        <ion-segment-button value="size">
-          <ion-label>Talla</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="color">
-          <ion-label>Color</ion-label>
-        </ion-segment-button>
-      </ion-segment>
-
-      <div class="variation-chips" [class.active]="activeVariation == 'size'">
-        <div class="chip" [class.chip--active]="selectedSize == 1" (click)="changeSize(1)">S</div>
-        <div class="chip" [class.chip--active]="selectedSize == 2" (click)="changeSize(2)">M</div>
-        <div class="chip" [class.chip--active]="selectedSize == 3" (click)="changeSize(3)">L</div>
-        <div class="chip" [class.chip--active]="selectedSize == 4" (click)="changeSize(4)">XL</div>
+    <section class="item-section item-section--qty" *ngIf="hayStock && !isGuestUser">
+      <h2>Cantidad</h2>
+      <div class="qty-control" aria-label="Cantidad">
+        <button type="button" class="qty-control__btn" (click)="decrementar()" [disabled]="cantidad <= 1" aria-label="Menos">−</button>
+        <span class="qty-control__value">{{ cantidad }}</span>
+        <button type="button" class="qty-control__btn" (click)="incrementar()" [disabled]="cantidad >= stockDisponible" aria-label="Más">+</button>
       </div>
+      <p class="qty-hint" *ngIf="stockDisponible <= 5">Máximo disponible: {{ stockDisponible }}</p>
+    </section>
 
-      <div class="variation-chips" [class.active]="activeVariation == 'color'">
-        <div class="chip" [class.chip--active]="selectedColor == 1" (click)="changeColor(1)">Negro</div>
-        <div class="chip" [class.chip--active]="selectedColor == 2" (click)="changeColor(2)">Verde</div>
-        <div class="chip" [class.chip--active]="selectedColor == 3" (click)="changeColor(3)">Azul</div>
-      </div>
-    </div> -->
-
-    <!-- Espaciado para el footer -->
-    <div style="height: 100px;"></div>
+    <div class="item-spacer"></div>
   </div>
 
 </ion-content>
 
-<!-- Footer sticky con CTAs -->
-<ion-footer class="ion-no-border item-footer">
+<ng-template #emptyTpl>
+  <ion-content class="item-content">
+    <div class="item-empty">
+      <ion-icon name="cube-outline"></ion-icon>
+      <h2>Producto no encontrado</h2>
+      <p>Vuelve al inicio y elige un producto del catálogo.</p>
+      <ion-button class="btn-primary" (click)="irAHome()">Ir al inicio</ion-button>
+    </div>
+  </ion-content>
+</ng-template>
+
+<ion-footer class="ion-no-border item-footer" *ngIf="producto">
   <div class="item-footer__inner">
-    <ion-button expand="block" class="btn-ghost footer-btn-cart" (click)="agregarAlCarrito()">
+    <ion-button
+      expand="block"
+      fill="outline"
+      class="footer-btn-cart"
+      [disabled]="!hayStock || adding"
+      (click)="agregarAlCarrito()">
       <ion-icon slot="start" name="cart-outline"></ion-icon>
       Al carrito
     </ion-button>
-    <ion-button expand="block" class="btn-buy footer-btn-buy" (click)="comprarAhora()">
+    <ion-button
+      expand="block"
+      class="btn-buy footer-btn-buy"
+      [disabled]="!hayStock || adding"
+      (click)="comprarAhora()">
       Comprar ahora
     </ion-button>
   </div>
+  <p class="item-footer__guest" *ngIf="isGuestUser">Inicia sesión para agregar al carrito</p>
 </ion-footer>

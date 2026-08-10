@@ -1,8 +1,12 @@
 .prods-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 26px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .prods-stat {
@@ -232,7 +236,59 @@
 
   &::-webkit-scrollbar { display: none; }
 
-  &--stock { margin-bottom: 18px; }
+  &--stock { margin-bottom: 12px; }
+}
+
+.flag-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 18px;
+}
+
+.flag-toggle {
+  --background: var(--ds-bg-elevated);
+  --border-radius: 14px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --inner-padding-end: 0;
+  border: 1px solid var(--ds-border);
+  border-radius: 14px;
+
+  ion-label {
+    strong {
+      display: block;
+      font-size: 13px;
+      color: var(--ds-text-1);
+    }
+
+    p {
+      margin: 2px 0 0;
+      font-size: 11px;
+      color: var(--ds-text-2);
+      white-space: normal;
+    }
+  }
+}
+
+.flag-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+
+  &--destacado {
+    color: var(--ds-price);
+    background: rgba(255, 193, 7, 0.12);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+  }
+
+  &--vendido {
+    color: var(--ds-accent);
+    background: var(--ds-accent-tint);
+    border: 1px solid var(--ds-border-accent);
+  }
 }
 
 .chip {
@@ -318,6 +374,13 @@
     }
   }
 
+  &__flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 4px 0 6px;
+  }
+
   &__badge {
     flex-shrink: 0;
     font-size: 10px;
@@ -372,6 +435,7 @@
   &__price-row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
     margin-top: 8px;
     flex-wrap: wrap;
@@ -397,6 +461,13 @@
       border: 1px solid var(--ds-border);
       border-radius: 999px;
       padding: 3px 8px;
+    }
+
+    .meta-flag {
+      color: var(--ds-price);
+      font-weight: 700;
+      border-color: rgba(255, 193, 7, 0.35);
+      background: rgba(255, 193, 7, 0.12);
     }
   }
 

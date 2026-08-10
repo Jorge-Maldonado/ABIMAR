@@ -98,6 +98,16 @@
             <ion-icon name="receipt-outline" slot="start"></ion-icon>
             <ion-label>Pedidos</ion-label>
           </ion-item>
+
+          <ion-item
+            button
+            detail="false"
+            class="menu-item"
+            [class.menu-item--active]="selected === 'contactos'"
+            (click)="go('contactos', $event)">
+            <ion-icon name="mail-outline" slot="start"></ion-icon>
+            <ion-label>Mensajes</ion-label>
+          </ion-item>
         </ion-list>
 
         <div class="menu-footer">

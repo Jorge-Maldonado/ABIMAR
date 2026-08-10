@@ -47,23 +47,7 @@
   }
 }
 
-.cat-cart-btn {
-  position: relative;
-  --color: var(--ds-text-1);
-}
-
-.cart-qty-badge {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  min-width: 16px;
-  height: 16px;
-  font-size: 10px;
-  font-weight: 700;
-  --background: var(--ds-price);
-  --color: #111;
-  padding: 0 4px;
-}
+// cart-pay-chip: global.scss
 
 .ds-loading {
   text-align: center;

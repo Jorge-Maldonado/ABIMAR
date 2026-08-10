@@ -6,6 +6,7 @@
       <h1>Dashboard</h1>
       <p class="dash-hero__sub">Resumen operativo de la tienda</p>
     </div>
+    <span class="dash-badge dash-badge--live" *ngIf="!usingMock && data">Datos en vivo</span>
     <span class="dash-badge" *ngIf="usingMock">Datos de demo</span>
   </header>
 
@@ -22,7 +23,7 @@
     <article class="kpi">
       <span class="kpi__label">Pedidos</span>
       <strong class="kpi__value">{{ data.pedidos.total }}</strong>
-      <small>{{ data.pedidos.pagados }} pagados · {{ data.pedidos.pendientes }} pend.</small>
+      <small>{{ data.pedidos.pagados }} pag. · {{ data.pedidos.entregados }} ent. · {{ data.pedidos.pendientes }} pend.</small>
     </article>
 
     <article class="kpi">
@@ -52,6 +53,10 @@
         <span class="status-chip__n">{{ data.pedidos.pagados }}</span>
         <span>Pagados</span>
       </button>
+      <button type="button" class="status-chip status-chip--accent" routerLink="/admin-home/pedidos">
+        <span class="status-chip__n">{{ data.pedidos.entregados }}</span>
+        <span>Entregados</span>
+      </button>
       <button type="button" class="status-chip status-chip--bad" routerLink="/admin-home/pedidos">
         <span class="status-chip__n">{{ data.pedidos.cancelados }}</span>
         <span>Cancelados</span>
@@ -75,7 +80,7 @@
           </div>
         </div>
         <span class="bars__label">{{ d.label }}</span>
-        <span class="bars__val">{{ d.totalBs / 1000 | number:'1.1-1' }}k</span>
+        <span class="bars__val">{{ formatBarValue(d.totalBs) }}</span>
       </div>
     </div>
   </section>
@@ -125,7 +130,7 @@
       <h2>Top productos</h2>
       <ion-button fill="clear" size="small" routerLink="/admin-home/productos">Ver todos</ion-button>
     </div>
-    <div class="top-list">
+    <div class="top-list" *ngIf="data.topProductos.length > 0; else topEmpty">
       <div class="top-item" *ngFor="let p of data.topProductos; let i = index">
         <span class="top-item__rank">{{ i + 1 }}</span>
         <div class="top-item__info">
@@ -135,6 +140,9 @@
         <strong class="top-item__amount">Bs {{ p.montoBs | number:'1.0-0' }}</strong>
       </div>
     </div>
+    <ng-template #topEmpty>
+      <p class="panel-empty">Aún no hay ventas pagadas para ranking.</p>
+    </ng-template>
   </section>
 
   <!-- Fase 1: pedidos recientes -->
@@ -143,10 +151,10 @@
       <h2>Pedidos recientes</h2>
       <ion-button fill="clear" size="small" routerLink="/admin-home/pedidos">Ver todos</ion-button>
     </div>
-    <div class="recent-list">
+    <div class="recent-list" *ngIf="data.pedidosRecientes.length > 0; else recentEmpty">
       <a class="recent" *ngFor="let p of data.pedidosRecientes" routerLink="/admin-home/pedidos">
         <div class="recent__left">
-          <strong>#{{ p.idpedido }}</strong>
+          <strong>{{ p.codigo }}</strong>
           <span>{{ p.clienteNombre }}</span>
           <small>{{ p.fecha | date:'dd/MM HH:mm' }} · {{ getMetodoPago(p.tipoPagoId) }}</small>
         </div>
@@ -156,6 +164,9 @@
         </div>
       </a>
     </div>
+    <ng-template #recentEmpty>
+      <p class="panel-empty">Sin pedidos registrados todavía.</p>
+    </ng-template>
   </section>
 
   <!-- Accesos rápidos -->

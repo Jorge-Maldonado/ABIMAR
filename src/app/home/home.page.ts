@@ -41,8 +41,6 @@ export class HomePage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.usuarioEmail = localStorage.getItem('usuario') || 'Invitado';
-
     this.util.getShowIcons().subscribe(s => {
       this.showIcons = s;
     });
@@ -54,9 +52,6 @@ export class HomePage implements OnInit {
     this.favoritesService.items$.subscribe(items => {
       this.favoritos = items || [];
     });
-
-    this.loadCategorias();
-    this.loadProductos();
   }
 
   get displayName(): string {
@@ -85,6 +80,10 @@ export class HomePage implements OnInit {
     this.usuarioEmail = localStorage.getItem('usuario') || 'Invitado';
     this.util.setMenuState(true);
     this.menu.enable(true, 'mainMenu');
+    this.favoritesService.syncFromSession();
+    // Ionic reutiliza la página: recargar catálogo al entrar (login, guest, back)
+    this.loadCategorias();
+    this.loadProductos();
   }
 
   async logout() {
@@ -97,7 +96,9 @@ export class HomePage implements OnInit {
           text: 'Salir',
           handler: () => {
             localStorage.removeItem('usuario');
+            localStorage.removeItem('personal');
             localStorage.removeItem('guestAccess');
+            this.favoritesService.clearSession();
             this.router.navigate(['/login']);
           }
         }
@@ -136,10 +137,12 @@ export class HomePage implements OnInit {
               .filter(p => Number(p.status) === 1)
               .map((p) => ({
                 ...p,
+                destacado: this.readFlag(p, 'destacado'),
+                masVendido: this.readFlag(p, 'masVendido', 'masvendido', 'mas_vendido'),
                 imagen: this.normalizeImagePath(p.imagen),
               }));
-            this.destacados = this.productos.slice(0, 5);
-            this.masVendidos = this.productos.slice(5, 10);
+            this.destacados = this.productos.filter(p => p.destacado);
+            this.masVendidos = this.productos.filter(p => p.masVendido);
           } else {
             this.productos = [];
             this.destacados = [];
@@ -163,6 +166,12 @@ export class HomePage implements OnInit {
   }
 
   async agregarFavorito(producto: any) {
+    if (this.isGuestUser) {
+      await this.mostrarToast('Inicia sesión para usar favoritos', 'warning');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     const activo = this.favoritesService.toggle(producto);
     if (activo) {
       await this.mostrarToast(`"${producto.nombre}" agregado a favoritos`, 'warning');
@@ -179,6 +188,30 @@ export class HomePage implements OnInit {
     if (s.startsWith('/assets/')) return s.substring(1);
     const onlyName = s.replace(/^.*[\\/]/, '');
     return `assets/products/${onlyName}`;
+  }
+
+  /** Normaliza boolean / 0|1 / "true" del backend. */
+  private isFlagOn(val: any): boolean {
+    if (val === true || val === 1 || val === '1') return true;
+    if (typeof val === 'string' && val.trim().toLowerCase() === 'true') return true;
+    return false;
+  }
+
+  /** Lee un flag desde posibles alias JSON (camelCase / lowercase / snake). */
+  private readFlag(obj: any, ...keys: string[]): boolean {
+    if (!obj) return false;
+    for (const key of keys) {
+      if (obj[key] !== undefined && obj[key] !== null) {
+        return this.isFlagOn(obj[key]);
+      }
+    }
+    const lowerKeys = keys.map(k => k.toLowerCase());
+    for (const k of Object.keys(obj)) {
+      if (lowerKeys.includes(k.toLowerCase())) {
+        return this.isFlagOn(obj[k]);
+      }
+    }
+    return false;
   }
 
   get productosFiltrados() {
@@ -201,15 +234,23 @@ export class HomePage implements OnInit {
   // 🛒 CORRECTO (REACTIVO)
   // ===============================
   async agregarCarrito(producto: any) {
+    if (this.isGuestUser) {
+      await this.mostrarToast('Inicia sesión para comprar', 'warning');
+      this.router.navigate(['/login']);
+      return;
+    }
 
-    this.cartService.add(producto); // 🔥 YA NO USAR localStorage
-
-    await this.mostrarToast(`"${producto.nombre}" agregado al carrito 🛒`, 'warning');
+    this.cartService.add(producto);
+    await this.mostrarToast(`"${producto.nombre}" agregado al carrito`, 'warning');
   }
 
   comprarProducto(producto: any) {
-    this.mostrarToast(`Iniciando compra de "${producto.nombre}" 💳`, 'success');
+    // Invitado y usuario: ver detalle; la compra se exige al agregar al carrito
     this.verDetalle(producto);
+  }
+
+  irALogin() {
+    this.router.navigate(['/login']);
   }
 
   async mostrarToast(mensaje: string, color: string) {

@@ -15,6 +15,11 @@ PIN 6 digitos : 111111
 
 contraseña paypal
 NzJ2FafR@68zTLk
+Abc#12Ab
+
+
+clientAbimar@personal.com
+R+:P2xpL
 
 usuario
 m61d0n6d0@gmail.com

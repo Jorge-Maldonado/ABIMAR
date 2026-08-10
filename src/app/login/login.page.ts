@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, MenuController, AlertController } from '@ionic/angular';
-import { UtilService } from '../util.service';
+import { NavController, MenuController, ToastController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
-import { LoaderService } from '../services/ui/loader.service'; // ✅ IMPORTANTE
+import { finalize } from 'rxjs/operators';
+import { UtilService } from '../util.service';
+import { LoaderService } from '../services/ui/loader.service';
+import { ApiService } from '../services/api.service';
+import { FavoritesService } from '../services/favorites.service';
 
 @Component({
   selector: 'app-login',
@@ -13,21 +16,25 @@ export class LoginPage implements OnInit {
 
   email = '';
   password = '';
-  showPassword: boolean = false;
-  isGuest: boolean = false;
-  errorMessage: string = '';
-  loading: boolean = false; // ✅ control UI
+  showPassword = false;
+  errorMessage = '';
+  loading = false;
+  submitted = false;
+
+  private readonly adminEmail = 'jorge.maldonado@hotmail.com';
 
   constructor(
     private util: UtilService,
     private navCtrl: NavController,
     private menu: MenuController,
-    private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
     private http: HttpClient,
-    private loader: LoaderService // ✅ INYECCIÓN
-  ) { }
+    private loader: LoaderService,
+    private api: ApiService<any>,
+    private favorites: FavoritesService
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   ionViewWillEnter() {
     this.menu.enable(false, 'mainMenu');
@@ -39,118 +46,110 @@ export class LoginPage implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
+  get emailInvalid(): boolean {
+    if (!this.submitted) return false;
+    const value = this.email.trim();
+    if (!value) return true;
+    return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  get passwordInvalid(): boolean {
+    return this.submitted && !this.password.trim();
+  }
+
   async login() {
+    if (this.loading) return;
 
-    if (this.loading) return; // 🚫 evita doble click
+    this.submitted = true;
+    this.errorMessage = '';
 
-    if (!this.email.trim() || !this.password.trim()) {
-      this.showAlert('Error', 'Ingresa correo y contraseña');
+    if (this.emailInvalid || this.passwordInvalid) {
+      this.errorMessage = 'Revisa tu correo y contraseña.';
       return;
     }
 
     const payload = {
-      emailUser: this.email,
+      emailUser: this.email.trim(),
       password: this.password
     };
 
-    try {
-      this.loading = true;
+    this.loading = true;
+    await this.loader.show('Iniciando sesión...');
 
-      await this.loader.show('Iniciando sesión...'); // 🔥 LOADER ON
+    this.http.post(
+      this.api.url('login'),
+      payload,
+      {
+        observe: 'response',
+        responseType: 'text'
+      }
+    ).pipe(
+      finalize(() => {
+        this.loading = false;
+      })
+    ).subscribe({
+      next: async (response) => {
+        await this.loader.hide();
 
-      this.http.post(
-        'https://backend-abimar.onrender.com/abimar/core/api/login',
-        payload,
-        {
-          observe: 'response',
-          responseType: 'text'
+        if (response.status !== 200) {
+          this.errorMessage = 'No se pudo iniciar sesión.';
+          return;
         }
-      ).subscribe(
 
-        async (response: any) => {
+        const body = response.body || '';
+        const personalId = body.split(',')[1]?.trim() || '';
+        const isAdmin = this.email.trim().toLowerCase() === this.adminEmail;
 
-          if (response.status === 200) {
+        this.util.setGuest(false);
+        this.util.setShowIcons(true);
 
-            const body = response.body; // "Login correcto, 1"
-            const parts = body.split(',');
-            const personalId = parts[1]?.trim(); // "1"
-
-            localStorage.setItem('usuario', this.email);
-            localStorage.setItem('guestAccess', 'false');
-            localStorage.setItem('personal', personalId);
-
-            this.isGuest = false;
-            this.util.setGuest(false);
-            this.util.setShowIcons(true);
-
-            await this.loader.hide(); // 🔥 IMPORTANTE antes del alert
-
-            if (this.email === 'jorge.maldonado@hotmail.com') {
-              // Admin: menú cliente off; adminMenu lo activa AdminHomePage
-              this.util.setMenuState(false);
-              await this.menu.enable(false, 'mainMenu');
-
-              const alert = await this.alertCtrl.create({
-                header: '¡Bienvenido Admin!',
-                message: 'Serás redirigido al panel de administración.',
-                backdropDismiss: false,
-                buttons: [{
-                  text: 'Aceptar',
-                  handler: () => this.navCtrl.navigateRoot('/admin-home', { animationDirection: 'forward' })
-                }]
-              });
-
-              await alert.present();
-
-            } else {
-              this.util.setMenuState(true);
-              await this.menu.enable(true, 'mainMenu');
-
-              const alert = await this.alertCtrl.create({
-                header: '¡Login exitoso!',
-                message: 'Serás redirigido al inicio.',
-                backdropDismiss: false,
-                buttons: [{
-                  text: 'Aceptar',
-                  handler: () => this.navCtrl.navigateRoot('/home', { animationDirection: 'forward' })
-                }]
-              });
-
-              await alert.present();
-            }
-          }
-        },
-
-        async (error) => {
-
-          await this.loader.hide(); // 🔥 SIEMPRE cerrar loader
-
-          if (error.status === 401) {
-            this.showAlert('Error', 'Usuario o contraseña incorrectos');
-          } else {
-            this.showAlert('Error', 'No se pudo conectar con el servidor');
-          }
-        },
-
-        () => {
-          this.loading = false; // ✅ reset UI
+        if (isAdmin) {
+          localStorage.setItem('adminUsuario', this.email.trim());
+          localStorage.setItem('adminPersonal', personalId);
+          this.util.setMenuState(false);
+          await this.menu.enable(false, 'mainMenu');
+          await this.toast('¡Bienvenido Admin!');
+          this.navCtrl.navigateRoot('/admin-home', { animationDirection: 'forward' });
+          return;
         }
-      );
 
-    } catch (err) {
-      await this.loader.hide();
-      this.loading = false;
-      this.showAlert('Error', 'Error inesperado');
-    }
+        localStorage.setItem('usuario', this.email.trim());
+        localStorage.setItem('guestAccess', 'false');
+        localStorage.setItem('personal', personalId);
+        this.util.setMenuState(true);
+        await this.menu.enable(true, 'mainMenu');
+        this.favorites.setOwner(this.email.trim());
+        await this.toast('Sesión iniciada');
+        this.navCtrl.navigateRoot('/home', { animationDirection: 'forward' });
+      },
+      error: async (error) => {
+        await this.loader.hide();
+        if (error?.status === 401) {
+          this.errorMessage = 'Usuario o contraseña incorrectos.';
+        } else {
+          this.errorMessage = 'No se pudo conectar con el servidor.';
+        }
+      }
+    });
   }
 
-  private async showAlert(header: string, message: string) {
-    const alert = await this.alertCtrl.create({
-      header,
+  async continueAsGuest() {
+    localStorage.setItem('guestAccess', 'true');
+    this.util.setGuest(true);
+    this.util.setMenuState(true);
+    this.util.setShowIcons(false);
+    this.favorites.clearSession();
+    await this.menu.enable(true, 'mainMenu');
+    this.navCtrl.navigateRoot('/home', { animationDirection: 'forward' });
+  }
+
+  private async toast(message: string) {
+    const t = await this.toastCtrl.create({
       message,
-      backdropDismiss: true,
-      buttons: ['Aceptar']
+      duration: 1800,
+      color: 'dark',
+      position: 'bottom'
     });
-    await alert.present();
+    await t.present();
   }
 }

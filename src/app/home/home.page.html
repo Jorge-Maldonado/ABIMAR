@@ -9,10 +9,17 @@
     </ion-title>
 
     <ion-buttons slot="end">
-      <ion-button fill="clear" class="home-cart-btn" *ngIf="!isGuestUser" routerLink="/my-cart">
-        <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
-        <ion-badge class="cart-qty-badge" *ngIf="cartCount > 0">{{ cartCount }}</ion-badge>
-      </ion-button>
+      <button
+        type="button"
+        class="cart-pay-chip"
+        *ngIf="!isGuestUser"
+        [class.cart-pay-chip--active]="cartCount > 0"
+        routerLink="/my-cart"
+        [attr.aria-label]="cartCount > 0 ? 'Ir a pagar, ' + cartCount + ' productos' : 'Carrito vacío'">
+        <ion-icon [name]="cartCount > 0 ? 'cart' : 'cart-outline'"></ion-icon>
+        <span class="cart-pay-chip__count" *ngIf="cartCount > 0">{{ cartCount }}</span>
+        <span class="cart-pay-chip__label" *ngIf="cartCount > 0">Pagar</span>
+      </button>
 
       <ion-button fill="clear" *ngIf="!isGuestUser" (click)="logout()" class="logout-btn">
         <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
@@ -31,6 +38,14 @@
       <p class="home-intro__hello" *ngIf="isGuestUser">Explora la tienda</p>
       <h1 class="home-intro__brand">Abimar<span>.</span></h1>
       <p class="home-intro__tag">Tecnología y accesorios con envío en Santa Cruz</p>
+
+      <div class="home-guest-banner" *ngIf="isGuestUser">
+        <p>Estás como invitado. Puedes ver productos; para comprar inicia sesión.</p>
+        <button type="button" class="home-guest-banner__btn" (click)="irALogin()">
+          Iniciar sesión
+        </button>
+      </div>
+
       <button type="button" class="home-intro__cta" (click)="scrollToSection('sec-destacados')" *ngIf="destacados.length > 0">
         Ver destacados
         <ion-icon name="arrow-down-outline"></ion-icon>

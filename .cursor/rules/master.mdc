@@ -1,0 +1,28 @@
+---
+description: Enrutador del AI Workspace ABIMAR. Activa .ai/MASTER.md en cada tarea.
+alwaysApply: true
+---
+
+Este proyecto se trabaja siguiendo `.ai/MASTER.md`. No empieces por el código.
+
+Clasifica la petición por profundidad y declárala en una línea:
+- **Consulta** (sin escribir código): Memory + CodeGraph y responde. No abras MASTER.
+- **Cambio acotado** (ajuste en page/service existente, sin piezas nuevas): Memory + Knowledge + CodeGraph; implementa y valida.
+- **Cambio estructural** (feature, page/service/widget nuevo, refactor o contrato API): abre `.ai/MASTER.md` y sigue los 12 pasos.
+Ante la duda, sube de nivel. Si un acotado exige componente nuevo, reclasifícalo como estructural.
+
+Fuentes (en este orden):
+- Memory MCP — reglas, decisiones y patrones permanentes.
+- `.ai/knowledge/` — documentación estable; índice en su `README.md`.
+- CodeGraph MCP — estructura real del código; úsalo antes de recorrer archivos.
+- `.ai/templates/` — contrato de cada tipo de componente.
+- `.ai/playbooks/` — análisis, implementación, validación, documentación, feature nuevo.
+- `.ai/prompts/CONVENTIONS.md` — contrato del workspace.
+
+No negociable:
+- URLs solo desde `environment.apiBase` / `ApiService.url`. Nunca hosts en Pages.
+- Page → Service → HTTP. Un Service no importa Pages.
+- Antes de crear, verifica con CodeGraph. No inventes repository, BLoC ni datasource.
+- Construye `api → service/state → page → widget → test`. No amplíes deuda de URLs literales.
+
+Detente y pregunta si la solicitud es ambigua, falta información, hay conflicto arquitectónico o el contexto es insuficiente.

@@ -1,5 +1,5 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
+  <ion-toolbar class="payment-toolbar">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/checkout" text=""></ion-back-button>
     </ion-buttons>
@@ -9,53 +9,108 @@
 
 <ion-content class="payment-content">
 
-  <div class="payment-body">
+  <div class="payment-empty" *ngIf="!hasPedido">
+    <ion-icon name="card-outline"></ion-icon>
+    <h2>No hay pedido para pagar</h2>
+    <p>Regresa al checkout o vuelve al inicio para continuar tu compra.</p>
+    <ion-button class="btn-primary" (click)="irACheckout()">Ir al checkout</ion-button>
+    <ion-button fill="clear" class="btn-ghost" (click)="irAHome()">Ir al inicio</ion-button>
+  </div>
 
-    <p class="payment-subtitle">Elige cómo quieres pagar tu pedido</p>
+  <div class="payment-body" *ngIf="hasPedido">
 
-    <div class="payment-total" *ngIf="totalBs > 0">
-      <span>Total a pagar</span>
-      <strong>Bs. {{ totalBs | number:'1.2-2' }}</strong>
-      <small *ngIf="mostrarPayPal">PayPal cobrará ≈ USD {{ totalUsd | number:'1.2-2' }}</small>
+    <div class="payment-amount">
+      <span class="payment-amount__label">Total a pagar</span>
+      <strong class="payment-amount__value">
+        <span>Bs</span> {{ totalBs | number:'1.2-2' }}
+      </strong>
+      <span class="payment-amount__pedido" *ngIf="codigoPedido || pedidoId">
+        Pedido {{ codigoPedido || ('#' + pedidoId) }}
+      </span>
+      <small class="payment-amount__hint">
+        PayPal cobrará ≈ USD {{ totalUsd | number:'1.2-2' }}
+        <span>(tasa {{ tasaCambio }} Bs = 1 USD)</span>
+      </small>
     </div>
 
-    <!-- Spinner mientras carga PayPal -->
-    <div class="payment-loading" *ngIf="mostrarPayPal && !paypalCargado">
-      <ion-spinner name="crescent"></ion-spinner>
-      <span>Cargando PayPal…</span>
-    </div>
+    <p class="payment-subtitle">Elige cómo quieres pagar</p>
 
-    <!-- Métodos de pago -->
-    <div class="payment-methods">
+    <div class="payment-methods" role="list">
 
-      <div class="payment-method" (click)="pagarConPayPal()">
+      <button
+        type="button"
+        class="payment-method"
+        [class.payment-method--active]="metodoSeleccionado === 'paypal'"
+        [disabled]="actualizando"
+        (click)="seleccionarPayPal()"
+        role="listitem">
         <div class="payment-method__icon payment-method__icon--paypal">
-          <img src="assets/paypal.png" alt="PayPal" />
+          <img src="assets/paypal.png" alt="" />
         </div>
         <div class="payment-method__info">
-          <h3>PayPal</h3>
-          <p>Paga con tu cuenta PayPal de forma segura</p>
+          <div class="payment-method__title-row">
+            <h3>PayPal</h3>
+            <span class="payment-chip payment-chip--soft">Sandbox</span>
+          </div>
+          <p>Pago inmediato con tu cuenta PayPal</p>
         </div>
-        <ion-icon name="chevron-forward-outline" class="payment-method__arrow"></ion-icon>
-      </div>
+        <ion-icon
+          [name]="metodoSeleccionado === 'paypal' ? 'checkmark-circle' : 'chevron-forward-outline'"
+          class="payment-method__arrow"
+          [class.payment-method__arrow--on]="metodoSeleccionado === 'paypal'">
+        </ion-icon>
+      </button>
 
-      <div class="payment-method" (click)="pagarConQR()">
+      <button
+        type="button"
+        class="payment-method"
+        [class.payment-method--active]="metodoSeleccionado === 'qr'"
+        [disabled]="actualizando"
+        (click)="pagarConQR()"
+        role="listitem">
         <div class="payment-method__icon payment-method__icon--qr">
-          <img src="assets/qr.png" alt="QR" />
+          <img src="assets/qr.png" alt="" />
         </div>
         <div class="payment-method__info">
-          <h3>Pago con QR</h3>
-          <p>Escanea con tu app bancaria y paga al instante</p>
+          <div class="payment-method__title-row">
+            <h3>Pago con QR</h3>
+            <span class="payment-chip">Local</span>
+          </div>
+          <p>Escanea con tu app bancaria en bolivianos</p>
         </div>
         <ion-icon name="chevron-forward-outline" class="payment-method__arrow"></ion-icon>
-      </div>
+      </button>
 
     </div>
 
-    <!-- Contenedor botón PayPal -->
-    <div id="paypal-button-container" *ngIf="mostrarPayPal" class="paypal-container"></div>
+    <div class="payment-paypal-panel" *ngIf="mostrarPayPal">
+      <div class="payment-paypal-panel__head">
+        <h2>Completa el pago con PayPal</h2>
+        <p>Confirma el monto en USD. El pedido se marcará como pagado al finalizar.</p>
+      </div>
 
-    <!-- Badge de seguridad -->
+      <div class="payment-loading" *ngIf="!paypalCargado && !paypalError">
+        <ion-spinner name="crescent"></ion-spinner>
+        <span>Cargando PayPal…</span>
+      </div>
+
+      <div class="payment-paypal-error" *ngIf="paypalError">
+        <ion-icon name="warning-outline"></ion-icon>
+        <p>No se pudo cargar PayPal. Usa pago con QR o reintenta más tarde.</p>
+      </div>
+
+      <div
+        id="paypal-button-container"
+        class="paypal-container"
+        *ngIf="paypalCargado && !paypalError">
+      </div>
+    </div>
+
+    <div class="payment-note">
+      <ion-icon name="shield-checkmark-outline"></ion-icon>
+      <p>Tus datos de pago no se almacenan en Abimar Shop. Elige el método que prefieras para este pedido.</p>
+    </div>
+
     <div class="payment-security">
       <ion-icon name="lock-closed-outline"></ion-icon>
       <span>Pagos encriptados y seguros</span>

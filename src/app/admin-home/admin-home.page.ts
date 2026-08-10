@@ -53,6 +53,7 @@ export class AdminHomePage implements OnDestroy {
     else if (path.includes('/categorias')) this.selected = 'categorias';
     else if (path.includes('/productos')) this.selected = 'productos';
     else if (path.includes('/pedidos')) this.selected = 'pedidos';
+    else if (path.includes('/contactos')) this.selected = 'contactos';
     else this.selected = 'dashboard';
   }
 
@@ -75,7 +76,9 @@ export class AdminHomePage implements OnDestroy {
   }
 
   async logout() {
-    localStorage.clear();
+    // Solo sesión admin: no borrar carrito ni personal del cliente
+    localStorage.removeItem('adminUsuario');
+    localStorage.removeItem('adminPersonal');
     await this.menu.close(AdminHomePage.MENU_ID);
     await this.menu.enable(false, AdminHomePage.MENU_ID);
     this.util.setMenuState(false);

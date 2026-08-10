@@ -41,7 +41,7 @@
 
 .logout-btn ion-icon { color: var(--ds-danger) !important; }
 
-.home-cart-btn { position: relative; }
+// cart-pay-chip styles live in global.scss
 
 // ─── Intro / brand block ─────────────────────────────────────
 .home-intro {
@@ -97,6 +97,39 @@
       transform: scale(0.97);
       background: rgba(0, 229, 255, 0.2);
     }
+  }
+}
+
+.home-guest-banner {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--ds-border-accent);
+  background: var(--ds-accent-tint);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+
+  p {
+    margin: 0;
+    flex: 1 1 180px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--ds-text-2);
+  }
+
+  &__btn {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--ds-accent);
+    color: #000;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
   }
 }
 

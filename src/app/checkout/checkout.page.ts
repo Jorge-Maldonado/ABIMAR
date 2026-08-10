@@ -85,8 +85,10 @@ export class CheckoutPage implements OnInit {
 
     this.registrando = true;
 
+    const codigoPedido = this.pedidoService.generarCodigoPedido();
+
     const payload = {
-      referenciaCobro: 'Compra App',
+      referenciaCobro: codigoPedido,
       idTransaccionPaypal: '',
       datosPaypal: '',
       personal,
@@ -107,6 +109,10 @@ export class CheckoutPage implements OnInit {
           return;
         }
 
+        const codigo =
+          this.pedidoService.codigoPublico(resp?.referenciaCobro || codigoPedido) ||
+          codigoPedido;
+
         const detalles$ = this.carrito.map(item => {
           const precio = Number(item.precio) || 0;
           const cantidad = Number(item.cantidad) || 0;
@@ -122,13 +128,14 @@ export class CheckoutPage implements OnInit {
         forkJoin(detalles$).subscribe({
           next: async () => {
             localStorage.setItem('pedidoId', String(pedidoId));
+            localStorage.setItem('codigoPedido', codigo);
             localStorage.setItem('totalPedido', monto.toFixed(2));
 
             this.registrando = false;
 
             const alert = await this.alertCtrl.create({
               header: 'Pedido registrado',
-              message: `Tu pedido #${pedidoId} por Bs. ${monto.toFixed(2)} fue creado correctamente.`,
+              message: `Tu pedido ${codigo} por Bs. ${monto.toFixed(2)} fue creado correctamente.`,
               backdropDismiss: false,
               buttons: [{
                 text: 'Continuar al pago',
@@ -136,6 +143,7 @@ export class CheckoutPage implements OnInit {
                   this.router.navigate(['/payment-methods'], {
                     queryParams: {
                       pedidoId,
+                      codigo,
                       total: monto.toFixed(2)
                     }
                   });

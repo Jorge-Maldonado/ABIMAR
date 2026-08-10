@@ -1,7 +1,7 @@
 <ion-header class="ion-no-border">
   <ion-toolbar class="toolbar-qr">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/payment-methods"></ion-back-button>
+      <ion-back-button defaultHref="/payment-methods" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>Pago con QR</ion-title>
   </ion-toolbar>
@@ -9,32 +9,82 @@
 
 <ion-content class="qr-content">
 
-  <div *ngIf="!cargando; else cargandoTpl" class="qr-wrapper">
-
-    <h2 class="qr-title">Escanea el código QR</h2>
-    <p class="qr-subtext">Usa tu app bancaria para pagar el monto total</p>
-
-    <div class="qr-card">
-      <img src="assets/qr/qr.jpg" alt="QR de pago" class="qr-image" />
-    </div>
-
-    <h3 class="qr-total">
-      Total: {{ total | number: '1.2-2' }} Bs
-    </h3>
-
-    <ion-button expand="block" class="btn-buy qr-btn" (click)="confirmarPago()">
-      Confirmar Pago
-      <ion-icon slot="end" name="checkmark-outline"></ion-icon>
-    </ion-button>
-
+  <div class="qr-loading" *ngIf="cargando">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Preparando pago QR…</p>
   </div>
 
-  <!-- Loader -->
-  <ng-template #cargandoTpl>
-    <div class="qr-loading">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Generando código QR...</p>
+  <div class="qr-empty" *ngIf="!cargando && !hasPedido">
+    <ion-icon name="qr-code-outline"></ion-icon>
+    <h2>No hay pedido para pagar</h2>
+    <p>Vuelve al checkout o elige otro método de pago.</p>
+    <ion-button class="btn-primary" (click)="irAHome()">Ir al inicio</ion-button>
+  </div>
+
+  <div class="qr-body" *ngIf="!cargando && hasPedido">
+
+    <div class="qr-amount">
+      <span class="qr-amount__label">Total a pagar</span>
+      <strong class="qr-amount__value">
+        <span>Bs</span> {{ total | number:'1.2-2' }}
+      </strong>
+      <button type="button" class="qr-amount__copy" (click)="copiarMonto()">
+        <ion-icon name="copy-outline"></ion-icon>
+        Copiar monto
+      </button>
+      <span class="qr-amount__pedido" *ngIf="codigoPedido || pedidoId">
+        Pedido {{ codigoPedido || ('#' + pedidoId) }}
+      </span>
     </div>
-  </ng-template>
+
+    <div class="qr-card">
+      <div class="qr-card__frame">
+        <img
+          class="qr-card__img"
+          [src]="qrImage"
+          alt="Código QR de pago Abimar Shop"
+          (error)="onQrError($event)" />
+      </div>
+      <p class="qr-card__hint">Escanea con tu app bancaria</p>
+      <button type="button" class="qr-download" (click)="descargarQR()">
+        <ion-icon name="download-outline"></ion-icon>
+        Descargar imagen QR
+      </button>
+    </div>
+
+    <section class="qr-steps">
+      <h2>Cómo pagar</h2>
+      <ol>
+        <li *ngFor="let paso of pasos; let i = index">
+          <span class="qr-steps__num">{{ i + 1 }}</span>
+          <span>{{ paso }}</span>
+        </li>
+      </ol>
+    </section>
+
+    <div class="qr-note">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <p>Paga el monto exacto. La confirmación puede tardar unos minutos hasta que se verifique el depósito.</p>
+    </div>
+
+    <button type="button" class="qr-link" (click)="volverMetodos()">
+      Elegir otro método de pago
+    </button>
+
+    <div class="qr-spacer"></div>
+  </div>
 
 </ion-content>
+
+<ion-footer class="ion-no-border qr-footer" *ngIf="!cargando && hasPedido">
+  <div class="qr-footer__inner">
+    <ion-button
+      expand="block"
+      class="btn-buy"
+      [disabled]="verificando"
+      (click)="confirmarPago()">
+      <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+      Ya pagué — Verificar
+    </ion-button>
+  </div>
+</ion-footer>

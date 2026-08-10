@@ -1,115 +1,226 @@
-.welcome-content { --background: var(--ds-bg-base); }
+.welcome-content {
+  --background: var(--ds-bg-base);
+}
 
-// ─── Background effects ───────────────────────────────────────
+// ─── Background ───────────────────────────────────────────────
 .welcome-bg {
-  position:  absolute;
-  inset:     0;
-  overflow:  hidden;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
   pointer-events: none;
-  z-index:   0;
+  z-index: 0;
 
   &__glow {
-    position:      absolute;
+    position: absolute;
     border-radius: 50%;
-    filter:        blur(80px);
-    opacity:       0.18;
+    filter: blur(90px);
+    opacity: 0.22;
   }
+
   &__glow--1 {
-    width:      300px;
-    height:     300px;
+    width: 320px;
+    height: 320px;
     background: var(--ds-accent);
-    top:        -80px;
-    right:      -80px;
+    top: -100px;
+    right: -90px;
+    animation: welcome-pulse 7s ease-in-out infinite;
   }
+
   &__glow--2 {
-    width:      250px;
-    height:     250px;
+    width: 260px;
+    height: 260px;
     background: var(--ds-price);
-    bottom:     -60px;
-    left:       -60px;
+    bottom: -80px;
+    left: -70px;
+    opacity: 0.14;
+    animation: welcome-pulse 9s ease-in-out infinite reverse;
+  }
+
+  &__grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 20%, transparent 75%);
   }
 }
 
-// ─── Hero image ───────────────────────────────────────────────
-.welcome-hero {
-  position:   relative;
-  z-index:    1;
-  text-align: center;
-  padding-top: calc(env(safe-area-inset-top, 16px) + 24px);
-
-  &__img {
-    width:      min(280px, 75vw);
-    height:     auto;
-    display:    inline-block;
-    filter:     drop-shadow(0 24px 40px rgba(0, 229, 255, 0.15));
-  }
-}
-
-// ─── Body ─────────────────────────────────────────────────────
-.welcome-body {
-  position:   relative;
-  z-index:    1;
-  padding:    0 28px calc(env(safe-area-inset-bottom, 16px) + 32px);
+// ─── Stage ────────────────────────────────────────────────────
+.welcome-stage {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding:
+    calc(env(safe-area-inset-top, 0) + 36px)
+    28px
+    calc(env(safe-area-inset-bottom, 0) + 28px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
 }
 
 // ─── Brand ────────────────────────────────────────────────────
 .welcome-brand {
-  text-align:  center;
-  margin-bottom: 40px;
+  text-align: center;
 
-  &__tag {
-    display:       block;
-    font-size:     13px;
-    color:         var(--ds-text-3);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 6px;
+  &__mark {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    margin-bottom: 14px;
+    filter: drop-shadow(0 0 20px rgba(var(--ds-accent-rgb), 0.4));
   }
 
   &__name {
-    font-family:   var(--ds-font-heading);
-    font-size:     48px;
-    font-weight:   800;
-    color:         var(--ds-text-1);
-    line-height:   1;
-    margin:        0 0 10px;
+    margin: 0 0 10px;
+    font-family: var(--ds-font-heading);
+    font-size: clamp(30px, 8vw, 36px);
+    font-weight: 800;
     letter-spacing: -0.03em;
-
-    // Cyan highlight on last letter
-    &::after {
-      content:    '.';
-      color:      var(--ds-accent);
-    }
+    line-height: 1.05;
+    color: var(--ds-text-1);
   }
 
-  &__subtitle {
-    font-size:   15px;
-    color:       var(--ds-text-2);
-    margin:      0;
-    line-height: 1.5;
+  &__headline {
+    margin: 0 0 8px;
+    font-family: var(--ds-font-heading);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ds-accent);
+    letter-spacing: -0.01em;
+  }
+
+  &__sub {
+    margin: 0 auto;
+    max-width: 280px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ds-text-2);
   }
 }
 
-// ─── Actions ─────────────────────────────────────────────────
+// ─── Product visual ───────────────────────────────────────────
+.welcome-visual {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 4px;
+
+  &__img {
+    width: min(300px, 82vw);
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 28px 48px rgba(0, 229, 255, 0.18));
+    animation: welcome-float 5.5s ease-in-out infinite;
+  }
+}
+
+// ─── Actions ──────────────────────────────────────────────────
 .welcome-actions {
-  display:         flex;
-  flex-direction:  column;
-  gap:             12px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+  isolation: isolate;
 
-  ion-button { margin: 0; }
+  .welcome-btn {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    display: block;
+    width: 100%;
+    height: 50px;
+    overflow: hidden;
+    pointer-events: auto;
+  }
 }
 
-.welcome-guest-btn {
-  background:   transparent;
-  border:       none;
-  color:        var(--ds-text-3);
-  font-size:    13px;
-  font-family:  var(--ds-font-body);
-  padding:      12px;
-  cursor:       pointer;
-  text-align:   center;
-  width:        100%;
-  transition:   color 0.2s;
+.welcome-guest {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  height: 48px;
+  font-family: var(--ds-font-heading);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  --color: var(--ds-accent);
+  --background: transparent;
+  --background-hover: var(--ds-accent-tint);
+  --background-activated: var(--ds-accent-tint);
+  --border-radius: var(--ds-r-md);
+  --border-width: 1.5px;
+  --border-style: solid;
+  --border-color: var(--ds-border-accent);
+  border-radius: var(--ds-r-md);
+  pointer-events: auto;
+}
 
-  &:active { color: var(--ds-text-1); }
+.welcome-guest-hint {
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ds-text-3);
+}
+
+// ─── Motion ───────────────────────────────────────────────────
+.anim-fade-up {
+  animation: welcome-fade-up 0.7s ease both;
+}
+
+.anim-delay-1 {
+  animation-delay: 0.12s;
+}
+
+.anim-delay-2 {
+  animation-delay: 0.24s;
+}
+
+@keyframes welcome-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes welcome-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes welcome-pulse {
+  0%,
+  100% {
+    opacity: 0.18;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.28;
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up,
+  .welcome-visual__img,
+  .welcome-bg__glow {
+    animation: none !important;
+  }
 }

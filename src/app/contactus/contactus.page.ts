@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MenuController, ToastController } from '@ionic/angular';
 import { UtilService } from '../util.service';
+import { ContactoService } from '../services/contacto.service';
 
 @Component({
   selector: 'app-contactus',
@@ -24,9 +25,9 @@ export class ContactusPage {
     {
       icon: 'logo-whatsapp',
       title: 'WhatsApp',
-      value: '+591 7000 0000',
+      value: '+591 73283217',
       hint: 'Respuesta rápida',
-      href: 'https://wa.me/59170000000'
+      href: 'https://wa.me/59173283217'
     },
     {
       icon: 'mail-outline',
@@ -47,7 +48,8 @@ export class ContactusPage {
   constructor(
     private toastCtrl: ToastController,
     private menu: MenuController,
-    private util: UtilService
+    private util: UtilService,
+    private contactoService: ContactoService
   ) {}
 
   ionViewWillEnter() {
@@ -83,34 +85,36 @@ export class ContactusPage {
     this.sending = true;
 
     const payload = {
-      ...this.contact,
-      name: this.contact.name.trim(),
-      email: this.contact.email.trim(),
-      phone: this.contact.phone.trim(),
-      message: this.contact.message.trim(),
-      fecha: new Date().toISOString()
+      idcontacto: 0,
+      nombre: this.contact.name.trim(),
+      correo: this.contact.email.trim(),
+      telefono: this.contact.phone.trim() || '',
+      mensaje: this.contact.message.trim(),
+      fecha: new Date().toISOString(),
+      estado: 1
     };
 
-    try {
-      const prev = JSON.parse(localStorage.getItem('contactos') || '[]');
-      const lista = Array.isArray(prev) ? prev : [];
-      lista.unshift(payload);
-      localStorage.setItem('contactos', JSON.stringify(lista.slice(0, 50)));
-    } catch {
-      localStorage.setItem('contactos', JSON.stringify([payload]));
-    }
+    this.contactoService.crear(payload).subscribe({
+      next: async () => {
+        this.sending = false;
+        this.success = true;
+        this.submitted = false;
+        this.contact = { name: '', email: '', phone: '', message: '' };
+        await this.showToast('Mensaje enviado. Te contactaremos pronto.', 'success');
+      },
+      error: async (err) => {
+        console.error('Error enviando contacto:', err);
+        this.sending = false;
+        await this.showToast('No se pudo enviar el mensaje. Intenta de nuevo.', 'danger');
+      }
+    });
+  }
 
-    await new Promise(r => setTimeout(r, 450));
-
-    this.sending = false;
-    this.success = true;
-    this.submitted = false;
-    this.contact = { name: '', email: '', phone: '', message: '' };
-
+  private async showToast(message: string, color: string) {
     const toast = await this.toastCtrl.create({
-      message: 'Mensaje registrado. Te contactaremos pronto.',
+      message,
       duration: 2500,
-      color: 'success',
+      color,
       position: 'bottom',
       cssClass: 'custom-toast'
     });

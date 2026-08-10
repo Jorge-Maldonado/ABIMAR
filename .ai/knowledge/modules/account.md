@@ -8,9 +8,9 @@ Páginas de cuenta del cliente y contacto.
 
 | Página | Hace |
 |---|---|
-| `ProfilePage` | perfil del usuario logueado |
-| `MyOrdersPage` | pedidos del cliente (vía API / personal) |
-| `ContactusPage` | formulario / info de contacto |
+| `ProfilePage` | perfil vía `usuario/list` + `persona/list` (`ApiService.url`); accesos y logout |
+| `MyOrdersPage` | pedidos del cliente; detalle con imagen vía catálogo `producto/list`; WhatsApp entrega |
+| `ContactusPage` | formulario → `ContactoService.crear` (`/contacto/create`); canales WhatsApp/mail |
 
 Visibles en el side menu solo si `!isGuest`.
 
@@ -18,6 +18,7 @@ Visibles en el side menu solo si `!isGuest`.
 
 - Sesión en `localStorage` (`usuario`, `personal`).
 - Menú controlado por `AppComponent` + `UtilService`.
+- `ContactoService` → `/contacto/create` (payload: `nombre`, `correo`, `telefono`, `mensaje`, `fecha`, `estado: 1`).
 
 ## Referencias
 

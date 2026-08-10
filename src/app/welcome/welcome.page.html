@@ -1,40 +1,65 @@
 <ion-content class="welcome-content" [fullscreen]="true">
 
-  <!-- Fondo con gradiente -->
-  <div class="welcome-bg">
+  <div class="welcome-bg" aria-hidden="true">
     <div class="welcome-bg__glow welcome-bg__glow--1"></div>
     <div class="welcome-bg__glow welcome-bg__glow--2"></div>
+    <div class="welcome-bg__grid"></div>
   </div>
 
+  <div class="welcome-stage">
 
-  <!-- Contenido -->
-  <div class="welcome-body">
-    <!-- Imagen hero -->
-    <div class="welcome-hero">
-      <img src="assets/logoWelcome.png" alt="Abimar Shop" class="welcome-hero__img" />
-    </div>
-    <div class="welcome-hero">
-      <img src="assets/cuerpoWelcome.png" alt="Abimar Shop" class="welcome-hero__img" />
-    </div>
-    <div class="welcome-brand">
-      <span class="welcome-brand__tag"></span>
-      <h1 class="welcome-brand__name">Tecnologia al mejor precio</h1>
-      <p class="welcome-brand__subtitle">cargadores, parlantes y mas..</p>
+    <header class="welcome-brand anim-fade-up">
+      <img
+        src="assets/logoAbimarFondoOscuro.svg"
+        alt=""
+        class="welcome-brand__mark"
+        width="72"
+        height="72" />
+      <h1 class="welcome-brand__name">Abimar Shop</h1>
+      <p class="welcome-brand__headline">Tecnología al mejor precio</p>
+      <p class="welcome-brand__sub">
+        Cargadores, parlantes y más para tu día a día.
+      </p>
+    </header>
+
+    <div class="welcome-visual anim-fade-up anim-delay-1" aria-hidden="true">
+      <img
+        src="assets/cuerpoWelcome.png"
+        alt=""
+        class="welcome-visual__img" />
     </div>
 
-    <div class="welcome-actions">
-      <ion-button expand="block" class="btn-primary" routerLink="/login" routerDirection="forward">
+    <div class="welcome-actions anim-fade-up anim-delay-2">
+      <ion-button
+        expand="block"
+        class="btn-primary welcome-btn"
+        routerLink="/login"
+        routerDirection="forward">
         Iniciar sesión
       </ion-button>
 
-      <ion-button expand="block" class="btn-ghost" routerLink="/signup" routerDirection="forward">
+      <ion-button
+        expand="block"
+        class="btn-ghost welcome-btn"
+        routerLink="/signup"
+        routerDirection="forward">
         Crear cuenta
       </ion-button>
 
-      <button class="welcome-guest-btn" (click)="goHomeWithoutLogin()">
+      <ion-button
+        expand="block"
+        fill="outline"
+        class="welcome-guest"
+        type="button"
+        (click)="continueAsGuest($event)">
         Continuar como invitado
-      </button>
+      </ion-button>
+
+      <p class="welcome-guest-hint">
+        Explora productos sin cuenta. Para comprar, inicia sesión.
+      </p>
     </div>
+
   </div>
 
 </ion-content>

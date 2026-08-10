@@ -30,12 +30,14 @@ Preload: `PreloadAllModules`.
 
 | Clave `localStorage` | Uso |
 |---|---|
-| `usuario` | email logueado |
-| `personal` | id persona del login |
+| `usuario` | email del cliente logueado |
+| `personal` | id persona del **cliente** (checkout / mis pedidos) |
 | `guestAccess` | modo invitado |
+| `adminUsuario` | email admin (sesión aislada) |
+| `adminPersonal` | id persona admin (no se usa en pedidos cliente) |
 | `carrito` | JSON del carrito (`CartService`) |
 | `pedidoId` | pedido en flujo de pago |
-| `totalPedido` | auxiliar de checkout (hoy guarda envío) |
+| `totalPedido` | auxiliar de checkout (total en Bs) |
 
 No hay NgRx/Akita. El carrito es la única pieza reactiva de dominio (`BehaviorSubject`).
 

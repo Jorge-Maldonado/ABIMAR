@@ -59,6 +59,19 @@
   color: var(--ds-warning);
   background: var(--ds-warning-tint);
   border: 1px solid rgba(255, 215, 64, 0.28);
+
+  &--live {
+    color: var(--ds-success);
+    background: var(--ds-success-tint);
+    border-color: rgba(0, 230, 118, 0.28);
+  }
+}
+
+.panel-empty {
+  margin: 0;
+  padding: 12px 4px;
+  font-size: 13px;
+  color: var(--ds-text-3);
 }
 
 .kpi-grid {
@@ -143,7 +156,7 @@
 
 .status-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 
@@ -172,10 +185,22 @@
     color: var(--ds-success);
   }
 
+  &--accent {
+    background: rgba(var(--ds-accent-rgb), 0.12);
+    border-color: rgba(var(--ds-accent-rgb), 0.3);
+    color: var(--ds-accent);
+  }
+
   &--bad {
     background: var(--ds-danger-tint);
     border-color: rgba(255, 82, 82, 0.28);
     color: var(--ds-danger);
+  }
+}
+
+@media (max-width: 720px) {
+  .status-row {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -391,6 +416,11 @@
 .st-ok {
   color: var(--ds-success);
   background: var(--ds-success-tint);
+}
+
+.st-accent {
+  color: var(--ds-accent);
+  background: rgba(var(--ds-accent-rgb), 0.12);
 }
 
 .st-warn {

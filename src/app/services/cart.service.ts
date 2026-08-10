@@ -45,10 +45,10 @@ export class CartService {
   // ===============================
   // ➕ ADD
   // ===============================
-  add(producto: any) {
+  add(producto: any, cantidad: number = 1) {
     const cart = [...this.items];
-
     const id = this.getId(producto);
+    const qty = Math.max(1, Number(cantidad) || 1);
 
     const index = cart.findIndex(p =>
       this.getId(p) === id &&
@@ -56,12 +56,12 @@ export class CartService {
     );
 
     if (index > -1) {
-      cart[index].cantidad += 1;
+      cart[index].cantidad += qty;
     } else {
       cart.push({
         ...producto,
-        idproducto: id, // 🔥 normalizamos
-        cantidad: 1,
+        idproducto: id,
+        cantidad: qty,
         options: producto.options || {}
       });
     }

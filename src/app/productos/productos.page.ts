@@ -15,6 +15,8 @@ export class ProductosPage implements OnInit {
   stock: number | null = null;
   imagen = '';
   categoriaId: number | null = null;
+  destacado = false;
+  masVendido = false;
 
   productos: any[] = [];
   categorias: any[] = [];
@@ -25,6 +27,7 @@ export class ProductosPage implements OnInit {
   searchTerm = '';
   filtroCategoria: number | 'ALL' = 'ALL';
   filtroStock: 'ALL' | 'LOW' | 'OUT' = 'ALL';
+  filtroVitrine: 'ALL' | 'DESTACADO' | 'MAS_VENDIDO' = 'ALL';
 
   loading = false;
   saving = false;
@@ -55,6 +58,14 @@ export class ProductosPage implements OnInit {
       const s = Number(p.stock);
       return s > 0 && s <= 5;
     }).length;
+  }
+
+  get countDestacados(): number {
+    return this.productos.filter(p => this.isFlagOn(p.destacado)).length;
+  }
+
+  get countMasVendidos(): number {
+    return this.productos.filter(p => this.isFlagOn(p.masVendido)).length;
   }
 
   get formValid(): boolean {
@@ -117,6 +128,8 @@ export class ProductosPage implements OnInit {
           if (Array.isArray(res)) {
             this.productos = res.map((p) => ({
               ...p,
+              destacado: this.readFlag(p, 'destacado'),
+              masVendido: this.readFlag(p, 'masVendido', 'masvendido', 'mas_vendido'),
               imagen: this.normalizeImagePath(p.imagen),
               imagenFile: this.extractFileName(p.imagen),
             }));
@@ -168,6 +181,10 @@ export class ProductosPage implements OnInit {
     this.filtroStock = mode;
   }
 
+  setFiltroVitrine(mode: 'ALL' | 'DESTACADO' | 'MAS_VENDIDO') {
+    this.filtroVitrine = mode;
+  }
+
   productosFiltrados(): any[] {
     let lista = [...this.productos];
 
@@ -182,6 +199,12 @@ export class ProductosPage implements OnInit {
       });
     } else if (this.filtroStock === 'OUT') {
       lista = lista.filter(p => Number(p.stock) <= 0);
+    }
+
+    if (this.filtroVitrine === 'DESTACADO') {
+      lista = lista.filter(p => this.isFlagOn(p.destacado));
+    } else if (this.filtroVitrine === 'MAS_VENDIDO') {
+      lista = lista.filter(p => this.isFlagOn(p.masVendido));
     }
 
     if (this.searchTerm) {
@@ -221,6 +244,31 @@ export class ProductosPage implements OnInit {
     return Number(p?.status) === 1;
   }
 
+  /** Normaliza boolean / 0|1 / "true" del backend. */
+  isFlagOn(val: any): boolean {
+    if (val === true || val === 1 || val === '1') return true;
+    if (typeof val === 'string' && val.trim().toLowerCase() === 'true') return true;
+    return false;
+  }
+
+  /** Lee un flag desde posibles alias JSON (camelCase / lowercase / snake). */
+  private readFlag(obj: any, ...keys: string[]): boolean {
+    if (!obj) return false;
+    for (const key of keys) {
+      if (obj[key] !== undefined && obj[key] !== null) {
+        return this.isFlagOn(obj[key]);
+      }
+    }
+    // fallback: buscar key case-insensitive
+    const lowerKeys = keys.map(k => k.toLowerCase());
+    for (const k of Object.keys(obj)) {
+      if (lowerKeys.includes(k.toLowerCase())) {
+        return this.isFlagOn(obj[k]);
+      }
+    }
+    return false;
+  }
+
   async createProducto() {
     this.submitted = true;
     if (!this.formValid || this.saving) {
@@ -240,6 +288,8 @@ export class ProductosPage implements OnInit {
       ruta: this.slugify(this.nombre),
       status: 1,
       stock: Number(this.stock),
+      destacado: !!this.destacado,
+      masVendido: !!this.masVendido,
     };
 
     this.apiService
@@ -267,6 +317,8 @@ export class ProductosPage implements OnInit {
     this.stock = Number(p.stock) || 0;
     this.categoriaId = p.categoriaId ?? null;
     this.imagen = p.imagenFile || this.extractFileName(p.imagen);
+    this.destacado = this.readFlag(p, 'destacado');
+    this.masVendido = this.readFlag(p, 'masVendido', 'masvendido', 'mas_vendido');
     this.originalData = { ...p };
     this.submitted = false;
 
@@ -295,6 +347,8 @@ export class ProductosPage implements OnInit {
       ruta: this.slugify(this.nombre),
       status: this.originalData.status ?? 1,
       stock: Number(this.stock),
+      destacado: !!this.destacado,
+      masVendido: !!this.masVendido,
     };
 
     this.apiService
@@ -359,6 +413,8 @@ export class ProductosPage implements OnInit {
     this.stock = null;
     this.imagen = '';
     this.categoriaId = null;
+    this.destacado = false;
+    this.masVendido = false;
     this.editId = null;
     this.originalData = {};
     this.submitted = false;

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "codegraph": {
+      "type": "stdio",
+      "command": "codegraph",
+      "args": [
+        "serve",
+        "--mcp",
+        "--path",
+        "C:/UNSLP 04092023/PROYECTO DE GRADO/Fases/Fase3 Perfil/Proyecto codigo/ionic-ecommerce-app-master"
+      ]
+    }
+  }
+}

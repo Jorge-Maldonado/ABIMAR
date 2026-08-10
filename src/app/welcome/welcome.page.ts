@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { UtilService } from '../util.service';
+import { FavoritesService } from '../services/favorites.service';
 
 @Component({
   selector: 'app-welcome',
@@ -9,32 +10,37 @@ import { UtilService } from '../util.service';
   styleUrls: ['./welcome.page.scss'],
 })
 export class WelcomePage implements OnInit {
-  isGuest: boolean = false;
+
   constructor(
     private menu: MenuController,
     private router: Router,
-    private util: UtilService
-  ) { }
+    private util: UtilService,
+    private favorites: FavoritesService
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
-  ionViewWillEnter() {
-    this.menu.enable(false, 'mainMenu');
+  async ionViewWillEnter() {
     this.util.setMenuState(false);
     this.util.setShowIcons(false);
+    await this.menu.enable(false, 'mainMenu');
+    await this.menu.close('mainMenu');
   }
 
-  ionViewWillLeave() {
+  async continueAsGuest(event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
-  }
-
-  goHomeWithoutLogin() {
     localStorage.setItem('guestAccess', 'true');
-    this.util.setMenuState(true);
-    this.isGuest = true;
-    this.menu.enable(true, 'mainMenu');
-    this.util.setShowIcons(false);
     this.util.setGuest(true);
-    this.router.navigate(['/home']);
+    this.util.setShowIcons(false);
+    this.util.setMenuState(true);
+    this.favorites.clearSession();
+    await this.menu.enable(true, 'mainMenu');
+    await this.menu.close('mainMenu');
+
+    await this.router.navigateByUrl('/home', { replaceUrl: true });
   }
 }

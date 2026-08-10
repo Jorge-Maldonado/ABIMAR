@@ -6,22 +6,83 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class FavoritesService {
 
-  private static readonly STORAGE_KEY = 'favoritos';
-  private favoritesSubject = new BehaviorSubject<any[]>(this.load());
+  private static readonly LEGACY_KEY = 'favoritos';
+  private static readonly KEY_PREFIX = 'favoritos:';
 
-  constructor() {}
+  private ownerKey: string | null = null;
+  private favoritesSubject = new BehaviorSubject<any[]>([]);
 
-  private load(): any[] {
+  constructor() {
+    this.syncFromSession();
+  }
+
+  /** Email normalizado del dueño actual, o null si invitado/sin sesión. */
+  get owner(): string | null {
+    return this.ownerKey;
+  }
+
+  /**
+   * Carga favoritos del usuario en sesión (`localStorage.usuario`).
+   * Cada usuario tiene su propia lista; el invitado no ve favoritos de nadie.
+   */
+  syncFromSession(): void {
+    // Limpiar lista global antigua (no pertenece a un usuario)
+    localStorage.removeItem(FavoritesService.LEGACY_KEY);
+
+    const email = (localStorage.getItem('usuario') || '').trim().toLowerCase();
+    const guest = localStorage.getItem('guestAccess') === 'true';
+
+    if (!email || guest) {
+      this.ownerKey = null;
+      this.favoritesSubject.next([]);
+      return;
+    }
+
+    this.ownerKey = email;
+    this.favoritesSubject.next(this.loadFor(email));
+  }
+
+  /** Fija el dueño (p. ej. tras login) y recarga su lista. */
+  setOwner(email: string | null): void {
+    const normalized = (email || '').trim().toLowerCase();
+    if (!normalized) {
+      this.ownerKey = null;
+      this.favoritesSubject.next([]);
+      return;
+    }
+
+    this.ownerKey = normalized;
+    // Descartar clave global antigua (compartida entre usuarios)
+    localStorage.removeItem(FavoritesService.LEGACY_KEY);
+    this.favoritesSubject.next(this.loadFor(normalized));
+  }
+
+  clearSession(): void {
+    this.ownerKey = null;
+    this.favoritesSubject.next([]);
+  }
+
+  private storageKey(email: string): string {
+    return `${FavoritesService.KEY_PREFIX}${email}`;
+  }
+
+  private loadFor(email: string): any[] {
     try {
-      return JSON.parse(localStorage.getItem(FavoritesService.STORAGE_KEY) || '[]');
+      const raw = localStorage.getItem(this.storageKey(email));
+      const parsed = JSON.parse(raw || '[]');
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
-      localStorage.removeItem(FavoritesService.STORAGE_KEY);
+      localStorage.removeItem(this.storageKey(email));
       return [];
     }
   }
 
   private save(items: any[]) {
-    localStorage.setItem(FavoritesService.STORAGE_KEY, JSON.stringify(items));
+    if (!this.ownerKey) {
+      this.favoritesSubject.next([]);
+      return;
+    }
+    localStorage.setItem(this.storageKey(this.ownerKey), JSON.stringify(items));
     this.favoritesSubject.next(items);
   }
 
@@ -42,6 +103,7 @@ export class FavoritesService {
   }
 
   isFavorite(producto: any): boolean {
+    if (!this.ownerKey) return false;
     const id = this.getId(producto);
     if (!id) return false;
     return this.items.some(p => this.getId(p) === id);
@@ -49,6 +111,8 @@ export class FavoritesService {
 
   /** Agrega o quita. Devuelve true si quedó como favorito. */
   toggle(producto: any): boolean {
+    if (!this.ownerKey) return false;
+
     const id = this.getId(producto);
     if (!id) return false;
 
@@ -62,6 +126,8 @@ export class FavoritesService {
   }
 
   add(producto: any) {
+    if (!this.ownerKey) return;
+
     const id = this.getId(producto);
     if (!id || this.isFavorite(producto)) return;
 
@@ -75,11 +141,17 @@ export class FavoritesService {
   }
 
   remove(idproducto: number) {
+    if (!this.ownerKey) return;
     this.save(this.items.filter(p => this.getId(p) !== Number(idproducto)));
   }
 
+  /** Borra solo la lista del usuario actual (no otras cuentas). */
   clear() {
-    localStorage.removeItem(FavoritesService.STORAGE_KEY);
+    if (!this.ownerKey) {
+      this.favoritesSubject.next([]);
+      return;
+    }
+    localStorage.removeItem(this.storageKey(this.ownerKey));
     this.favoritesSubject.next([]);
   }
 }

@@ -28,8 +28,12 @@
         <span class="prods-stat__label">Stock bajo</span>
       </div>
       <div class="prods-stat">
-        <span class="prods-stat__value">{{ productosFiltrados().length }}</span>
-        <span class="prods-stat__label">Visibles</span>
+        <span class="prods-stat__value">{{ countDestacados }}</span>
+        <span class="prods-stat__label">Destacados</span>
+      </div>
+      <div class="prods-stat">
+        <span class="prods-stat__value">{{ countMasVendidos }}</span>
+        <span class="prods-stat__label">Más vendidos</span>
       </div>
     </div>
 
@@ -142,6 +146,33 @@
           </span>
         </div>
 
+        <div class="flag-toggles">
+          <ion-item lines="none" class="flag-toggle">
+            <ion-label>
+              <strong>Destacado</strong>
+              <p>Aparece en la sección Destacados del home</p>
+            </ion-label>
+            <ion-toggle
+              slot="end"
+              color="warning"
+              [checked]="destacado"
+              (ionChange)="destacado = $event.detail.checked">
+            </ion-toggle>
+          </ion-item>
+          <ion-item lines="none" class="flag-toggle">
+            <ion-label>
+              <strong>Más vendido</strong>
+              <p>Aparece en la sección Más vendidos del home</p>
+            </ion-label>
+            <ion-toggle
+              slot="end"
+              color="warning"
+              [checked]="masVendido"
+              (ionChange)="masVendido = $event.detail.checked">
+            </ion-toggle>
+          </ion-item>
+        </div>
+
         <div class="form-actions">
           <ion-button
             *ngIf="!editId"
@@ -219,6 +250,18 @@
           </button>
         </div>
 
+        <div class="chips">
+          <button type="button" class="chip" [class.chip--active]="filtroVitrine === 'ALL'" (click)="setFiltroVitrine('ALL')">
+            Vitrina
+          </button>
+          <button type="button" class="chip" [class.chip--active]="filtroVitrine === 'DESTACADO'" (click)="setFiltroVitrine('DESTACADO')">
+            Destacados
+          </button>
+          <button type="button" class="chip" [class.chip--active]="filtroVitrine === 'MAS_VENDIDO'" (click)="setFiltroVitrine('MAS_VENDIDO')">
+            Más vendidos
+          </button>
+        </div>
+
         <div class="ds-loading" *ngIf="loading">
           <ion-spinner name="crescent"></ion-spinner>
           <p>Cargando productos...</p>
@@ -239,6 +282,11 @@
                   </span>
                 </div>
 
+                <div class="prod-card__flags" *ngIf="p.destacado || p.masVendido">
+                  <span class="flag-pill flag-pill--destacado" *ngIf="p.destacado">Destacado</span>
+                  <span class="flag-pill flag-pill--vendido" *ngIf="p.masVendido">Más vendido</span>
+                </div>
+
                 <p *ngIf="p.descripcion">{{ p.descripcion }}</p>
                 <p *ngIf="!p.descripcion" class="muted">Sin descripción</p>
 
@@ -253,6 +301,8 @@
                   <span>#{{ p.idproducto }}</span>
                   <span>{{ getCategoriaNombre(p.categoriaId) }}</span>
                   <span *ngIf="p.codigo">{{ p.codigo }}</span>
+                  <span *ngIf="p.destacado" class="meta-flag">★ Destacado</span>
+                  <span *ngIf="p.masVendido" class="meta-flag">↑ Más vendido</span>
                 </div>
               </div>
 
@@ -272,8 +322,8 @@
         <ng-template #emptyTpl>
           <div class="empty-card">
             <ion-icon name="cube-outline"></ion-icon>
-            <h2>{{ searchTerm || filtroCategoria !== 'ALL' || filtroStock !== 'ALL' ? 'Sin resultados' : 'Sin productos' }}</h2>
-            <p>{{ searchTerm || filtroCategoria !== 'ALL' || filtroStock !== 'ALL' ? 'Prueba otro filtro o término de búsqueda.' : 'Los productos creados aparecerán en esta sección.' }}</p>
+            <h2>{{ searchTerm || filtroCategoria !== 'ALL' || filtroStock !== 'ALL' || filtroVitrine !== 'ALL' ? 'Sin resultados' : 'Sin productos' }}</h2>
+            <p>{{ searchTerm || filtroCategoria !== 'ALL' || filtroStock !== 'ALL' || filtroVitrine !== 'ALL' ? 'Prueba otro filtro o término de búsqueda.' : 'Los productos creados aparecerán en esta sección.' }}</p>
           </div>
         </ng-template>
 

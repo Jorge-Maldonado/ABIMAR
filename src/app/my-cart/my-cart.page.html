@@ -1,11 +1,14 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
+  <ion-toolbar class="cart-toolbar">
     <ion-buttons slot="start">
       <ion-menu-button menu="mainMenu" autoHide="false"></ion-menu-button>
     </ion-buttons>
     <ion-title>Mi carrito</ion-title>
     <ion-buttons slot="end" *ngIf="totalItems > 0">
-      <ion-badge class="cart-count">{{ totalItems }}</ion-badge>
+      <div class="cart-toolbar-count" aria-label="{{ totalItems }} productos">
+        <span class="cart-toolbar-count__num">{{ totalItems }}</span>
+        <span class="cart-toolbar-count__txt">en carrito</span>
+      </div>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -13,6 +16,11 @@
 <ion-content class="cart-content">
 
   <div class="cart-list" *ngIf="carrito.length > 0; else vacio">
+
+    <div class="cart-pay-hint" role="note">
+      <ion-icon name="card-outline"></ion-icon>
+      <p>Ajusta cantidades y toca <strong>Pagar ahora</strong> para completar tu compra.</p>
+    </div>
 
     <div class="cart-item" *ngFor="let item of carrito">
       <img [src]="item.imagen" [alt]="item.nombre" class="cart-item__img" />
@@ -26,7 +34,7 @@
         </p>
 
         <div class="cart-item__row">
-          <div class="qty-control" role="group" aria-label="Cantidad">
+          <div class="qty-control" role="group" aria-label="Cantidad de {{ item.nombre }}">
             <button type="button" class="qty-btn" aria-label="Disminuir cantidad" (click)="decrementarCantidad(item)">
               <ion-icon name="remove-outline"></ion-icon>
             </button>
@@ -57,7 +65,7 @@
         <span>Bs. {{ total | number:'1.2-2' }}</span>
       </div>
       <div class="cart-summary__row cart-summary__row--total">
-        <span>Total</span>
+        <span>Total a pagar</span>
         <span class="cart-summary__total-val">Bs. {{ total | number:'1.2-2' }}</span>
       </div>
     </div>
@@ -69,6 +77,7 @@
       <ion-icon name="cart-outline"></ion-icon>
       <h3>Tu carrito está vacío</h3>
       <p>Agrega productos para comenzar tu compra</p>
+      <ion-button class="btn-primary" routerLink="/home">Explorar tienda</ion-button>
     </div>
   </ng-template>
 
@@ -76,8 +85,12 @@
 
 <ion-footer class="ion-no-border cart-footer" *ngIf="carrito.length > 0">
   <div class="cart-footer__inner">
-    <ion-button expand="block" class="btn-buy" routerLink="/checkout">
-      Continuar al pago
+    <div class="cart-footer__meta">
+      <span class="cart-footer__meta-label">{{ totalItems }} producto{{ totalItems !== 1 ? 's' : '' }}</span>
+      <strong class="cart-footer__meta-total">Bs. {{ total | number:'1.2-2' }}</strong>
+    </div>
+    <ion-button expand="block" class="btn-buy cart-footer__pay" routerLink="/checkout">
+      Pagar ahora
       <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
     </ion-button>
   </div>
