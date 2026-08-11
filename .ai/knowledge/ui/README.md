@@ -18,7 +18,10 @@ Shell Ionic (`ion-split-pane` + `ion-menu` + `ion-router-outlet`) y páginas con
 
 - Siempre: Inicio, Contáctanos.
 - Si no invitado: Mi Perfil, Mi Carrito, Mis Pedidos.
-- Header del menú: “Invitado” o “Mi cuenta” + “Abimar Shop”.
+- Header del menú: “Invitado” o “Mi cuenta” + email/`userLabel`.
+- Footer menú: **Cerrar sesión** (solo logueado). Cierre del menú con la X del header o al elegir una opción.
+- Toolbar logout (`SessionService.logoutCliente`) en: home, perfil, pedidos, contactanos, categoría, detalle. **No** en carrito.
+- Admin: logout en shell `AdminHomePage` (todas las hijas).
 
 ## Admin UI
 
@@ -29,6 +32,7 @@ Shell Ionic (`ion-split-pane` + `ion-menu` + `ion-router-outlet`) y páginas con
 - Categorías: `src/assets/categories/`
 - Productos: `src/assets/products/`
 - Fallback: `assets/no-image.png`
+- Splash nativo (Cordova): `resources/splash.png` → densidades con `npm run android:splash` (mismas señales de marca que Welcome/Login: `#0B0B0D`, cyan `#00E5FF`, tagline “Tecnología al mejor precio”).
 
 ## Estado visual
 

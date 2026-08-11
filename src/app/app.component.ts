@@ -5,6 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { UtilService } from './util.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { SessionService } from './services/session.service';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +42,8 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
     private util: UtilService,
     private router: Router,
-    private menuCtrl: MenuController
+    private menuCtrl: MenuController,
+    private session: SessionService
   ) {
     this.initializeApp();
   }
@@ -147,5 +149,14 @@ export class AppComponent implements OnInit {
       event.stopPropagation();
     }
     await this.menuCtrl.close(AppComponent.MENU_ID);
+  }
+
+  async logout(event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    await this.menuCtrl.close(AppComponent.MENU_ID);
+    await this.session.logoutCliente();
   }
 }

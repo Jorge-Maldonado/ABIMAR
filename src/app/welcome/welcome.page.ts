@@ -3,6 +3,7 @@ import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { UtilService } from '../util.service';
 import { FavoritesService } from '../services/favorites.service';
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-welcome',
@@ -15,7 +16,8 @@ export class WelcomePage implements OnInit {
     private menu: MenuController,
     private router: Router,
     private util: UtilService,
-    private favorites: FavoritesService
+    private favorites: FavoritesService,
+    private cart: CartService
   ) {}
 
   ngOnInit() {}
@@ -38,6 +40,7 @@ export class WelcomePage implements OnInit {
     this.util.setShowIcons(false);
     this.util.setMenuState(true);
     this.favorites.clearSession();
+    this.cart.clearSession();
     await this.menu.enable(true, 'mainMenu');
     await this.menu.close('mainMenu');
 

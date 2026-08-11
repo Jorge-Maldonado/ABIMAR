@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
-import { ToastController, AlertController, MenuController } from '@ionic/angular';
+import { ToastController, MenuController } from '@ionic/angular';
 import { UtilService } from '../util.service';
 import { CartService } from '../services/cart.service';
 import { FavoritesService } from '../services/favorites.service';
+import { SessionService } from '../services/session.service';
 
 @Component({
   selector: 'app-home',
@@ -33,11 +34,11 @@ export class HomePage implements OnInit {
     private apiService: ApiService<any>,
     private router: Router,
     private toastController: ToastController,
-    private alertCtrl: AlertController,
     private util: UtilService,
     private menu: MenuController,
     private cartService: CartService,
-    private favoritesService: FavoritesService
+    private favoritesService: FavoritesService,
+    private session: SessionService
   ) { }
 
   ngOnInit() {
@@ -81,30 +82,14 @@ export class HomePage implements OnInit {
     this.util.setMenuState(true);
     this.menu.enable(true, 'mainMenu');
     this.favoritesService.syncFromSession();
+    this.cartService.syncFromSession();
     // Ionic reutiliza la página: recargar catálogo al entrar (login, guest, back)
     this.loadCategorias();
     this.loadProductos();
   }
 
   async logout() {
-    const alert = await this.alertCtrl.create({
-      header: 'Cerrar sesión',
-      message: '¿Deseas salir de tu cuenta?',
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Salir',
-          handler: () => {
-            localStorage.removeItem('usuario');
-            localStorage.removeItem('personal');
-            localStorage.removeItem('guestAccess');
-            this.favoritesService.clearSession();
-            this.router.navigate(['/login']);
-          }
-        }
-      ]
-    });
-    await alert.present();
+    await this.session.logoutCliente();
   }
 
   loadCategorias() {

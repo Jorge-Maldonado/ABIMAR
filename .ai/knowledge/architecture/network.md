@@ -23,7 +23,8 @@ Valor actual de `apiBase`:
 - La mayoría de operaciones de negocio usan **POST** incluso para listar/leer/actualizar (`/list`, `/read`, `/update`, `/delete?id=`).
 - Login usa `HttpClient` directo (no `ApiService`), `responseType: 'text'`, body tipo `"Login correcto, <personalId>"`.
 - No hay interceptor de auth ni headers de Bearer token en las llamadas actuales.
-- CORS y disponibilidad dependen del servicio en Render (cold start posible).
+- CORS: orígenes web + Cordova/APK en backend (`CorsConfig` + `@CrossOrigin`). Requiere redeploy en Render.
+- Disponibilidad: cold start posible en Render.
 
 ## Dominios de API usados por el front
 

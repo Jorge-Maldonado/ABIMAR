@@ -1,52 +1,8 @@
 .welcome-content {
-  --background: var(--ds-bg-base);
+  --background: #0B0B0D;
 }
 
-// ─── Background ───────────────────────────────────────────────
-.welcome-bg {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-
-  &__glow {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(90px);
-    opacity: 0.22;
-  }
-
-  &__glow--1 {
-    width: 320px;
-    height: 320px;
-    background: var(--ds-accent);
-    top: -100px;
-    right: -90px;
-    animation: welcome-pulse 7s ease-in-out infinite;
-  }
-
-  &__glow--2 {
-    width: 260px;
-    height: 260px;
-    background: var(--ds-price);
-    bottom: -80px;
-    left: -70px;
-    opacity: 0.14;
-    animation: welcome-pulse 9s ease-in-out infinite reverse;
-  }
-
-  &__grid {
-    position: absolute;
-    inset: 0;
-    opacity: 0.04;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 20%, transparent 75%);
-  }
-}
+// Fondo: clases globales .app-hero-bg
 
 // ─── Stage ────────────────────────────────────────────────────
 .welcome-stage {
@@ -220,7 +176,7 @@
 @media (prefers-reduced-motion: reduce) {
   .anim-fade-up,
   .welcome-visual__img,
-  .welcome-bg__glow {
+  .app-hero-bg__glow {
     animation: none !important;
   }
 }

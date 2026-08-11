@@ -6,6 +6,7 @@ import { UtilService } from '../util.service';
 import { LoaderService } from '../services/ui/loader.service';
 import { ApiService } from '../services/api.service';
 import { FavoritesService } from '../services/favorites.service';
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-login',
@@ -31,7 +32,8 @@ export class LoginPage implements OnInit {
     private http: HttpClient,
     private loader: LoaderService,
     private api: ApiService<any>,
-    private favorites: FavoritesService
+    private favorites: FavoritesService,
+    private cart: CartService
   ) {}
 
   ngOnInit() {}
@@ -119,6 +121,7 @@ export class LoginPage implements OnInit {
         this.util.setMenuState(true);
         await this.menu.enable(true, 'mainMenu');
         this.favorites.setOwner(this.email.trim());
+        this.cart.setOwner(personalId);
         await this.toast('Sesión iniciada');
         this.navCtrl.navigateRoot('/home', { animationDirection: 'forward' });
       },
@@ -139,6 +142,7 @@ export class LoginPage implements OnInit {
     this.util.setMenuState(true);
     this.util.setShowIcons(false);
     this.favorites.clearSession();
+    this.cart.clearSession();
     await this.menu.enable(true, 'mainMenu');
     this.navCtrl.navigateRoot('/home', { animationDirection: 'forward' });
   }

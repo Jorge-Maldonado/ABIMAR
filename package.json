@@ -10,8 +10,17 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --prod --base-href /ABIMAR/",
+    "build:app": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --prod --base-href ./",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d www"
+    "deploy": "gh-pages -d www",
+    "resources": "ionic cordova resources android --force",
+    "android:icons": "node scripts/generate-app-icons.js",
+    "android:splash": "node scripts/generate-splash.js",
+    "android:add": "npx cordova platform add android && node scripts/fix-android-repos.js",
+    "android:prepare": "node scripts/fix-android-repos.js && npm run build:app && npx cordova prepare android",
+    "android:build": "scripts\\android-build.cmd",
+    "android:apk": "scripts\\android-build.cmd --release",
+    "android:sdk-setup": "powershell -ExecutionPolicy Bypass -File scripts/setup-android-sdk.ps1"
   },
   "private": true,
   "dependencies": {
@@ -22,12 +31,17 @@
     "@angular/platform-browser-dynamic": "~10.0.0",
     "@angular/router": "~10.0.0",
     "@ionic-native/core": "^5.0.0",
+    "@ionic-native/file": "^5.36.0",
+    "@ionic-native/social-sharing": "^5.36.0",
     "@ionic-native/splash-screen": "^5.0.0",
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^5.0.0",
     "@paypal/paypal-js": "^9.0.1",
-    "angularx-qrcode": "^11.0.0",
+    "angularx-qrcode": "~10.0.12",
     "cordova-ios": "5.1.1",
+    "cordova-plugin-file": "6.0.2",
+    "cordova-plugin-x-socialsharing": "6.0.4",
+    "es6-promise-plugin": "4.2.2",
     "ngx-qrcode2": "^9.0.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
@@ -45,6 +59,8 @@
     "@types/node": "^12.11.1",
     "@types/paypal__paypal-js": "^1.0.2",
     "codelyzer": "^6.0.0",
+    "cordova": "^10.0.0",
+    "cordova-android": "9.1.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.2.1",
@@ -71,11 +87,16 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
-      "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      },
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-x-socialsharing": {},
+      "cordova-plugin-file": {}
     },
     "platforms": [
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

@@ -11,14 +11,14 @@ Flujo de compra: carrito local → pedido en backend → métodos de pago → co
 | `MyCartPage` | UI del carrito vía `CartService`; qty llamativa; CTA **Pagar ahora** → checkout |
 | `CheckoutPage` | resumen; `registrarPedido()` crea pedido+detalles y navega a pago; `confirmarCompra()` variante que limpia carrito |
 | `PaymentMethodsPage` | resumen pedido; PayPal sandbox + QR; panel PayPal expandible; empty state |
-| `QrPaymentPage` | QR estático `assets/qr/qr.jpg`; monto/pedido, copiar, pasos; `confirmarPago` exige `status === 'PAGADO'` y limpia con `CartService` |
+| `QrPaymentPage` | QR estático `assets/qr/qr.jpg`; monto/pedido, copiar, pasos; descarga web con `<a download>`; en **APK** guarda con File plugin (fallback share) + botón **Compartir QR** solo Cordova; `confirmarPago` exige `status === 'PAGADO'` |
 | `ConfirmPage` | resumen final; aviso de entrega por WhatsApp + CTA `wa.me` |
-| `CartService` | CRUD carrito, total, persistencia `carrito` |
+| `CartService` | CRUD carrito por `personal` (`carrito:{personalId}`); total; sync en login/home |
 | `PedidoService` | create/list/read/update pedido y detalle |
 
 ## Flujo canónico
 
-1. `CartService` mantiene ítems (`idproducto` normalizado, `cantidad`, `precio`, `options`).
+1. `CartService` mantiene ítems por usuario (`idproducto` normalizado, `cantidad`, `precio`, `options`); clave `carrito:{personal}`.
 2. `CheckoutPage.registrarPedido` crea pedido `PENDIENTE` con `referenciaCobro` = código único `ABI-…` y `personal` del cliente.
 3. Crea `detallepedido` por ítem con `forkJoin`.
 4. Navega a `/payment-methods?pedidoId=...&codigo=ABI-…`.
@@ -46,6 +46,8 @@ Al marcar `ENTREGADO` en admin (solo desde `PAGADO`; no desde `PENDIENTE`), se p
 
 ## Particularidades / riesgos
 
+- En **APK**, descarga QR usa `cordova-plugin-file` (carpeta Descargas); si falla por almacenamiento scoped, abre share sheet como fallback.
+- Botón **Compartir QR** solo si `platform.is('cordova')` / `window.cordova`.
 - `personal` del pedido se toma de `localStorage.personal` (sesión **cliente**; admin usa `adminPersonal` y no la sobrescribe).
 - PayPal cobra en USD (`montoBs / 9`); el pedido y la confirmación guardan/muestran el monto en **Bs**.
 - Tras PayPal se actualiza `status=PAGADO`, `tipoPagoId=1` y datos de transacción; una sola navegación a `/confirm`.

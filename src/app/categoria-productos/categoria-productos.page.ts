@@ -4,6 +4,7 @@ import { MenuController, ToastController } from '@ionic/angular';
 import { ApiService } from '../services/api.service';
 import { CartService } from '../services/cart.service';
 import { FavoritesService } from '../services/favorites.service';
+import { SessionService } from '../services/session.service';
 import { UtilService } from '../util.service';
 
 @Component({
@@ -27,7 +28,8 @@ export class CategoriaProductosPage implements OnInit {
     private cartService: CartService,
     private favoritesService: FavoritesService,
     private util: UtilService,
-    private menu: MenuController
+    private menu: MenuController,
+    public session: SessionService
   ) {}
 
   ngOnInit() {
@@ -50,6 +52,10 @@ export class CategoriaProductosPage implements OnInit {
 
   get isGuestUser(): boolean {
     return localStorage.getItem('guestAccess') === 'true' || !localStorage.getItem('usuario');
+  }
+
+  async logout() {
+    await this.session.logoutCliente();
   }
 
   get productosFiltrados() {

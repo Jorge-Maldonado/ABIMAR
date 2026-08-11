@@ -5,6 +5,8 @@ import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ApiService } from '../services/api.service';
 import { PedidoService } from '../services/pedido.service';
+import { SessionService } from '../services/session.service';
+import { CartService } from '../services/cart.service';
 import { UtilService } from '../util.service';
 
 @Component({
@@ -18,6 +20,7 @@ export class MyOrdersPage implements OnInit {
   loading = true;
   filtroEstado = 'ALL';
   personalId = Number(localStorage.getItem('personal') || 0);
+  cartCount = 0;
 
   pedidoAbiertoId: number | null = null;
   detalle: any[] = [];
@@ -37,10 +40,15 @@ export class MyOrdersPage implements OnInit {
     private router: Router,
     private menu: MenuController,
     private util: UtilService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    public session: SessionService,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
+    this.cartService.items$.subscribe(() => {
+      this.cartCount = this.cartService.totalItems;
+    });
     this.cargarCatalogoProductos();
     this.cargarPedidos();
   }
@@ -50,6 +58,10 @@ export class MyOrdersPage implements OnInit {
     this.menu.enable(true, 'mainMenu');
     this.personalId = Number(localStorage.getItem('personal') || 0);
     this.cargarPedidos();
+  }
+
+  async logout() {
+    await this.session.logoutCliente();
   }
 
   get countAll(): number {

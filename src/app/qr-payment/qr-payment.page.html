@@ -46,10 +46,25 @@
           (error)="onQrError($event)" />
       </div>
       <p class="qr-card__hint">Escanea con tu app bancaria</p>
-      <button type="button" class="qr-download" (click)="descargarQR()">
-        <ion-icon name="download-outline"></ion-icon>
-        Descargar imagen QR
-      </button>
+      <div class="qr-actions">
+        <button
+          type="button"
+          class="qr-download"
+          [disabled]="busyMedia"
+          (click)="descargarQR()">
+          <ion-icon name="download-outline"></ion-icon>
+          Descargar imagen QR
+        </button>
+        <button
+          *ngIf="isNativeApp"
+          type="button"
+          class="qr-share"
+          [disabled]="busyMedia"
+          (click)="compartirQR()">
+          <ion-icon name="share-social-outline"></ion-icon>
+          Compartir QR
+        </button>
+      </div>
     </div>
 
     <section class="qr-steps">

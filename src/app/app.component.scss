@@ -23,13 +23,28 @@ ion-menu {
 }
 
 .menu-close-icon {
-  --color: var(--ds-text-2);
-  --ripple-color: transparent;
-  margin-right: 4px;
+  --color: var(--ds-danger);
+  --background: rgba(255, 59, 48, 0.12);
+  --background-activated: rgba(255, 59, 48, 0.22);
+  --background-focused: rgba(255, 59, 48, 0.18);
+  --background-hover: rgba(255, 59, 48, 0.18);
+  --border-radius: 50%;
+  --padding-start: 0;
+  --padding-end: 0;
+  --ripple-color: rgba(255, 59, 48, 0.35);
+  width: 40px;
+  height: 40px;
+  margin: 0 10px 0 0;
+  transition: transform 0.15s ease, background 0.15s ease;
 
-  ion-icon { font-size: 24px; }
+  ion-icon {
+    font-size: 22px;
+    font-weight: 700;
+  }
 
-  &:hover { --color: var(--ds-text-1); }
+  &:active {
+    transform: scale(0.94);
+  }
 }
 
 .menu-content {
@@ -141,15 +156,14 @@ ion-menu {
   }
 }
 
-.menu-close-btn {
+.menu-logout-btn {
   margin: 0;
   height: 42px;
   font-size: 13px;
-  font-weight: 600;
-  --border-color: var(--ds-border-md);
-  --color: var(--ds-text-1);
+  font-weight: 700;
+  --color: var(--ds-danger);
   --border-radius: 12px;
-  --background: transparent;
+  --background: rgba(255, 59, 48, 0.08);
 
   ion-icon {
     font-size: 18px;

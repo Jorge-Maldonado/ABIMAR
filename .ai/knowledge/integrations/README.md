@@ -16,7 +16,9 @@ Servicios externos y backend consumidos por el front.
 Dominios REST usados: login, persona, usuario, rol, categoria, producto, pedido, detallepedido.
 Contrato típico: POST con body JSON; listados devuelven arrays.
 
-Este repo **no** contiene el código del backend.
+Este repo **no** contiene el código del backend (está en `backend-abimar-master`).
+
+CORS (tras redeploy): orígenes web + Cordova (`http://localhost`, `ionic://localhost`, GitHub Pages). Ver [`android_apk.md`](./android_apk.md).
 
 ## PayPal
 
@@ -39,10 +41,13 @@ Conversión ad-hoc: total local `/ 9` antes de cobrar en USD.
 
 ## Cordova / nativo
 
-Plugins declarados: whitelist, statusbar, device, splashscreen, ionic-webview, ionic-keyboard. Plataforma iOS en `package.json`. El deploy principal documentado es web/GitHub Pages.
+Plugins: whitelist, statusbar, device, splashscreen, ionic-webview, ionic-keyboard, **file**, **x-socialsharing** (QR en APK).  
+`config.xml`: id `com.abimar.shop`, content `index.html` (no live-reload).  
+Guía APK: [`android_apk.md`](./android_apk.md).
 
 ## Referencias
 
+- [`android_apk.md`](./android_apk.md)
 - [`../architecture/network.md`](../architecture/network.md)
 - [`../modules/cart_checkout.md`](../modules/cart_checkout.md)
 - [`../dependencies/`](../dependencies/)

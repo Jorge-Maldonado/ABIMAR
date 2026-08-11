@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { CartService } from '../services/cart.service';
 import { FavoritesService } from '../services/favorites.service';
+import { SessionService } from '../services/session.service';
 
 @Component({
   selector: 'app-item-details',
@@ -21,7 +22,8 @@ export class ItemDetailsPage implements OnInit {
     private router: Router,
     private toastController: ToastController,
     private cartService: CartService,
-    private favoritesService: FavoritesService
+    private favoritesService: FavoritesService,
+    public session: SessionService
   ) {}
 
   ngOnInit() {
@@ -49,6 +51,10 @@ export class ItemDetailsPage implements OnInit {
 
   get isGuestUser(): boolean {
     return localStorage.getItem('guestAccess') === 'true' || !localStorage.getItem('usuario');
+  }
+
+  async logout() {
+    await this.session.logoutCliente();
   }
 
   get esFavorito(): boolean {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
 import { PedidoService } from '../../services/pedido.service';
@@ -96,11 +96,11 @@ export class DashboardPage implements OnInit {
     this.loading = true;
     this.errorMsg = '';
 
-    const asArray = (res: any) => (Array.isArray(res) ? res : []);
-    const safe = <T>(obs: any) =>
+    const asArray = (res: any): any[] => (Array.isArray(res) ? res : []);
+    const safe = (obs: any): Observable<any[]> =>
       obs.pipe(
         map(asArray),
-        catchError(() => of([] as T[]))
+        catchError(() => of([] as any[]))
       );
 
     forkJoin({

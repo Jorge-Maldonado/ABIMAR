@@ -1,0 +1,6 @@
+// Nombre de salida del APK: abimar.apk
+android.applicationVariants.all { variant ->
+    variant.outputs.all { output ->
+        outputFileName = "abimar.apk"
+    }
+}

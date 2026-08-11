@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>Mi carrito</ion-title>
     <ion-buttons slot="end" *ngIf="totalItems > 0">
-      <div class="cart-toolbar-count" aria-label="{{ totalItems }} productos">
+      <div class="cart-toolbar-count" [attr.aria-label]="totalItems + ' productos'">
         <span class="cart-toolbar-count__num">{{ totalItems }}</span>
         <span class="cart-toolbar-count__txt">en carrito</span>
       </div>
@@ -34,7 +34,7 @@
         </p>
 
         <div class="cart-item__row">
-          <div class="qty-control" role="group" aria-label="Cantidad de {{ item.nombre }}">
+          <div class="qty-control" role="group" [attr.aria-label]="'Cantidad de ' + item.nombre">
             <button type="button" class="qty-btn" aria-label="Disminuir cantidad" (click)="decrementarCantidad(item)">
               <ion-icon name="remove-outline"></ion-icon>
             </button>

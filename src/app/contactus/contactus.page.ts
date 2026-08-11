@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { MenuController, ToastController } from '@ionic/angular';
 import { UtilService } from '../util.service';
 import { ContactoService } from '../services/contacto.service';
+import { SessionService } from '../services/session.service';
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-contactus',
@@ -20,6 +22,7 @@ export class ContactusPage {
   sending = false;
   success = false;
   submitted = false;
+  cartCount = 0;
 
   readonly canales = [
     {
@@ -49,12 +52,22 @@ export class ContactusPage {
     private toastCtrl: ToastController,
     private menu: MenuController,
     private util: UtilService,
-    private contactoService: ContactoService
-  ) {}
+    private contactoService: ContactoService,
+    public session: SessionService,
+    private cartService: CartService
+  ) {
+    this.cartService.items$.subscribe(() => {
+      this.cartCount = this.cartService.totalItems;
+    });
+  }
 
   ionViewWillEnter() {
     this.util.setMenuState(true);
     this.menu.enable(true, 'mainMenu');
+  }
+
+  async logout() {
+    await this.session.logoutCliente();
   }
 
   get formValid(): boolean {

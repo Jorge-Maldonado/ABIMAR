@@ -20,7 +20,7 @@
               class="menu-close-icon"
               aria-label="Cerrar menú"
               (click)="closeMenu($event)">
-              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+              <ion-icon slot="icon-only" name="close"></ion-icon>
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
@@ -94,15 +94,15 @@
         </div>
       </ion-content>
 
-      <ion-footer class="ion-no-border menu-footer-bar">
+      <ion-footer class="ion-no-border menu-footer-bar" *ngIf="!isGuest">
         <ion-toolbar>
           <ion-button
             expand="block"
-            fill="outline"
-            class="menu-close-btn"
-            (click)="closeMenu($event)">
-            <ion-icon slot="start" name="close-circle-outline"></ion-icon>
-            Cerrar menú
+            fill="clear"
+            class="menu-logout-btn"
+            (click)="logout($event)">
+            <ion-icon slot="start" name="log-out-outline"></ion-icon>
+            Cerrar sesión
           </ion-button>
         </ion-toolbar>
       </ion-footer>

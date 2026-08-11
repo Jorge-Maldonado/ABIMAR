@@ -22,6 +22,7 @@ export class MyCartPage {
   ionViewWillEnter() {
     this.util.setMenuState(true);
     this.menu.enable(true, 'mainMenu');
+    this.cartService.syncFromSession();
     this.cartService.items$.subscribe(data => {
       this.carrito = data;
     });

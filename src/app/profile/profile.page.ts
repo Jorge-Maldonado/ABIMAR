@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, MenuController, ToastController } from '@ionic/angular';
+import { MenuController, ToastController } from '@ionic/angular';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ApiService } from '../services/api.service';
 import { UtilService } from '../util.service';
-import { FavoritesService } from '../services/favorites.service';
+import { SessionService } from '../services/session.service';
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +16,7 @@ import { FavoritesService } from '../services/favorites.service';
 export class ProfilePage implements OnInit {
 
   loading = true;
+  cartCount = 0;
   usuario: any = {
     idpersona: null,
     nombres: '',
@@ -26,15 +28,18 @@ export class ProfilePage implements OnInit {
 
   constructor(
     private apiService: ApiService<any>,
-    private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private menu: MenuController,
     private util: UtilService,
     private router: Router,
-    private favorites: FavoritesService
+    private session: SessionService,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
+    this.cartService.items$.subscribe(() => {
+      this.cartCount = this.cartService.totalItems;
+    });
     this.loadProfile();
   }
 
@@ -161,26 +166,7 @@ export class ProfilePage implements OnInit {
   }
 
   async logout() {
-    const alert = await this.alertCtrl.create({
-      header: 'Cerrar sesión',
-      message: '¿Deseas salir de tu cuenta?',
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Salir',
-          handler: () => {
-            localStorage.removeItem('usuario');
-            localStorage.removeItem('personal');
-            localStorage.removeItem('guestAccess');
-            this.util.setGuest(false);
-            this.util.setMenuState(false);
-            this.favorites.clearSession();
-            this.router.navigate(['/login'], { replaceUrl: true });
-          },
-        },
-      ],
-    });
-    await alert.present();
+    await this.session.logoutCliente();
   }
 
   private async showToast(message: string, color: string) {

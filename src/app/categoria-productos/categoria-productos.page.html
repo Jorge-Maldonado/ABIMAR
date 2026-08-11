@@ -17,6 +17,14 @@
         <span class="cart-pay-chip__count" *ngIf="cartCount > 0">{{ cartCount }}</span>
         <span class="cart-pay-chip__label" *ngIf="cartCount > 0">Pagar</span>
       </button>
+      <ion-button
+        fill="clear"
+        class="logout-btn"
+        *ngIf="!isGuestUser"
+        (click)="logout()"
+        aria-label="Cerrar sesión">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

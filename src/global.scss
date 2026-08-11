@@ -38,6 +38,91 @@ ion-buttons:focus { outline: none !important; }
 // ─── Global ion-content background ──────────────────────────
 ion-content { --background: var(--ds-bg-base); }
 
+// ─── Fondo hero compartido (welcome / login) ─────────────────
+.app-hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+
+  &__glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.22;
+  }
+
+  &__glow--1 {
+    width: 320px;
+    height: 320px;
+    background: #00E5FF;
+    top: -100px;
+    right: -90px;
+    animation: app-hero-pulse 7s ease-in-out infinite;
+  }
+
+  &__glow--2 {
+    width: 260px;
+    height: 260px;
+    background: #FFD54F;
+    bottom: -80px;
+    left: -70px;
+    opacity: 0.14;
+    animation: app-hero-pulse 9s ease-in-out infinite reverse;
+  }
+
+  &__grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 20%, transparent 75%);
+  }
+}
+
+@keyframes app-hero-pulse {
+  0%, 100% { opacity: 0.18; transform: scale(1); }
+  50% { opacity: 0.28; transform: scale(1.06); }
+}
+
+.app-back-fab {
+  position: absolute !important;
+  z-index: 20 !important;
+  top: calc(env(safe-area-inset-top, 0px) + 14px) !important;
+  left: 16px !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  border: 1.5px solid rgba(0, 229, 255, 0.5) !important;
+  background: rgba(0, 229, 255, 0.14) !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35) !important;
+  color: #00E5FF !important;
+  text-decoration: none !important;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+
+  ion-icon {
+    font-size: 22px !important;
+    color: #00E5FF !important;
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
 // ─── Button system ───────────────────────────────────────────
 
 // Primary (cyan) — navigation, forms, add-to-cart
@@ -530,6 +615,17 @@ ion-badge {
   .cart-qty-badge,
   .cart-pay-chip--active {
     animation: none !important;
+  }
+}
+
+/** Botón cerrar sesión en toolbars de tienda (excepto carrito). */
+ion-button.logout-btn {
+  --color: var(--ds-danger);
+  margin-inline-start: 2px;
+
+  ion-icon {
+    color: var(--ds-danger);
+    font-size: 22px;
   }
 }
 

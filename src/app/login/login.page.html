@@ -1,21 +1,30 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar class="login-toolbar">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/welcome" routerDirection="back" fill="clear" aria-label="Volver">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="login-content" [fullscreen]="true" forceOverscroll="false">
 
-<ion-content class="login-content">
-  <div class="bg-overlay" aria-hidden="true"></div>
+  <div class="app-hero-bg" aria-hidden="true">
+    <div class="app-hero-bg__glow app-hero-bg__glow--1"></div>
+    <div class="app-hero-bg__glow app-hero-bg__glow--2"></div>
+    <div class="app-hero-bg__grid"></div>
+  </div>
+
+  <a
+    class="app-back-fab"
+    routerLink="/welcome"
+    routerDirection="back"
+    aria-label="Volver">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </a>
 
   <div class="auth-container">
 
     <div class="auth-brand">
-      <img src="/assets/logoAbimarFondoOscuro.svg" alt="Abimar Shop" class="brand-mark" />
+      <img
+        src="assets/logoAbimarFondoOscuro.svg"
+        alt="Abimar Shop"
+        class="brand-mark"
+        width="72"
+        height="72" />
       <h1 class="brand-name">Abimar Shop</h1>
+      <p class="brand-headline">Tecnología al mejor precio</p>
       <p class="brand-tagline">Inicia sesión para comprar y seguir tus pedidos</p>
     </div>
 
@@ -66,7 +75,7 @@
 
       <ion-button
         expand="block"
-        class="auth-submit"
+        class="btn-primary auth-submit"
         type="submit"
         [disabled]="loading">
         <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
