@@ -162,6 +162,22 @@
   }
 }
 
+.auth-forgot {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+
+  .auth-link {
+    --color: #00E5FF;
+    --background: transparent;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+    height: auto;
+    min-height: 0;
+  }
+}
+
 .auth-divider {
   display: flex;
   align-items: center;

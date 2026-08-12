@@ -81,6 +81,17 @@
         <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
         <span *ngIf="!loading">Ingresar</span>
       </ion-button>
+
+      <div class="auth-forgot">
+        <ion-button
+          fill="clear"
+          class="auth-link"
+          type="button"
+          routerLink="/forgot-password"
+          routerDirection="forward">
+          ¿Olvidaste tu contraseña?
+        </ion-button>
+      </div>
     </form>
 
     <div class="auth-divider">
