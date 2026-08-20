@@ -64,7 +64,8 @@ const routes: Routes = [
   {
     path: 'admin-home',
     loadChildren: () => import('./admin-home/admin-home.module').then(m => m.AdminHomePageModule)
-  },  {
+  },
+  {
     path: 'categoria-productos',
     loadChildren: () => import('./categoria-productos/categoria-productos.module').then( m => m.CategoriaProductosPageModule)
   },

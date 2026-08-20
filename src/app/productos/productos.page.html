@@ -103,36 +103,72 @@
           </label>
         </div>
 
-        <label class="field">
+        <div class="field field--category">
           <span class="field__label">Categoría</span>
-          <ion-select
-            class="field__input field__select"
-            [(ngModel)]="categoriaId"
-            interface="popover"
-            placeholder="Seleccionar categoría"
-            okText="Listo"
-            cancelText="Cancelar">
-            <ion-select-option *ngFor="let c of categorias" [value]="c.idcategoria">
-              {{ c.nombre }}
-            </ion-select-option>
-          </ion-select>
+          <div
+            class="cat-select"
+            [class.cat-select--filled]="categoriaId != null"
+            [class.cat-select--disabled]="!categorias.length"
+            [class.cat-select--invalid]="submitted && categoriaId == null">
+            <div class="cat-select__icon-wrap" aria-hidden="true">
+              <ion-icon name="pricetags-outline"></ion-icon>
+            </div>
+            <div class="cat-select__body">
+              <span class="cat-select__eyebrow">{{ categoriaId != null ? 'Seleccionada' : 'Obligatorio' }}</span>
+              <span class="cat-select__value">
+                {{ categoriaSeleccionadaNombre || 'Seleccionar categoría' }}
+              </span>
+            </div>
+            <ion-icon name="chevron-down-outline" class="cat-select__chev" aria-hidden="true"></ion-icon>
+            <ion-select
+              class="cat-select__native"
+              name="categoriaId"
+              [(ngModel)]="categoriaId"
+              [compareWith]="compareCategoria"
+              interface="alert"
+              [interfaceOptions]="categoriaSelectOptions"
+              placeholder="Seleccionar categoría"
+              okText="Listo"
+              cancelText="Cancelar"
+              [disabled]="!categorias.length">
+              <ion-select-option
+                *ngFor="let c of categorias"
+                [value]="c.idcategoria">
+                {{ c.nombre }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+          <span class="field__hint" *ngIf="categoriasLoading">Cargando categorías…</span>
+          <span class="field__hint" *ngIf="!categorias.length && !categoriasLoading">
+            No hay categorías. Créalas en el menú Categorías.
+          </span>
           <span class="field__error" *ngIf="submitted && categoriaId == null">
             Selecciona una categoría
           </span>
-        </label>
+        </div>
 
-        <div class="field">
+        <div class="field field--image">
           <span class="field__label">Imagen</span>
-          <button type="button" class="image-picker" (click)="abrirSelectorImagen()">
+          <button
+            type="button"
+            class="image-picker"
+            [class.image-picker--filled]="!!imagen"
+            [class.image-picker--invalid]="submitted && !imagen"
+            (click)="abrirSelectorImagen($event)">
             <div class="image-picker__preview">
               <img *ngIf="imagen" [src]="imagenPreview" alt="Vista previa" />
-              <ion-icon *ngIf="!imagen" name="image-outline"></ion-icon>
+              <div *ngIf="!imagen" class="image-picker__placeholder">
+                <ion-icon name="images-outline"></ion-icon>
+              </div>
             </div>
             <div class="image-picker__meta">
               <strong>{{ imagen ? 'Cambiar imagen' : 'Seleccionar imagen' }}</strong>
-              <span>{{ imagen || 'Toca para abrir el selector' }}</span>
+              <span>{{ imagen || 'Elige desde el catálogo visual' }}</span>
             </div>
-            <ion-icon name="chevron-forward-outline" class="image-picker__chev"></ion-icon>
+            <span class="image-picker__action" aria-hidden="true">
+              <ion-icon name="add-outline" *ngIf="!imagen"></ion-icon>
+              <ion-icon name="create-outline" *ngIf="imagen"></ion-icon>
+            </span>
           </button>
           <button
             *ngIf="imagen"

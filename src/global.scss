@@ -835,6 +835,72 @@ ion-item {
   box-shadow: var(--ds-glow-cyan);
 }
 
+/* Modal selector de imágenes de producto (admin) */
+.image-selector-modal {
+  --width: min(960px, 96vw);
+  --height: min(780px, 92vh);
+  --border-radius: 20px;
+  --background: #0b0b0d;
+  --box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+.image-selector-modal .modal-wrapper,
+.image-selector-modal ion-modal {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Alert del ion-select de categoría (admin productos) */
+.cat-select-alert {
+  --background: #16161a;
+  --max-width: 420px;
+  --width: min(420px, 92vw);
+  border-radius: 18px !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+
+  .alert-wrapper {
+    border-radius: 18px;
+    border: 1px solid rgba(0, 229, 255, 0.18);
+    background: #16161a;
+  }
+
+  .alert-head {
+    padding-bottom: 4px;
+  }
+
+  .alert-title {
+    font-family: var(--ds-font-heading, 'Sora', sans-serif);
+    font-weight: 760;
+    color: #fff;
+  }
+
+  .alert-sub-title {
+    color: #9ca3af;
+    font-size: 13px;
+  }
+
+  .alert-radio-group {
+    max-height: 320px;
+  }
+
+  .alert-radio-label {
+    color: #e5e7eb;
+  }
+
+  button.alert-button {
+    color: #00e5ff;
+    font-weight: 700;
+  }
+
+  .alert-radio-icon {
+    border-color: rgba(0, 229, 255, 0.45);
+  }
+
+  [aria-checked='true'] .alert-radio-inner {
+    background: #00e5ff;
+  }
+}
+
 .admin-list-pane {
   min-width: 0;
 }

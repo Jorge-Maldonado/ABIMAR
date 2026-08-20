@@ -1,63 +1,85 @@
-<ion-header>
-  <ion-toolbar color="dark">
-    <ion-title>Seleccionar imagen</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="close()">Cerrar</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  <ion-searchbar
-    [(ngModel)]="searchTerm"
-    placeholder="Buscar imagen..."
-  ></ion-searchbar>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col size="4" *ngFor="let img of filteredImages()">
-        <ion-card
-          button
-          (click)="selectImage(img)"
-          (dblclick)="chooseImage(img)"
-          [class.selected]="selectedImage === img"
-          style="border-radius: 12px; overflow: hidden;"
-        >
-          <img
-            [src]="'assets/products/' + img"
-            [alt]="img"
-            style="width: 100%; height: 110px; object-fit: cover;"
-          />
-          <ion-card-content style="text-align: center; font-size: 12px;">
-            {{ img }}
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <div
-    *ngIf="filteredImages().length === 0"
-    style="text-align:center; padding: 24px; color:#888;"
-  >
-    No se encontraron imágenes en assets/products
-  </div>
-</ion-content>
-
-<ion-footer *ngIf="filteredImages().length > 0">
-  <ion-toolbar>
-    <div class="footer-actions">
-      <div class="preview" *ngIf="selectedImage">
-        <img [src]="'assets/products/' + selectedImage" [alt]="selectedImage" />
-        <span>{{ selectedImage }}</span>
-      </div>
-      <ion-button
-        expand="block"
-        (click)="useSelected()"
-        [disabled]="!selectedImage"
-      >
-        Usar esta imagen
-      </ion-button>
+<div class="img-sel">
+  <header class="img-sel__header">
+    <div class="img-sel__titles">
+      <p class="img-sel__eyebrow">Catálogo visual</p>
+      <h2 class="img-sel__title">Seleccionar imagen</h2>
+      <p class="img-sel__sub">
+        {{ loading ? 'Cargando…' : (filteredImages().length + ' disponibles') }}
+      </p>
     </div>
-  </ion-toolbar>
-</ion-footer>
+    <button type="button" class="img-sel__close" (click)="close()" aria-label="Cerrar">
+      <ion-icon name="close-outline"></ion-icon>
+    </button>
+  </header>
+
+  <div class="img-sel__search">
+    <ion-icon name="search-outline" class="img-sel__search-icon" aria-hidden="true"></ion-icon>
+    <input
+      class="img-sel__search-input"
+      type="search"
+      [(ngModel)]="searchTerm"
+      placeholder="Buscar por nombre…"
+      autocomplete="off" />
+  </div>
+
+  <div class="img-sel__body">
+    <div *ngIf="loading" class="img-sel__state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>Cargando imágenes…</span>
+    </div>
+
+    <div *ngIf="!loading && loadError" class="img-sel__state img-sel__state--error">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <span>{{ loadError }}</span>
+    </div>
+
+    <div
+      *ngIf="!loading && !loadError && filteredImages().length === 0"
+      class="img-sel__state">
+      <ion-icon name="images-outline"></ion-icon>
+      <span>No se encontraron imágenes.</span>
+    </div>
+
+    <div class="img-sel__grid" *ngIf="!loading && !loadError && filteredImages().length">
+      <button
+        type="button"
+        class="img-tile"
+        *ngFor="let img of filteredImages()"
+        [class.img-tile--selected]="selectedImage === img"
+        (click)="selectImage(img)">
+        <img
+          class="img-tile__media"
+          [src]="'assets/products/' + img"
+          [alt]="displayName(img)"
+          loading="lazy" />
+        <span class="img-tile__check" aria-hidden="true">
+          <ion-icon name="checkmark"></ion-icon>
+        </span>
+        <span class="img-tile__caption">{{ displayName(img) }}</span>
+      </button>
+    </div>
+  </div>
+
+  <footer class="img-sel__footer" *ngIf="!loading && filteredImages().length > 0">
+    <div class="img-sel__preview" *ngIf="selectedImage; else pickHint">
+      <img [src]="'assets/products/' + selectedImage" [alt]="displayName(selectedImage)" />
+      <div>
+        <strong>{{ displayName(selectedImage) }}</strong>
+        <span>Lista para usar</span>
+      </div>
+    </div>
+    <ng-template #pickHint>
+      <div class="img-sel__hint">
+        Toca una imagen para seleccionarla
+      </div>
+    </ng-template>
+
+    <button
+      type="button"
+      class="img-sel__confirm"
+      (click)="useSelected()"
+      [disabled]="!selectedImage">
+      Usar esta imagen
+    </button>
+  </footer>
+</div>

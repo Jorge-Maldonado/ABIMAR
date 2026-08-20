@@ -23,7 +23,7 @@ Shell: `AdminHomePage` navega a children; logout limpia solo `adminUsuario`/`adm
 - `ApiService` para roles/usuarios/categorías/productos.
 - `PedidoService` para pedidos.
 - `ContactoService` para mensajes de contacto.
-- `ImageSelectorComponent` (modal) al editar imagen de producto.
+- `ImageSelectorComponent` (modal): UI Dark Tech con grilla, búsqueda y confirmación; lista desde `assets/products/index.json`.
 
 ## Dependencias
 
@@ -40,6 +40,8 @@ Shell: `AdminHomePage` navega a children; logout limpia solo `adminUsuario`/`adm
 - Al marcar PAGADO sin método, admin pide QR/PayPal; la página QR setea `tipoPagoId=2` al entrar.
 - Al marcar ENTREGADO (solo si estaba PAGADO), pide responsable + nota; persiste en `datosPaypal.entrega`.
 - Producto: create/update envían `destacado` y `masVendido` (boolean); el home filtra esas banderas.
+- Formulario producto: selector de categoría custom + alert estilizado; picker de imagen con preview CTA.
+- Al añadir imagen en `assets/products/`, actualizar también `assets/products/index.json`.
 - Contactos: `estado=1` nuevo, `estado=0` atendido; ruta admin `/admin-home/contactos`.
 
 ## Referencias

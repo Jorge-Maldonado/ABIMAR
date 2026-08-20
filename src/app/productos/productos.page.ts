@@ -20,6 +20,7 @@ export class ProductosPage implements OnInit {
 
   productos: any[] = [];
   categorias: any[] = [];
+  categoriasLoading = false;
 
   editId: number | null = null;
   originalData: any = {};
@@ -33,6 +34,9 @@ export class ProductosPage implements OnInit {
   saving = false;
   submitted = false;
 
+  /** ion-select: evita fallos number vs string en el value. */
+  compareCategoria = (a: any, b: any): boolean => Number(a) === Number(b);
+
   constructor(
     private apiService: ApiService<any>,
     private modalCtrl: ModalController,
@@ -42,6 +46,10 @@ export class ProductosPage implements OnInit {
 
   ngOnInit() {
     this.loadProductos();
+    this.loadCategorias();
+  }
+
+  ionViewWillEnter() {
     this.loadCategorias();
   }
 
@@ -84,6 +92,19 @@ export class ProductosPage implements OnInit {
     return this.normalizeImagePath(this.imagen);
   }
 
+  get categoriaSelectOptions() {
+    return {
+      header: 'Elegir categoría',
+      subHeader: 'Clasifica el producto en el catálogo',
+      cssClass: 'cat-select-alert',
+    };
+  }
+
+  get categoriaSeleccionadaNombre(): string {
+    if (this.categoriaId == null) return '';
+    return this.getCategoriaNombre(this.categoriaId);
+  }
+
   private normalizeImagePath(val: any): string {
     if (!val) return 'assets/no-image.png';
     const s = String(val).trim();
@@ -94,9 +115,15 @@ export class ProductosPage implements OnInit {
     return `assets/products/${onlyName}`;
   }
 
-  async abrirSelectorImagen() {
+  async abrirSelectorImagen(event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     const modal = await this.modalCtrl.create({
       component: ImageSelectorComponent,
+      cssClass: 'image-selector-modal',
       showBackdrop: true,
       backdropDismiss: true,
     });
@@ -154,22 +181,40 @@ export class ProductosPage implements OnInit {
   }
 
   loadCategorias() {
+    this.categoriasLoading = true;
     this.apiService
       .post(this.apiService.url('categoria/list'), {})
       .subscribe(
         (res: any) => {
-          this.categorias = Array.isArray(res) ? res : [];
+          const lista = Array.isArray(res) ? res : [];
+          this.categorias = lista
+            .map((c) => ({
+              ...c,
+              idcategoria: Number(
+                c.idcategoria ?? c.idCategoria ?? c.id ?? 0
+              ),
+              nombre: c.nombre || `Categoría #${c.idcategoria || ''}`,
+              status: Number(c.status ?? 1),
+            }))
+            .filter((c) => c.idcategoria > 0 && c.status === 1)
+            .sort((a, b) =>
+              String(a.nombre).localeCompare(String(b.nombre), 'es')
+            );
+          this.categoriasLoading = false;
         },
         async (err) => {
           console.error('Error cargando categorías:', err);
           this.categorias = [];
+          this.categoriasLoading = false;
           await this.showToast('No se pudieron cargar las categorías', 'danger');
         }
       );
   }
 
   getCategoriaNombre(id: number): string {
-    const cat = this.categorias.find((c) => c.idcategoria === id);
+    const cat = this.categorias.find(
+      (c) => Number(c.idcategoria) === Number(id)
+    );
     return cat ? cat.nombre : 'Sin categoría';
   }
 
