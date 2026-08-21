@@ -20,6 +20,8 @@ export class UsuariosPage implements OnInit {
 
   idRol: number | null = null;
 
+  compareRol = (a: any, b: any): boolean => Number(a) === Number(b);
+
   email = '';
   password = '';
 
@@ -37,6 +39,8 @@ export class UsuariosPage implements OnInit {
 
   loading = false;
 
+  rolesLoading = false;
+
   originalData: any = {};
 
   constructor(
@@ -49,11 +53,28 @@ export class UsuariosPage implements OnInit {
   //====================================================
 
   ngOnInit(): void {
-
     this.loadRoles();
-
     this.loadUsuarios();
+  }
 
+  ionViewWillEnter(): void {
+    this.loadRoles();
+  }
+
+  get rolSelectOptions() {
+    return {
+      header: 'Elegir rol',
+      subHeader: 'Asigna el permiso del usuario en el sistema',
+      cssClass: 'rol-select-alert',
+    };
+  }
+
+  get rolSeleccionadoNombre(): string {
+    if (this.idRol == null) {
+      return '';
+    }
+    const name = this.getRoleName(this.idRol);
+    return name === '-' ? '' : name;
   }
 
   //====================================================
@@ -61,36 +82,37 @@ export class UsuariosPage implements OnInit {
   //====================================================
 
   loadRoles(): void {
-
+    this.rolesLoading = true;
     this.apiService
-      .post(
-        'https://backend-abimar.onrender.com/abimar/core/api/rol/list',
-        {}
-      )
+      .post(this.apiService.url('rol/list'), {})
       .subscribe({
-
         next: (res: any) => {
-
-          this.roles = Array.isArray(res)
-
+          const lista = Array.isArray(res)
             ? res
-
-            : res
-
-              ? [res]
-
-              : [];
-
+            : Array.isArray(res?.data)
+              ? res.data
+              : res
+                ? [res]
+                : [];
+          this.roles = lista
+            .map((r) => ({
+              ...r,
+              idrol: Number(r.idrol ?? r.idRol ?? r.id ?? 0),
+              descripcion: r.descripcion || r.nombre || `Rol #${r.idrol || ''}`,
+              estado: Number(r.estado ?? r.status ?? 1),
+            }))
+            .filter((r) => r.idrol > 0 && r.estado === 1)
+            .sort((a, b) =>
+              String(a.descripcion).localeCompare(String(b.descripcion), 'es')
+            );
+          this.rolesLoading = false;
         },
-
         error: (err) => {
-
           console.error('Error cargando roles', err);
-
+          this.roles = [];
+          this.rolesLoading = false;
         }
-
       });
-
   }
 
   //====================================================

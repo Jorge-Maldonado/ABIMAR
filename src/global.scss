@@ -850,8 +850,9 @@ ion-item {
   overflow: hidden;
 }
 
-/* Alert del ion-select de categoría (admin productos) */
-.cat-select-alert {
+/* Alert del ion-select de categoría / rol (admin) */
+.cat-select-alert,
+.rol-select-alert {
   --background: #16161a;
   --max-width: 420px;
   --width: min(420px, 92vw);

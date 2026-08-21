@@ -132,35 +132,45 @@
 
           </ion-item>
 
-          <ion-item class="ds-form-item" lines="none">
-
-            <ion-label position="stacked">
-
-              Rol
-
-            </ion-label>
-
-            <ion-select
-
-              [(ngModel)]="idRol"
-
-              interface="popover"
-
-              placeholder="Seleccione un rol">
-
-              <ion-select-option
-
-                *ngFor="let r of roles"
-
-                [value]="r.idrol">
-
-                {{r.descripcion}}
-
-              </ion-select-option>
-
-            </ion-select>
-
-          </ion-item>
+          <div class="rol-select-field full-width">
+            <span class="rol-select-field__label">Rol</span>
+            <div
+              class="rol-select"
+              [class.rol-select--filled]="idRol != null"
+              [class.rol-select--disabled]="!roles.length">
+              <div class="rol-select__icon-wrap" aria-hidden="true">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+              </div>
+              <div class="rol-select__body">
+                <span class="rol-select__eyebrow">{{ idRol != null ? 'Seleccionado' : 'Obligatorio' }}</span>
+                <span class="rol-select__value">
+                  {{ rolSeleccionadoNombre || 'Seleccionar rol' }}
+                </span>
+              </div>
+              <ion-icon name="chevron-down-outline" class="rol-select__chev" aria-hidden="true"></ion-icon>
+              <ion-select
+                class="rol-select__native"
+                name="idRol"
+                [(ngModel)]="idRol"
+                [compareWith]="compareRol"
+                interface="alert"
+                [interfaceOptions]="rolSelectOptions"
+                placeholder="Seleccionar rol"
+                okText="Listo"
+                cancelText="Cancelar"
+                [disabled]="!roles.length">
+                <ion-select-option
+                  *ngFor="let r of roles"
+                  [value]="r.idrol">
+                  {{ r.descripcion }}
+                </ion-select-option>
+              </ion-select>
+            </div>
+            <span class="rol-select-field__hint" *ngIf="rolesLoading">Cargando roles…</span>
+            <span class="rol-select-field__hint" *ngIf="!roles.length && !rolesLoading">
+              No hay roles. Créalos en Gestión de Roles.
+            </span>
+          </div>
 
           <ion-item class="ds-form-item" lines="none">
 
