@@ -34,7 +34,7 @@ Shell: `AdminHomePage` navega a children; logout limpia solo `adminUsuario`/`adm
 
 - Layout admin compartido: contenedor `max-width: 1600px`, y en CRUD con form (Usuarios/Productos/Categorías) grid `380px 1fr` (form sticky + listado).
 - `UsuariosPage` une `/persona/list` + `/usuario/list` por `personal` ↔ `idpersona`. Selector de rol: alerta Ionic (no popover) para que no lo recorte el formulario.
-- Al crear usuario desde admin hay llamadas duplicadas a `/usuario/create` (persona y login) — revisar al tocar ese flujo.
+- Al crear usuario desde admin: `persona/create` y luego `usuario/create` (mismo orden que signup). El login no se manda a `/usuario/create` como si fuera persona.
 - Pedidos: colores/iconos por status (`PENDIENTE`/`PAGADO`/`ENTREGADO`/`CANCELADO`); método pago 1=PayPal, 2=QR.
 - Admin pedidos enriquece `clienteNombre` con `persona/list` (`personal` → nombres+apellidos) y líneas con imagen vía `producto/list`.
 - Al marcar PAGADO sin método, admin pide QR/PayPal; la página QR setea `tipoPagoId=2` al entrar.

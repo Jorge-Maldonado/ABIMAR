@@ -220,9 +220,11 @@
 
             expand="block"
 
+            [disabled]="saving"
+
             (click)="createUsuario()">
 
-            Crear Usuario
+            {{ saving ? 'Creando…' : 'Crear Usuario' }}
 
           </ion-button>
 

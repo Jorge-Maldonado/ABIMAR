@@ -41,6 +41,8 @@ export class UsuariosPage implements OnInit {
 
   rolesLoading = false;
 
+  saving = false;
+
   originalData: any = {};
 
   constructor(
@@ -218,182 +220,113 @@ export class UsuariosPage implements OnInit {
   //====================================================
 
   async createUsuario(): Promise<void> {
-
-    if (!this.idRol) {
-
-      this.showAlert(
-
-        'Error',
-
-        'Debe seleccionar un rol antes de crear el usuario'
-
-      );
-
+    if (this.saving) {
       return;
-
     }
 
+    if (this.idRol == null) {
+      await this.showAlert('Error', 'Debe seleccionar un rol antes de crear el usuario');
+      return;
+    }
     if (!this.email.trim()) {
-
-      this.showAlert(
-
-        'Error',
-
-        'Debe ingresar un correo electrónico'
-
-      );
-
+      await this.showAlert('Error', 'Debe ingresar un correo electrónico');
       return;
-
     }
-
+    if (!this.isValidEmail(this.email.trim())) {
+      await this.showAlert('Error', 'El correo electrónico no es válido');
+      return;
+    }
     if (!this.password.trim()) {
-
-      this.showAlert(
-
-        'Error',
-
-        'Debe ingresar una contraseña'
-
-      );
-
+      await this.showAlert('Error', 'Debe ingresar una contraseña');
       return;
-
     }
-
+    if (this.password.trim().length < 6) {
+      await this.showAlert('Error', 'La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
     if (!this.nombres.trim()) {
-
-      this.showAlert(
-
-        'Error',
-
-        'Debe ingresar los nombres'
-
-      );
-
+      await this.showAlert('Error', 'Debe ingresar los nombres');
       return;
-
     }
-
     if (!this.apellidos.trim()) {
-
-      this.showAlert(
-
-        'Error',
-
-        'Debe ingresar los apellidos'
-
-      );
-
+      await this.showAlert('Error', 'Debe ingresar los apellidos');
       return;
-
+    }
+    if (!String(this.documento || '').trim()) {
+      await this.showAlert('Error', 'Debe ingresar el documento');
+      return;
     }
 
-    if (!this.documento.trim()) {
-
-      this.showAlert(
-
-        'Error',
-
-        'Debe ingresar el documento'
-
-      );
-
-      return;
-
-    }
-
+    const documento = String(this.documento).trim();
     const persona = {
-
-      apellidos: this.apellidos,
-
-      documento: this.documento,
-
+      nombres: this.nombres.trim(),
+      apellidos: this.apellidos.trim(),
+      documento,
+      identificacion: documento,
+      telefono: this.telefono != null && String(this.telefono).trim() !== ''
+        ? Number(this.telefono)
+        : null,
       estado: 1,
-
       fechaCreacion: new Date().toISOString(),
-
-      identificacion: this.documento,
-
-      idpersona: 0,
-
-      nombres: this.nombres,
-
-      razonSocial: `${this.nombres} ${this.apellidos}`,
-
-      rolId: this.idRol,
-
-      telefono: this.telefono,
-
+      razonSocial: `${this.nombres.trim()} ${this.apellidos.trim()}`,
+      rolId: String(this.idRol),
       tipoDocumentoId: 1,
-
     };
+
+    this.saving = true;
     try {
-
-      //------------------------------------------------
-      // CREAR PERSONA
-      //------------------------------------------------
-
       const personaResp: any = await this.apiService
-        .post('https://backend-abimar.onrender.com/abimar/core/api/usuario/create', persona)
+        .post(this.apiService.url('persona/create'), persona)
         .toPromise();
 
-      //------------------------------------------------
-      // CREAR LOGIN
-      //------------------------------------------------
+      const personalId = Number(
+        personaResp?.idpersona ?? personaResp?.idPersona ?? 0
+      );
+      if (!personalId) {
+        throw new Error('Respuesta de persona inválida');
+      }
 
       const loginData = {
-
         emailUser: this.email.trim(),
-
-        password: this.password,
-
+        password: this.password.trim(),
         token: this.generateToken(32),
-
-        personal: personaResp.idpersona,
-
+        personal: personalId,
       };
 
       await this.apiService
-        .post('https://backend-abimar.onrender.com/abimar/core/api/usuario/create', loginData)
+        .post(this.apiService.url('usuario/create'), loginData)
         .toPromise();
 
-      //------------------------------------------------
-
       await this.showAlert(
-
         '¡Usuario creado!',
-
         `Usuario creado correctamente.<br><b>Correo:</b> ${loginData.emailUser}`
-
       );
-
       this.resetForm();
-
       this.loadUsuarios();
-
-    }
-
-    catch (error) {
-
-      console.error(
-
-        'Error creando usuario',
-
-        error
-
-      );
-
-      this.showAlert(
-
+    } catch (error) {
+      console.error('Error creando usuario', error);
+      await this.showAlert(
         'Error',
-
-        'No se pudo crear el usuario o su login.'
-
+        this.createErrorMessage(error)
       );
-
+    } finally {
+      this.saving = false;
     }
+  }
 
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  private createErrorMessage(error: any): string {
+    const status = error?.status;
+    if (status === 409 || status === 400) {
+      return 'No se pudo crear: el correo o el documento ya existen.';
+    }
+    if (status === 0) {
+      return 'No hay conexión con el servidor. Intenta de nuevo.';
+    }
+    return 'No se pudo crear el usuario o su login.';
   }
 
   //====================================================
