@@ -8,7 +8,7 @@ Panel de administración bajo `/admin-home` con menú propio (`adminMenu`).
 
 | Ruta hija | Página | Hace |
 |---|---|---|
-| `dashboard` | `DashboardPage` | KPIs reales: pedidos (incl. ENTREGADO)/productos/categorías/usuarios/personas + top desde detalles |
+| `dashboard` | `DashboardPage` | KPIs reales + **Descargar reporte** (HTML imprimible/PDF) de lo visible |
 | `roles` | `RolesPage` | CRUD roles |
 | `usuarios` | `UsuariosPage` | personas + logins combinados; CRUD |
 | `categorias` | `CategoriasPage` | CRUD categorías |
@@ -41,8 +41,8 @@ Shell: `AdminHomePage` navega a children; logout limpia solo `adminUsuario`/`adm
 - Al marcar ENTREGADO (solo si estaba PAGADO), pide responsable + nota; persiste en `datosPaypal.entrega`.
 - Producto: create/update envían `destacado` y `masVendido` (boolean); el home filtra esas banderas.
 - Formulario producto: selector de categoría custom + alert estilizado; picker de imagen con preview CTA.
-- Al añadir imagen en `assets/products/`, actualizar también `assets/products/index.json`.
-- Contactos: `estado=1` nuevo, `estado=0` atendido; ruta admin `/admin-home/contactos`.
+- Al añadir imagen en `assets/products/`, el listado `index.json` se regenera en `npm run build` / `build:app` / `android:add`.
+- Dashboard: botón **Descargar reporte** genera un HTML con KPIs, estados, ventas 7 días, métodos de pago, top productos y pedidos recientes. Abrir el archivo e Imprimir → Guardar como PDF.
 
 ## Referencias
 

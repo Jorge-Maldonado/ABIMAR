@@ -31,6 +31,7 @@ Shell Ionic (`ion-split-pane` + `ion-menu` + `ion-router-outlet`) y páginas con
 
 - Categorías: `src/assets/categories/`
 - Productos: `src/assets/products/`
+- Listado del selector: `src/assets/products/index.json` (se regenera en `prebuild` / `prebuild:app` / `android:add`)
 - Fallback: `assets/no-image.png`
 - Splash nativo (Cordova): `resources/splash.png` → densidades con `npm run android:splash` (mismas señales de marca que Welcome/Login: `#0B0B0D`, cyan `#00E5FF`, tagline “Tecnología al mejor precio”).
 

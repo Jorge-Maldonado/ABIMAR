@@ -5,7 +5,7 @@
 **ABIMAR Shop** — tienda online de accesorios electrónicos (cargadores, audífonos, parlantes, etc.).
 Paquete npm: `ecomm-app`. Cliente móvil/web con Ionic 5 + Angular 10.
 El backend vive fuera de este repo: `https://backend-abimar.onrender.com/abimar/core/api`.
-Deploy front en GitHub Pages: `https://jorge-maldonado.github.io/ABIMAR/` (`base-href /ABIMAR/`).
+Deploy front en GitHub Pages: `https://jorge-maldonado.github.io/ABIMAR/` (`base-href /ABIMAR/`). En Windows: `npm run deploy` (no `sh deploy.sh`).
 
 ## Problema que resuelve
 
@@ -43,7 +43,7 @@ UI en español. Moneda de catálogo en Bs; PayPal convierte/cobra en USD (sandbo
 | Estado local | `BehaviorSubject` + `localStorage` |
 | Pagos | PayPal JS SDK (`client-id=sb`), QR vía `angularx-qrcode` |
 | Nativo (Cordova) | splash-screen, status-bar, iOS platform declarado |
-| Deploy | `ng build --prod` + `gh-pages` |
+| Deploy | `npm run deploy` (Windows: no `sh deploy.sh`; publica `www/` a `gh-pages`) |
 
 ## Fuera de alcance de este repo
 

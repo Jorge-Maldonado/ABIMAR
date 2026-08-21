@@ -1,6 +1,8 @@
 # Ionic ecommerce app UI
-deploy front
-sh deploy.sh
+deploy front (GitHub Pages, desde PowerShell):
+npm run deploy
+# URL: https://jorge-maldonado.github.io/ABIMAR/
+# No uses: sh deploy.sh  (falla en Windows; además hace git reset)
 pruebas paypal
 💳 Tarjeta de prueba más común (Visa)
 Número: 4111 1111 1111 1111

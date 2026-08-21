@@ -68,20 +68,32 @@ Requisitos: Node 14/16 (mejor), JDK 11 o 17, Android Studio / SDK, variable `AND
 # 1) Instalar deps (incluye cordova + cordova-android)
 npm install
 
-# 2) Plataforma (solo una vez)
+# 2) Plataforma + copiar src/assets a www (productos, categorías, index.json)
 npm run android:add
-# o: ionic cordova platform add android
+# Compila con build:app (base-href ./) y luego:
+# - si no hay platforms/android → cordova platform add android
+# - si ya existe → cordova prepare android (no deja www vacío)
 
 # 3) Regenerar iconos/splash si cambiaste resources/icon.png
 npm run resources
 
-# 4) Build debug APK
+# 4) Compilar e instalar en el teléfono USB (comando habitual)
+npm run android:install
+```
+
+Eso borra APKs previos (evita Gradle UP-TO-DATE), genera uno nuevo y hace `adb install -r` del APK en `platforms/android/app/build/outputs/apk/debug/`, no de un `abimar.apk` viejo en la raíz.
+
+Solo compilar, sin instalar:
+
+```bash
 npm run android:build
 ```
 
 APK debug típico:
 
-`platforms/android/app/build/outputs/apk/debug/app-debug.apk`
+`platforms/android/app/build/outputs/apk/debug/abimar.apk`
+
+Copia verificada en raíz: `abimar.apk` (mismo tamaño que el de `platforms/`). No instales un `abimar.apk` de la raíz sin mirar la fecha.
 
 Release firmado:
 
@@ -99,8 +111,9 @@ npm run android:apk
 | `build:app` | Web embebida Cordova (`base-href ./`) |
 | `android:icons` | Densidades icono desde `resources/icon.png` |
 | `android:splash` | Densidades splash desde `resources/splash.png` |
-| `android:add` | Agrega plataforma android |
-| `android:build` | Compila APK debug `--prod` |
+| `android:add` | `build:app` + add/prepare android (lleva `src/assets` al www de la plataforma; no genera APK) |
+| `android:build` | Compila APK debug `--prod`; borra APKs previos y copia verificado a `abimar.apk` |
+| `android:install` | `android:build` + `adb install -r` del APK debug de `platforms/` |
 | `android:apk` | Compila release |
 
 ## Riesgos en dispositivo
@@ -112,4 +125,6 @@ npm run android:apk
 
 ## No confundir
 
-`npm run build` (Pages) ≠ build del APK. Para APK usar `android:build` / `ionic cordova build android --prod`.
+`npm run build` (Pages, `base-href /ABIMAR/`) ≠ build del APK. `android:add` sin `build:app` copiaba un `www` vacío (`/www` está en `.gitignore`) y el APK quedaba sin imágenes de catálogo.
+
+Para el teléfono USB usa `npm run android:install`. `android:add` no genera APK. No instales un `abimar.apk` de la raíz sin comprobar que es de hoy. No uses un `www` de GitHub Pages (`base-href /ABIMAR/`) dentro de Cordova.

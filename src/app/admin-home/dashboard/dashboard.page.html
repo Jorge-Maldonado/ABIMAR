@@ -6,8 +6,19 @@
       <h1>Dashboard</h1>
       <p class="dash-hero__sub">Resumen operativo de la tienda</p>
     </div>
-    <span class="dash-badge dash-badge--live" *ngIf="!usingMock && data">Datos en vivo</span>
-    <span class="dash-badge" *ngIf="usingMock">Datos de demo</span>
+    <div class="dash-hero__actions">
+      <span class="dash-badge dash-badge--live" *ngIf="!usingMock && data">Datos en vivo</span>
+      <span class="dash-badge" *ngIf="usingMock">Datos de demo</span>
+      <ion-button
+        class="dash-export"
+        size="small"
+        fill="outline"
+        (click)="descargarReporte()"
+        [disabled]="exporting">
+        <ion-icon slot="start" name="download-outline"></ion-icon>
+        {{ exporting ? 'Generando…' : 'Descargar reporte' }}
+      </ion-button>
+    </div>
   </header>
 
   <!-- Fase 1: KPIs -->

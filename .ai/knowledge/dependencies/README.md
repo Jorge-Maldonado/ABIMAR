@@ -35,7 +35,7 @@ Criterio sobre librerías del `package.json` relevantes al dominio. No es un dum
 | Paquete | Por qué está |
 |---|---|
 | `@angular/cli` 10 | build/serve |
-| `gh-pages` | deploy a GitHub Pages |
+| `gh-pages` | quedó en package.json; el publish real es `scripts/deploy-pages.js` (Windows `ENAMETOOLONG`) |
 | Karma/Jasmine/Protractor | tests unitarios/e2e de plantilla |
 | `typescript` ~3.9 | lenguaje (pareja de Angular 10) |
 
